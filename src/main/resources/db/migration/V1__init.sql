@@ -8,7 +8,7 @@ CREATE TABLE `admin` (
 
 -- 2. 메인 페이지 설정
 CREATE TABLE `main_page` (
-    `config_id` INT PRIMARY KEY DEFAULT 1,
+    `main_id` INT PRIMARY KEY DEFAULT 1,
     `logo_url` VARCHAR(500) COMMENT '로고 이미지 경로',
     `description` TEXT COMMENT '동아리 소개글',
     `recruitment_start` DATE COMMENT '모집 시작일',
@@ -19,13 +19,13 @@ CREATE TABLE `main_page` (
 -- 3. 메인 페이지 노출용 프로젝트 (메인페이지 1 : N 프로젝트)
 CREATE TABLE `project_event` (
     `project_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `config_id` INT DEFAULT 1 COMMENT '메인페이지 연결',
+    `main_id` INT DEFAULT 1 COMMENT '메인페이지 연결',
     `project_name` VARCHAR(100) NOT NULL,
     `participant_count` INT DEFAULT 0,
     `description` TEXT,
     `priority` INT DEFAULT 0 COMMENT '프로젝트 노출 우선순위 (낮을수록 상단)',
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT `fk_project_main` FOREIGN KEY (`config_id`) REFERENCES `main_page` (`config_id`)
+    CONSTRAINT `fk_project_main` FOREIGN KEY (`main_id`) REFERENCES `main_page` (`main_id`)
 );
 
 -- 4. 프로젝트 사진 (프로젝트 1 : N 사진)
@@ -40,7 +40,7 @@ CREATE TABLE `project_photo` (
 
 -- 5. 신청 부원 (1년 뒤 하드 딜리트 대상)
 CREATE TABLE `applicant_member` (
-    `application_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `applicant_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(100) NOT NULL,
     `department` VARCHAR(100) NOT NULL,
     `student_id` VARCHAR(8) NOT NULL,
@@ -88,10 +88,11 @@ CREATE TABLE `calendar_schedule` (
 CREATE TABLE `refresh_token` (
     `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `user_id` BIGINT NOT NULL,
-    `role` VARCHAR(50) NOT NULL,
-    `token` VARCHAR(500) NOT NULL UNIQUE,
+    `token_hash` VARCHAR(128) NOT NULL UNIQUE COMMENT 'SHA-256 hex of refresh token',
     `expires_at` DATETIME NOT NULL,
     `revoked` BOOLEAN NOT NULL DEFAULT FALSE,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX `idx_refresh_token_user` (`user_id`),
+    CONSTRAINT `fk_refresh_token_user` FOREIGN KEY (`user_id`) REFERENCES `admin` (`admin_id`) ON DELETE CASCADE
 );
