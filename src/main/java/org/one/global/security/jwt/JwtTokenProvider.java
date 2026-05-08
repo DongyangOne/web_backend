@@ -6,7 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
-import org.springframework.beans.factory.annotation.Value;
+import org.one.global.config.props.JwtProperties;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,13 +17,11 @@ public class JwtTokenProvider {
 	private final long refreshExpirationMillis;
 
 	public JwtTokenProvider(
-			@Value("${jwt.secret}") String secret,
-			@Value("${jwt.access-expiration}") long accessExpirationMillis,
-			@Value("${jwt.refresh-expiration}") long refreshExpirationMillis
+			JwtProperties jwtProperties
 	) {
-		this.secretKey = Keys.hmacShaKeyFor(resolveKeyBytes(secret));
-		this.accessExpirationMillis = accessExpirationMillis;
-		this.refreshExpirationMillis = refreshExpirationMillis;
+		this.secretKey = Keys.hmacShaKeyFor(resolveKeyBytes(jwtProperties.getSecret()));
+		this.accessExpirationMillis = jwtProperties.getAccessExpiration();
+		this.refreshExpirationMillis = jwtProperties.getRefreshExpiration();
 	}
 
 	public String createAccessToken(String subject, String role) {
