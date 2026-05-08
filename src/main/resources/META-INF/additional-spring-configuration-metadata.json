@@ -1,0 +1,62 @@
+{
+  "groups": [
+    {
+      "name": "jwt",
+      "type": "org.one.global.config.props.JwtProperties",
+      "sourceType": "org.one.global.config.props.JwtProperties"
+    },
+    {
+      "name": "app.cors",
+      "type": "org.one.global.config.props.CorsProperties",
+      "sourceType": "org.one.global.config.props.CorsProperties"
+    },
+    {
+      "name": "admin.init",
+      "type": "org.one.global.config.props.AdminInitProperties",
+      "sourceType": "org.one.global.config.props.AdminInitProperties"
+    },
+    {
+      "name": "spring.flyway",
+      "type": "org.springframework.boot.autoconfigure.flyway.FlywayProperties",
+      "sourceType": "org.springframework.boot.autoconfigure.flyway.FlywayProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "sourceType": "org.one.global.config.props.JwtProperties"
+    },
+    {
+      "name": "jwt.access-expiration",
+      "type": "java.lang.Long",
+      "sourceType": "org.one.global.config.props.JwtProperties"
+    },
+    {
+      "name": "jwt.refresh-expiration",
+      "type": "java.lang.Long",
+      "sourceType": "org.one.global.config.props.JwtProperties"
+    },
+    {
+      "name": "app.cors.allowed-origins",
+      "type": "java.lang.String[]",
+      "sourceType": "org.one.global.config.props.CorsProperties"
+    },
+    {
+      "name": "admin.init.username",
+      "type": "java.lang.String",
+      "sourceType": "org.one.global.config.props.AdminInitProperties"
+    },
+    {
+      "name": "admin.init.password",
+      "type": "java.lang.String",
+      "sourceType": "org.one.global.config.props.AdminInitProperties"
+    },
+    {
+      "name": "spring.flyway.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.boot.autoconfigure.flyway.FlywayProperties"
+    }
+  ],
+  "hints": []
+}

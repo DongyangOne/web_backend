@@ -1,7 +1,7 @@
 package org.one.global.config;
 
+import org.one.global.config.props.CorsProperties;
 import org.one.global.file.config.FileUploadProperties;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -11,18 +11,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
 	private final FileUploadProperties fileUploadProperties;
+	private final CorsProperties corsProperties;
 
-	@Value("${app.cors.allowed-origins:http://localhost:3000}")
-	private String[] allowedOrigins;
-
-	public WebConfig(FileUploadProperties fileUploadProperties) {
+	public WebConfig(FileUploadProperties fileUploadProperties, CorsProperties corsProperties) {
 		this.fileUploadProperties = fileUploadProperties;
+		this.corsProperties = corsProperties;
 	}
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/api/**")
-				.allowedOrigins(allowedOrigins)
+				.allowedOrigins(corsProperties.getAllowedOrigins())
 				.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
 				.allowedHeaders("*")
 				.allowCredentials(true)

@@ -25,7 +25,7 @@ public class ProjectEvent {
 	private Long projectId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "config_id")
+	@JoinColumn(name = "main_id")
 	private MainPageConfig mainPageConfig;
 
 	@Column(nullable = false, length = 100)
