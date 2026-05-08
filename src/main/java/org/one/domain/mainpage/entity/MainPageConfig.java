@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class MainPageConfig {
 
 	@Id
-	private Integer configId;
+	private Integer mainId;
 
 	@Column(length = 500)
 	private String logoUrl;
@@ -31,11 +31,11 @@ public class MainPageConfig {
 
 	public static MainPageConfig singleton() {
 		MainPageConfig config = new MainPageConfig();
-		config.configId = 1;
+		config.mainId = 1;
 		return config;
 	}
 
-	public Integer getConfigId() { return configId; }
+	public Integer getMainId() { return mainId; }
 	public String getLogoUrl() { return logoUrl; }
 	public String getDescription() { return description; }
 	public LocalDate getRecruitmentStart() { return recruitmentStart; }
