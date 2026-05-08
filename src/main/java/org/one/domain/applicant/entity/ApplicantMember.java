@@ -15,7 +15,7 @@ public class ApplicantMember {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long applicationId;
+	private Long applicantId;
 
 	@Column(nullable = false, length = 100)
 	private String name;
@@ -79,7 +79,7 @@ public class ApplicantMember {
 		this.isFirstView = true;
 	}
 
-	public Long getApplicationId() { return applicationId; }
+	public Long getApplicantId() { return applicantId; }
 	public String getName() { return name; }
 	public String getDepartment() { return department; }
 	public String getStudentId() { return studentId; }
