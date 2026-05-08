@@ -34,14 +34,14 @@ public class AuthController {
 
 	@Operation(summary = "Refresh token 으로 access 재발급")
 	@PostMapping("/refresh")
-	public ResponseEntity<ApiResponse<LoginResponse>> refresh(@RequestBody TokenRequest request) {
+	public ResponseEntity<ApiResponse<LoginResponse>> refresh(@RequestBody @Valid TokenRequest request) {
 		LoginResponse tokens = adminAuthService.refresh(request.refreshToken());
 		return ResponseEntity.ok(ApiResponse.success(tokens));
 	}
 
 	@Operation(summary = "로그아웃(리프레시 토큰 폐기)")
 	@PostMapping("/logout")
-	public ResponseEntity<ApiResponse<Void>> logout(@RequestBody TokenRequest request) {
+	public ResponseEntity<ApiResponse<Void>> logout(@RequestBody @Valid TokenRequest request) {
 		adminAuthService.logout(request.refreshToken());
 		return ResponseEntity.ok(ApiResponse.success(null));
 	}
