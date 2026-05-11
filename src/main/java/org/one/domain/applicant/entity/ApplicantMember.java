@@ -2,12 +2,15 @@ package org.one.domain.applicant.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.one.global.enums.Gender;
 
 @Entity
 @Table(name = "applicant_member")
@@ -35,8 +38,9 @@ public class ApplicantMember {
 	@Column(nullable = false, length = 20)
 	private String phoneNumber;
 
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 10)
-	private String gender;
+	private Gender gender;
 
 	@Column(nullable = false, columnDefinition = "TEXT")
 	private String motivation;
@@ -62,7 +66,7 @@ public class ApplicantMember {
 	protected ApplicantMember() {}
 
 	public ApplicantMember(String name, String department, String studentId, LocalDate birthday,
-			Integer grade, String phoneNumber, String gender, String motivation,
+			Integer grade, String phoneNumber, Gender gender, String motivation,
 			String techStack, String desiredActivity, String finalWords, Boolean privacyConsent) {
 		this.name = name;
 		this.department = department;
@@ -86,7 +90,7 @@ public class ApplicantMember {
 	public LocalDate getBirthday() { return birthday; }
 	public Integer getGrade() { return grade; }
 	public String getPhoneNumber() { return phoneNumber; }
-	public String getGender() { return gender; }
+	public Gender getGender() { return gender; }
 	public String getMotivation() { return motivation; }
 	public String getTechStack() { return techStack; }
 	public String getDesiredActivity() { return desiredActivity; }
