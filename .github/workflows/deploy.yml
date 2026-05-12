@@ -31,4 +31,5 @@ jobs:
             docker network inspect web-network >/dev/null 2>&1 || docker network create web-network
 
             # 4. 컨테이너 새로 띄우기 (이미 빌드된 JAR를 포함해서 다시 빌드)
+            docker-compose down
             docker-compose up -d --build
