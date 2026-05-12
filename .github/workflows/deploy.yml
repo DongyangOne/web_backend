@@ -35,4 +35,8 @@ jobs:
             docker rm -f one-website-backend || true
             # 4. 컨테이너 새로 띄우기 (이미 빌드된 JAR를 포함해서 다시 빌드)
             docker-compose down
+
+            #환경변수 명시
+            export SPRING_PROFILES_ACTIVE=prod
+
             docker-compose up -d --build
