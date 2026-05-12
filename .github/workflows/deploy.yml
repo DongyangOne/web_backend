@@ -27,5 +27,8 @@ jobs:
             # 3. 빌드 (테스트는 시간 걸리니 일단 제외)
             ./gradlew build -x test
 
+            # 네트워크가 없으면 생성하는 명령어 추가
+            docker network inspect web-network >/dev/null 2>&1 || docker network create web-network
+
             # 4. 컨테이너 새로 띄우기 (이미 빌드된 JAR를 포함해서 다시 빌드)
             docker-compose up -d --build
