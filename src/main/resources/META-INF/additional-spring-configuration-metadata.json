@@ -2,18 +2,13 @@
   "groups": [
     {
       "name": "jwt",
-      "type": "org.one.global.config.props.JwtProperties",
-      "sourceType": "org.one.global.config.props.JwtProperties"
+      "type": "org.one.global.config.auth.JwtProperties",
+      "sourceType": "org.one.global.config.auth.JwtProperties"
     },
     {
       "name": "app.cors",
-      "type": "org.one.global.config.props.CorsProperties",
-      "sourceType": "org.one.global.config.props.CorsProperties"
-    },
-    {
-      "name": "admin.init",
-      "type": "org.one.global.config.props.AdminInitProperties",
-      "sourceType": "org.one.global.config.props.AdminInitProperties"
+      "type": "java.lang.String[]",
+      "sourceType": "org.one.global.config.SecurityConfig"
     },
     {
       "name": "spring.flyway",
@@ -25,32 +20,22 @@
     {
       "name": "jwt.secret",
       "type": "java.lang.String",
-      "sourceType": "org.one.global.config.props.JwtProperties"
+      "sourceType": "org.one.global.config.auth.JwtProperties"
     },
     {
       "name": "jwt.access-expiration",
       "type": "java.lang.Long",
-      "sourceType": "org.one.global.config.props.JwtProperties"
+      "sourceType": "org.one.global.config.auth.JwtProperties"
     },
     {
       "name": "jwt.refresh-expiration",
       "type": "java.lang.Long",
-      "sourceType": "org.one.global.config.props.JwtProperties"
+      "sourceType": "org.one.global.config.auth.JwtProperties"
     },
     {
       "name": "app.cors.allowed-origins",
       "type": "java.lang.String[]",
-      "sourceType": "org.one.global.config.props.CorsProperties"
-    },
-    {
-      "name": "admin.init.username",
-      "type": "java.lang.String",
-      "sourceType": "org.one.global.config.props.AdminInitProperties"
-    },
-    {
-      "name": "admin.init.password",
-      "type": "java.lang.String",
-      "sourceType": "org.one.global.config.props.AdminInitProperties"
+      "sourceType": "org.one.global.config.SecurityConfig"
     },
     {
       "name": "spring.flyway.enabled",
