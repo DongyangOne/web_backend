@@ -72,14 +72,13 @@ public class AdminProjectController {
 	}
 
 	/**
-	 * 프로젝트를 수정합니다.
-	 * 사진 목록은 요청 목록으로 전체 교체됩니다.
+	 * 프로젝트 기본 정보를 수정합니다. 사진은 별도 엔드포인트로 관리합니다.
 	 *
 	 * @param projectId 수정할 프로젝트 ID
 	 * @param request 프로젝트 수정 요청
 	 * @return 수정된 프로젝트 정보
 	 */
-	@Operation(summary = "프로젝트 수정", description = "프로젝트 정보를 수정합니다. 사진은 요청 목록으로 전체 교체됩니다 (빈 배열이면 전체 삭제).")
+	@Operation(summary = "프로젝트 수정", description = "프로젝트 기본 정보(이름/인원/설명/순서)를 수정합니다. 사진은 /photos 엔드포인트로 별도 관리합니다.")
 	@ApiResponses({
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "수정 성공"),
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", ref = "#/components/responses/BadRequest"),
@@ -94,7 +93,7 @@ public class AdminProjectController {
 			@io.swagger.v3.oas.annotations.parameters.RequestBody(
 					description = "프로젝트 수정 정보",
 					content = @Content(mediaType = "application/json", examples = @ExampleObject(
-							value = "{\"projectName\":\"ONE 웹사이트 v2\",\"participantCount\":8,\"description\":\"리뉴얼 개발\",\"priority\":0,\"photos\":[{\"photoUrl\":\"https://cdn.example.com/new.jpg\",\"priority\":0}]}")))
+							value = "{\"projectName\":\"ONE 웹사이트 v2\",\"participantCount\":8,\"description\":\"리뉴얼 개발\",\"priority\":0}")))
 			@RequestBody @Valid ProjectUpdateRequest request) {
 		return ResponseEntity.ok(ApiResponse.success(adminProjectService.update(projectId, request)));
 	}
