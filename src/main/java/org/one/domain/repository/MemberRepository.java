@@ -1,5 +1,6 @@
 package org.one.domain.repository;
 
+import java.util.List;
 import org.one.domain.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -24,4 +25,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	@Modifying
 	@Query("UPDATE Member m SET m.grade = m.grade + 1, m.age = m.age + 1")
 	void incrementGradeAndAge();
+
+	/**
+	 * 부원 상태별 인원을 집계합니다.
+	 *
+	 * @return [MemberStatus, count] 형태 목록
+	 */
+	@Query("SELECT m.status, COUNT(m) FROM Member m GROUP BY m.status")
+	List<Object[]> countGroupByStatus();
 }
