@@ -78,12 +78,4 @@ public class ProjectPhoto extends BaseEntity {
 	 */
 	public Integer getPriority() { return priority; }
 
-	/**
-	 * 사진 노출 순서를 수정합니다.
-	 *
-	 * @param priority 새 노출 순서
-	 */
-	public void updatePriority(Integer priority) {
-		this.priority = priority;
-	}
 }
