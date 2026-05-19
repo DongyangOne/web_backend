@@ -2,7 +2,7 @@ name: Deploy to EC2
 
 on:
   push:
-    branches: [ main ]  # main 브랜치에 코드가 올라오면 실행!
+    branches: [ develop ]
 
 jobs:
   deploy:
@@ -18,25 +18,17 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.REMOTE_SSH_KEY }}
           script: |
-            # 1. 백엔드 폴더로 이동
-            cd ~/web-backend/web_backend
+            cd ~/web-backend
 
-            # 2. 최신 코드 가져오기
-            git pull origin main
+            git pull origin develop
 
-            # 3. 빌드 (테스트는 시간 걸리니 일단 제외)
             ./gradlew build -x test
 
-            # 네트워크가 없으면 생성하는 명령어 추가
             docker network inspect web-network >/dev/null 2>&1 || docker network create web-network
 
-
-            #이름 겹치는 컨테이너 발견 시 강제 삭제
             docker rm -f one-website-backend || true
-            # 4. 컨테이너 새로 띄우기 (이미 빌드된 JAR를 포함해서 다시 빌드)
-            docker-compose down
+            docker-compose down || true
 
-            #환경변수 명시
             export SPRING_PROFILES_ACTIVE=prod
 
             docker-compose up -d --build
