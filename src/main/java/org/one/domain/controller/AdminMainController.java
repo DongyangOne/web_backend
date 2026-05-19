@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.one.domain.dto.request.MainIntroUpdateRequest;
 import org.one.domain.dto.request.MainLogoUpdateRequest;
 import org.one.domain.dto.response.MainLogoResponse;
 import org.one.domain.service.AdminMainService;
@@ -57,5 +58,29 @@ public class AdminMainController {
 							value = "{\"logoUrl\":\"https://cdn.example.com/logo.png\"}")))
 			@RequestBody @Valid MainLogoUpdateRequest request) {
 		return ResponseEntity.ok(ApiResponse.success(adminMainService.updateLogo(request)));
+	}
+
+	/**
+	 * 관리자 메인 소개 문구를 수정합니다.
+	 *
+	 * @param request 소개 수정 요청
+	 * @return 수정 후 메인 요약 정보
+	 */
+	@Operation(summary = "관리자 메인 소개 수정", description = "소개 문구를 즉시 저장합니다.")
+	@ApiResponses({
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "수정 성공"),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", ref = "#/components/responses/BadRequest"),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", ref = "#/components/responses/InternalServerError")
+	})
+	@PatchMapping("/intro")
+	public ResponseEntity<ApiResponse<AdminMainSummaryResponse>> updateIntro(
+			@io.swagger.v3.oas.annotations.parameters.RequestBody(
+					description = "수정할 소개 문구",
+					content = @Content(mediaType = "application/json", examples = @ExampleObject(
+							value = "{\"description\":\"ONE 동아리 소개 수정\"}")))
+			@RequestBody @Valid MainIntroUpdateRequest request) {
+		return ResponseEntity.ok(ApiResponse.success(adminMainService.updateIntro(request)));
 	}
 }

@@ -1,6 +1,8 @@
 package org.one.domain.service;
 
+import org.one.domain.dto.request.MainIntroUpdateRequest;
 import org.one.domain.dto.request.MainLogoUpdateRequest;
+import org.one.domain.dto.response.MainIntroResponse;
 import org.one.domain.dto.response.MainLogoResponse;
 import org.one.domain.entity.MainPageConfig;
 import org.one.domain.repository.MainPageConfigRepository;
@@ -40,5 +42,22 @@ public class AdminMainService {
 				config.getRecruitmentEnd()
 		);
 		return new MainLogoResponse(request.logoUrl());
+	}
+
+	/**
+	 * 소개 문구를 수정합니다.
+	 *
+	 * @param request 소개 수정 요청
+	 * @return 저장된 소개 문구
+	 */
+	public MainIntroResponse updateIntro(MainIntroUpdateRequest request) {
+		MainPageConfig config = mainPageConfigRepository.getConfig();
+		config.update(
+				config.getLogoUrl(),
+				request.description(),
+				config.getRecruitmentStart(),
+				config.getRecruitmentEnd()
+		);
+		return new MainIntroResponse(request.description());
 	}
 }
