@@ -2,6 +2,8 @@ package org.one.global.service;
 
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
 import io.minio.http.Method;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,7 @@ import org.one.global.config.minio.MinioConfig;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * MinIO 객체 스토리지와 연동하여 Presigned URL을 생성합니다.
@@ -43,6 +46,58 @@ public class MinioService {
 	 */
 	public String generateDownloadUrl(String objectKey) {
 		return getPresignedUrl(Method.GET, objectKey);
+	}
+
+	/**
+	 * 파일을 MinIO에 업로드하고 접근 URL을 반환합니다.
+	 *
+	 * @param file 업로드할 파일
+	 * @param objectKey 저장할 객체 키
+	 * @return 파일 접근 URL
+	 */
+	public String uploadFile(MultipartFile file, String objectKey) {
+		try {
+			minioClient.putObject(
+					PutObjectArgs.builder()
+							.bucket(minioConfig.getBucketName())
+							.object(objectKey)
+							.stream(file.getInputStream(), file.getSize(), -1)
+							.contentType(file.getContentType())
+							.build()
+			);
+			return minioConfig.getUrl() + "/" + minioConfig.getBucketName() + "/" + objectKey;
+		} catch (Exception e) {
+			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	/**
+	 * MinIO에서 파일을 삭제합니다.
+	 *
+	 * @param objectKey 삭제할 객체 키
+	 */
+	public void deleteFile(String objectKey) {
+		try {
+			minioClient.removeObject(
+					RemoveObjectArgs.builder()
+							.bucket(minioConfig.getBucketName())
+							.object(objectKey)
+							.build()
+			);
+		} catch (Exception e) {
+			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	/**
+	 * URL에서 MinIO 객체 키를 추출합니다.
+	 *
+	 * @param url 파일 접근 URL
+	 * @return 객체 키
+	 */
+	public String extractObjectKey(String url) {
+		String prefix = minioConfig.getUrl() + "/" + minioConfig.getBucketName() + "/";
+		return url.substring(prefix.length());
 	}
 
 	private String getPresignedUrl(Method method, String objectKey) {
