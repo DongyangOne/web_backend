@@ -37,21 +37,28 @@ public class SecurityConfig {
 			"/auth/**"
 	};
 
-	private final JwtTokenProvider jwtTokenProvider;
-	private final ObjectMapper objectMapper;
-
 	@Value("${app.cors.allowed-origins}")
 	private String[] allowedOrigins;
 
+	private final JwtTokenProvider jwtTokenProvider;
+
 	/**
-	 * 보안 설정에 필요한 JWT 처리 컴포넌트와 JSON 직렬화 도구를 주입받습니다.
+	 * 보안 설정에 필요한 JWT 처리 컴포넌트를 주입받습니다.
 	 *
 	 * @param jwtTokenProvider JWT 인증 처리 컴포넌트
-	 * @param objectMapper 공통 에러 응답 작성용 ObjectMapper
 	 */
-	public SecurityConfig(JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+	public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
 		this.jwtTokenProvider = jwtTokenProvider;
-		this.objectMapper = objectMapper;
+	}
+
+	/**
+	 * JSON 직렬화/역직렬화 도구를 등록합니다.
+	 *
+	 * @return ObjectMapper
+	 */
+	@Bean
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper();
 	}
 
 	/**
@@ -68,11 +75,12 @@ public class SecurityConfig {
 	 * Stateless JWT 기반 보안 필터 체인을 구성합니다.
 	 *
 	 * @param http Spring Security HttpSecurity
+	 * @param objectMapper JSON 직렬화 도구
 	 * @return SecurityFilterChain
 	 * @throws Exception 보안 설정 구성 예외
 	 */
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain filterChain(HttpSecurity http, ObjectMapper objectMapper) throws Exception {
 		http
 				.csrf(csrf -> csrf.disable())
 				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -85,10 +93,10 @@ public class SecurityConfig {
 				.exceptionHandling(exc -> exc
 						.authenticationEntryPoint((request, response, authException) ->
 								writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED,
-										ErrorCode.UNAUTHORIZED))
+										ErrorCode.UNAUTHORIZED, objectMapper))
 						.accessDeniedHandler((request, response, accessDeniedException) ->
 								writeErrorResponse(response, HttpServletResponse.SC_FORBIDDEN,
-										ErrorCode.FORBIDDEN))
+										ErrorCode.FORBIDDEN, objectMapper))
 				)
 				.addFilterBefore(
 						new JwtAuthenticationFilter(jwtTokenProvider, objectMapper),
@@ -123,9 +131,11 @@ public class SecurityConfig {
 	 * @param response HTTP 응답
 	 * @param status HTTP 상태 코드
 	 * @param errorCode 공통 에러 코드
+	 * @param objectMapper JSON 직렬화 도구
 	 * @throws IOException 응답 본문 작성 예외
 	 */
-	private void writeErrorResponse(HttpServletResponse response, int status, ErrorCode errorCode)
+	private void writeErrorResponse(HttpServletResponse response, int status, ErrorCode errorCode,
+			ObjectMapper objectMapper)
 			throws IOException {
 		response.setStatus(status);
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
