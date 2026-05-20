@@ -1,11 +1,16 @@
 package org.one.domain.service;
 
+import java.time.LocalDate;
 import org.one.domain.dto.request.MainIntroUpdateRequest;
 import org.one.domain.dto.request.MainLogoUpdateRequest;
+import org.one.domain.dto.request.MainRecruitmentUpdateRequest;
 import org.one.domain.dto.response.MainIntroResponse;
 import org.one.domain.dto.response.MainLogoResponse;
+import org.one.domain.dto.response.MainRecruitmentResponse;
 import org.one.domain.entity.MainPageConfig;
 import org.one.domain.repository.MainPageConfigRepository;
+import org.one.global.enums.ErrorCode;
+import org.one.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,5 +64,46 @@ public class AdminMainService {
 				config.getRecruitmentEnd()
 		);
 		return new MainIntroResponse(request.description());
+	}
+
+	/**
+	 * 모집 기간을 수정합니다.
+	 *
+	 * @param request 모집기간 수정 요청
+	 * @return 저장된 모집 기간 및 모집 여부
+	 */
+	public MainRecruitmentResponse updateRecruitment(MainRecruitmentUpdateRequest request) {
+		if (request.recruitmentStart().isAfter(request.recruitmentEnd())) {
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
+		}
+
+		MainPageConfig config = mainPageConfigRepository.getConfig();
+		config.update(
+				config.getLogoUrl(),
+				config.getDescription(),
+				request.recruitmentStart(),
+				request.recruitmentEnd()
+		);
+		return new MainRecruitmentResponse(
+				computeIsRecruiting(config),
+				request.recruitmentStart(),
+				request.recruitmentEnd()
+		);
+	}
+
+	/**
+	 * 현재 날짜가 모집 기간 범위 내에 있으면 true를 반환합니다.
+	 *
+	 * @param config 메인 페이지 설정
+	 * @return 모집 중 여부
+	 */
+	private boolean computeIsRecruiting(MainPageConfig config) {
+		LocalDate start = config.getRecruitmentStart();
+		LocalDate end = config.getRecruitmentEnd();
+		if (start == null || end == null) {
+			return false;
+		}
+		LocalDate today = LocalDate.now();
+		return !today.isBefore(start) && !today.isAfter(end);
 	}
 }
