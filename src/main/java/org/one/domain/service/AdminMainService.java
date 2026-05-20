@@ -1,7 +1,9 @@
 package org.one.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import org.one.domain.dto.request.MainIntroUpdateRequestDto;
 import org.one.domain.dto.request.MainLogoUpdateRequestDto;
+import org.one.domain.dto.response.MainIntroResponseDto;
 import org.one.domain.dto.response.MainLogoResponseDto;
 import org.one.domain.entity.MainPageConfig;
 import org.one.domain.repository.MainPageConfigRepository;
@@ -24,5 +26,16 @@ public class AdminMainService {
 				config.getRecruitmentEnd()
 		);
 		return MainLogoResponseDto.from(request.getLogoUrl());
+	}
+
+	public MainIntroResponseDto updateIntro(MainIntroUpdateRequestDto request) {
+		MainPageConfig config = mainPageConfigRepository.getConfig();
+		config.update(
+				config.getLogoUrl(),
+				request.getDescription(),
+				config.getRecruitmentStart(),
+				config.getRecruitmentEnd()
+		);
+		return MainIntroResponseDto.from(request.getDescription());
 	}
 }
