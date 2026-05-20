@@ -6,10 +6,11 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import lombok.RequiredArgsConstructor;
 import org.one.domain.entity.Admin;
 import org.one.domain.repository.AdminRepository;
-import org.one.domain.dto.request.LoginRequest;
-import org.one.domain.dto.response.LoginResponse;
+import org.one.domain.dto.request.LoginRequestDto;
+import org.one.domain.dto.response.LoginResponseDto;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
 import org.one.global.security.JwtTokenProvider;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AdminAuthService {
 
 	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
@@ -34,39 +36,23 @@ public class AdminAuthService {
 	private final RefreshTokenRepository refreshTokenRepository;
 
 	/**
-	 * 관리자 인증 처리에 필요한 저장소, 암호화 도구, 토큰 컴포넌트를 주입받습니다.
-	 *
-	 * @param adminRepository 관리자 계정 저장소
-	 * @param passwordEncoder 비밀번호 검증 도구
-	 * @param jwtTokenProvider JWT 발급 컴포넌트
-	 * @param refreshTokenRepository Refresh Token 저장소
-	 */
-	public AdminAuthService(AdminRepository adminRepository, PasswordEncoder passwordEncoder,
-			JwtTokenProvider jwtTokenProvider, RefreshTokenRepository refreshTokenRepository) {
-		this.adminRepository = adminRepository;
-		this.passwordEncoder = passwordEncoder;
-		this.jwtTokenProvider = jwtTokenProvider;
-		this.refreshTokenRepository = refreshTokenRepository;
-	}
-
-	/**
 	 * 관리자 계정 정보를 검증하고 Access Token과 Refresh Token을 발급합니다.
 	 *
 	 * @param request 로그인 요청 정보
 	 * @return 발급된 토큰 응답
 	 */
-	public LoginResponse login(LoginRequest request) {
-		Admin admin = adminRepository.findByUsername(request.username())
+	public LoginResponseDto login(LoginRequestDto request) {
+		Admin admin = adminRepository.findByUsername(request.getUsername())
 				.orElseThrow(() -> new BusinessException(ErrorCode.INVALID_CREDENTIALS));
 
-		if (!passwordEncoder.matches(request.password(), admin.getPassword())) {
+		if (!passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
 			throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
 		}
 
 		String access = jwtTokenProvider.createAccessToken(String.valueOf(admin.getAdminId()), "ADMIN");
 		String refresh = issueRefreshToken(admin.getAdminId());
 
-		return LoginResponse.of(access, refresh);
+		return LoginResponseDto.from(access, refresh);
 	}
 
 	/**
@@ -75,7 +61,7 @@ public class AdminAuthService {
 	 * @param refreshTokenStr 클라이언트가 전달한 Refresh Token 원문
 	 * @return 새로 발급된 토큰 응답
 	 */
-	public LoginResponse refresh(String refreshTokenStr) {
+	public LoginResponseDto refresh(String refreshTokenStr) {
 		String tokenHash = hashToken(refreshTokenStr);
 		RefreshToken stored = refreshTokenRepository.findByTokenHash(tokenHash)
 				.orElseThrow(() -> new BusinessException(ErrorCode.INVALID_TOKEN));
@@ -90,7 +76,7 @@ public class AdminAuthService {
 		String newAccess = jwtTokenProvider.createAccessToken(String.valueOf(stored.getUserId()), "ADMIN");
 		String newRefresh = issueRefreshToken(stored.getUserId());
 
-		return LoginResponse.of(newAccess, newRefresh);
+		return LoginResponseDto.from(newAccess, newRefresh);
 	}
 
 	/**
