@@ -9,8 +9,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.one.domain.dto.request.MainIntroUpdateRequestDto;
 import org.one.domain.dto.request.MainLogoUpdateRequestDto;
+import org.one.domain.dto.request.MainRecruitmentUpdateRequestDto;
 import org.one.domain.dto.response.MainIntroResponseDto;
 import org.one.domain.dto.response.MainLogoResponseDto;
+import org.one.domain.dto.response.MainRecruitmentResponseDto;
 import org.one.domain.service.AdminMainService;
 import org.one.global.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
@@ -61,5 +63,23 @@ public class AdminMainController {
 							value = "{\"description\":\"ONE 동아리 소개 수정\"}")))
 			@RequestBody @Valid MainIntroUpdateRequestDto request) {
 		return ResponseEntity.ok(ApiResponse.success(adminMainService.updateIntro(request)));
+	}
+
+	@Operation(summary = "관리자 메인 모집기간 수정", description = "모집 시작일과 종료일을 즉시 저장합니다. isRecruiting은 현재 날짜가 범위 내에 있으면 자동으로 true가 됩니다.")
+	@ApiResponses({
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "수정 성공"),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", ref = "#/components/responses/BadRequest"),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", ref = "#/components/responses/InternalServerError")
+	})
+	@PatchMapping("/recruitment")
+	public ResponseEntity<ApiResponse<MainRecruitmentResponseDto>> updateRecruitment(
+			@io.swagger.v3.oas.annotations.parameters.RequestBody(
+					description = "모집 시작/종료일",
+					content = @Content(mediaType = "application/json", examples = @ExampleObject(
+							value = "{\"recruitmentStart\":\"2026-03-04\",\"recruitmentEnd\":\"2026-03-20\"}")))
+			@RequestBody @Valid MainRecruitmentUpdateRequestDto request) {
+		return ResponseEntity.ok(ApiResponse.success(adminMainService.updateRecruitment(request)));
 	}
 }
