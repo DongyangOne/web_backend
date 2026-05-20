@@ -24,4 +24,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	@Modifying
 	@Query("UPDATE Member m SET m.grade = m.grade + 1, m.age = m.age + 1")
 	void incrementGradeAndAge();
+
 }
