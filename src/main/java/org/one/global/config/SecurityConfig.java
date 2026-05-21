@@ -34,7 +34,7 @@ public class SecurityConfig {
 	private static final String[] PUBLIC_URLS = {
 			"/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
 			"/actuator/health",
-			"/auth/**"
+			"/api/v1/auth/**"
 	};
 
 	@Value("${app.cors.allowed-origins}")
