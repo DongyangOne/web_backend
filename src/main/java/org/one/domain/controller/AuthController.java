@@ -1,6 +1,7 @@
 package org.one.domain.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,9 @@ import org.one.domain.dto.request.LoginRequestDto;
 import org.one.domain.dto.request.TokenRequestDto;
 import org.one.domain.dto.response.LoginResponseDto;
 import org.one.domain.service.AdminAuthService;
+import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
+import org.one.global.enums.ErrorCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "Auth", description = "관리자 인증")
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -33,12 +36,8 @@ public class AuthController {
 	 * @return 토큰 발급 응답
 	 */
 	@Operation(summary = "관리자 로그인", description = "관리자 계정 정보를 검증하고 JWT Access Token과 Refresh Token을 발급합니다.")
-	@io.swagger.v3.oas.annotations.responses.ApiResponses({
-			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "로그인 성공"),
-			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", ref = "#/components/responses/BadRequest"),
-			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
-			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", ref = "#/components/responses/InternalServerError")
-	})
+	@SecurityRequirements
+	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.INVALID_CREDENTIALS, ErrorCode.INTERNAL_SERVER_ERROR})
 	@PostMapping("/login")
 	public ResponseEntity<ApiResponse<LoginResponseDto>> login(
 			@RequestBody @Valid LoginRequestDto request) {
@@ -53,12 +52,8 @@ public class AuthController {
 	 * @return 재발급된 토큰 응답
 	 */
 	@Operation(summary = "Access Token 재발급", description = "Refresh Token으로 새로운 Access Token을 발급합니다.")
-	@io.swagger.v3.oas.annotations.responses.ApiResponses({
-			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "토큰 재발급 성공"),
-			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", ref = "#/components/responses/BadRequest"),
-			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
-			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", ref = "#/components/responses/InternalServerError")
-	})
+	@SecurityRequirements
+	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.INVALID_TOKEN, ErrorCode.INTERNAL_SERVER_ERROR})
 	@PostMapping("/refresh")
 	public ResponseEntity<ApiResponse<LoginResponseDto>> refresh(
 			@RequestBody @Valid TokenRequestDto request) {
@@ -73,11 +68,8 @@ public class AuthController {
 	 * @return 로그아웃 완료 응답
 	 */
 	@Operation(summary = "로그아웃", description = "Refresh Token을 폐기합니다.")
-	@io.swagger.v3.oas.annotations.responses.ApiResponses({
-			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "로그아웃 성공"),
-			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", ref = "#/components/responses/BadRequest"),
-			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", ref = "#/components/responses/InternalServerError")
-	})
+	@SecurityRequirements
+	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.INTERNAL_SERVER_ERROR})
 	@PostMapping("/logout")
 	public ResponseEntity<ApiResponse<Void>> logout(
 			@RequestBody @Valid TokenRequestDto request) {
