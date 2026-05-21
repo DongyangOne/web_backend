@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.one.domain.dto.request.CalendarSaveRequestDto;
+import org.one.domain.dto.request.CalendarUpdateRequestDto;
 import org.one.domain.dto.response.CalendarMonthlyResponseDto;
 import org.one.domain.dto.response.CalendarResponseDto;
 import org.one.domain.entity.CalendarSchedule;
@@ -89,6 +90,25 @@ public class AdminCalendarService {
 		return calendarScheduleRepository.findByDateRange(start, end).stream()
 				.map(CalendarResponseDto::from)
 				.toList();
+	}
+
+	/**
+	 * 캘린더 일정을 수정합니다.
+	 *
+	 * @param calendarId 수정할 일정 ID
+	 * @param request 수정 요청 DTO
+	 * @return 수정된 일정 응답 DTO
+	 */
+	public CalendarResponseDto update(Long calendarId, CalendarUpdateRequestDto request) {
+		validateDateRange(request.getStartDate(), request.getEndDate());
+		CalendarSchedule schedule = calendarScheduleRepository.findById(calendarId)
+				.orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
+		schedule.update(
+				request.getTitle(),
+				request.getStartDate(),
+				request.getEndDate()
+		);
+		return CalendarResponseDto.from(schedule);
 	}
 
 	/**
