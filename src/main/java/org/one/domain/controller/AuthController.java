@@ -3,9 +3,10 @@ package org.one.domain.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.one.domain.dto.request.LoginRequest;
-import org.one.domain.dto.request.TokenRequest;
-import org.one.domain.dto.response.LoginResponse;
+import lombok.RequiredArgsConstructor;
+import org.one.domain.dto.request.LoginRequestDto;
+import org.one.domain.dto.request.TokenRequestDto;
+import org.one.domain.dto.response.LoginResponseDto;
 import org.one.domain.service.AdminAuthService;
 import org.one.global.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Auth", description = "관리자 인증")
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
 	private final AdminAuthService adminAuthService;
-
-	/**
-	 * 관리자 인증 서비스를 주입받습니다.
-	 *
-	 * @param adminAuthService 관리자 인증 서비스
-	 */
-	public AuthController(AdminAuthService adminAuthService) {
-		this.adminAuthService = adminAuthService;
-	}
 
 	/**
 	 * 관리자 아이디와 비밀번호로 Access Token과 Refresh Token을 발급합니다.
@@ -47,9 +40,9 @@ public class AuthController {
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", ref = "#/components/responses/InternalServerError")
 	})
 	@PostMapping("/login")
-	public ResponseEntity<ApiResponse<LoginResponse>> login(
-			@RequestBody @Valid LoginRequest request) {
-		LoginResponse tokens = adminAuthService.login(request);
+	public ResponseEntity<ApiResponse<LoginResponseDto>> login(
+			@RequestBody @Valid LoginRequestDto request) {
+		LoginResponseDto tokens = adminAuthService.login(request);
 		return ResponseEntity.ok(ApiResponse.success(tokens));
 	}
 
@@ -67,9 +60,9 @@ public class AuthController {
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", ref = "#/components/responses/InternalServerError")
 	})
 	@PostMapping("/refresh")
-	public ResponseEntity<ApiResponse<LoginResponse>> refresh(
-			@RequestBody @Valid TokenRequest request) {
-		LoginResponse tokens = adminAuthService.refresh(request.refreshToken());
+	public ResponseEntity<ApiResponse<LoginResponseDto>> refresh(
+			@RequestBody @Valid TokenRequestDto request) {
+		LoginResponseDto tokens = adminAuthService.refresh(request.getRefreshToken());
 		return ResponseEntity.ok(ApiResponse.success(tokens));
 	}
 
@@ -87,8 +80,8 @@ public class AuthController {
 	})
 	@PostMapping("/logout")
 	public ResponseEntity<ApiResponse<Void>> logout(
-			@RequestBody @Valid TokenRequest request) {
-		adminAuthService.logout(request.refreshToken());
+			@RequestBody @Valid TokenRequestDto request) {
+		adminAuthService.logout(request.getRefreshToken());
 		return ResponseEntity.ok(ApiResponse.success(null));
 	}
 }
