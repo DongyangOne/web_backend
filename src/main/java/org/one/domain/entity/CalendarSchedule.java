@@ -29,9 +29,6 @@ public class CalendarSchedule extends BaseEntity {
 	@Column(nullable = false)
 	private LocalDate endDate;
 
-	@Column(length = 255)
-	private String description;
-
 	/**
 	 * JPA 엔티티 생성을 위한 기본 생성자입니다.
 	 */
@@ -43,13 +40,11 @@ public class CalendarSchedule extends BaseEntity {
 	 * @param title 일정 제목
 	 * @param startDate 일정 시작일
 	 * @param endDate 일정 종료일
-	 * @param description 일정 설명
 	 */
-	public CalendarSchedule(String title, LocalDate startDate, LocalDate endDate, String description) {
+	public CalendarSchedule(String title, LocalDate startDate, LocalDate endDate) {
 		this.title = title;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.description = description;
 	}
 
 	/**
@@ -81,24 +76,15 @@ public class CalendarSchedule extends BaseEntity {
 	public LocalDate getEndDate() { return endDate; }
 
 	/**
-	 * 일정 설명을 반환합니다.
-	 *
-	 * @return 일정 설명
-	 */
-	public String getDescription() { return description; }
-
-	/**
 	 * 캘린더 일정 내용을 수정합니다.
 	 *
 	 * @param title 일정 제목
 	 * @param startDate 일정 시작일
 	 * @param endDate 일정 종료일
-	 * @param description 일정 설명
 	 */
-	public void update(String title, LocalDate startDate, LocalDate endDate, String description) {
+	public void update(String title, LocalDate startDate, LocalDate endDate) {
 		this.title = title;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.description = description;
 	}
 }
