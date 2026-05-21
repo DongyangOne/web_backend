@@ -3,8 +3,10 @@ package org.one.domain.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.one.domain.dto.request.CalendarSaveRequestDto;
+import org.one.domain.dto.response.CalendarMonthlyResponseDto;
 import org.one.domain.dto.response.CalendarResponseDto;
 import org.one.domain.service.AdminCalendarService;
 import org.one.global.annotation.ApiErrorExceptions;
@@ -12,9 +14,11 @@ import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -41,5 +45,37 @@ public class AdminCalendarController {
 			@RequestBody @Valid CalendarSaveRequestDto request) {
 		CalendarResponseDto response = adminCalendarService.save(request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
+	}
+
+	/**
+	 * 특정 연도의 캘린더 일정을 월별 그룹으로 조회합니다.
+	 *
+	 * @param year 연도 (필수)
+	 * @return 월별 그룹핑된 일정 목록
+	 */
+	@Operation(summary = "캘린더 년별 조회", description = "해당 연도의 일정을 월별로 묶어 조회합니다.")
+	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
+	@GetMapping
+	public ResponseEntity<ApiResponse<List<CalendarMonthlyResponseDto>>> findAllByYear(
+			@RequestParam Integer year) {
+		List<CalendarMonthlyResponseDto> response = adminCalendarService.findAllByYear(year);
+		return ResponseEntity.ok(ApiResponse.success(response));
+	}
+
+	/**
+	 * 특정 연월의 캘린더 일정을 조회합니다.
+	 *
+	 * @param year 연도 (필수)
+	 * @param month 월 (필수)
+	 * @return 해당 월의 일정 목록
+	 */
+	@Operation(summary = "캘린더 월별 조회", description = "해당 연월의 일정을 조회합니다.")
+	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
+	@GetMapping("/month")
+	public ResponseEntity<ApiResponse<List<CalendarResponseDto>>> findAllByMonth(
+			@RequestParam Integer year,
+			@RequestParam Integer month) {
+		List<CalendarResponseDto> response = adminCalendarService.findAllByMonth(year, month);
+		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 }
