@@ -67,7 +67,7 @@ public class OpenApiConfig {
 	public GroupedOpenApi authApi() {
 		return GroupedOpenApi.builder()
 				.group("인증")
-				.pathsToMatch("/auth/**")
+				.pathsToMatch("/api/v1/auth/**")
 				.build();
 	}
 
@@ -80,7 +80,7 @@ public class OpenApiConfig {
 	public GroupedOpenApi adminApi() {
 		return GroupedOpenApi.builder()
 				.group("관리자")
-				.pathsToMatch("/api/**")
+				.pathsToMatch("/api/v1/**")
 				.build();
 	}
 
