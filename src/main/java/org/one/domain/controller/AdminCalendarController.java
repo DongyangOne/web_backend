@@ -3,6 +3,7 @@ package org.one.domain.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.one.domain.dto.request.CalendarSaveRequestDto;
@@ -15,6 +16,8 @@ import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/admin/calendar")
 @RequiredArgsConstructor
+@Validated
 public class AdminCalendarController {
 
 	private final AdminCalendarService adminCalendarService;
@@ -97,5 +101,20 @@ public class AdminCalendarController {
 			@RequestBody @Valid CalendarUpdateRequestDto request) {
 		CalendarResponseDto response = adminCalendarService.update(calendarId, request);
 		return ResponseEntity.ok(ApiResponse.success(response));
+	}
+
+	/**
+	 * 선택한 캘린더 일정을 일괄 삭제합니다.
+	 *
+	 * @param calendarIds 삭제할 일정 ID 목록
+	 * @return 삭제 완료 응답
+	 */
+	@Operation(summary = "캘린더 일정 삭제", description = "선택한 캘린더 일정을 일괄 삭제합니다. 멀티 선택 지원.")
+	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
+	@DeleteMapping
+	public ResponseEntity<ApiResponse<Void>> delete(
+			@RequestParam @NotEmpty(message = "삭제할 일정을 선택해주세요.") List<Long> calendarIds) {
+		adminCalendarService.delete(calendarIds);
+		return ResponseEntity.ok(ApiResponse.success(null));
 	}
 }
