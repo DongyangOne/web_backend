@@ -48,7 +48,6 @@ public class AdminProjectService {
 			validatePhotoTypes(photos);
 		}
 
-		int priority = Integer.parseInt(request.getYear());
 		ProjectEvent project = new ProjectEvent(
 				mainPageConfigRepository.getConfig(),
 				request.getYear(),
@@ -58,8 +57,7 @@ public class AdminProjectService {
 				request.getStartDate(),
 				request.getEndDate(),
 				request.getParticipantCount(),
-				request.getDescription(),
-				priority
+				request.getDescription()
 		);
 		request.getTechStacks().forEach(name ->
 				project.getTechStacks().add(new ProjectTechStack(project, name)));
