@@ -54,9 +54,6 @@ public class ProjectEvent extends BaseEntity {
 	@Column(columnDefinition = "TEXT")
 	private String description;
 
-	@Column(nullable = false)
-	private Integer priority;
-
 	@OneToMany(mappedBy = "projectEvent", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("priority ASC")
 	private List<ProjectPhoto> photos = new ArrayList<>();
@@ -81,11 +78,10 @@ public class ProjectEvent extends BaseEntity {
 	 * @param endDate 종료일
 	 * @param participantCount 참여 인원
 	 * @param description 프로젝트 설명
-	 * @param priority 노출 순서 (년도 기반 정렬)
 	 */
 	public ProjectEvent(MainPageConfig mainPageConfig, String year, String projectName,
 			String award, String activity, LocalDate startDate, LocalDate endDate,
-			Integer participantCount, String description, Integer priority) {
+			Integer participantCount, String description) {
 		this.mainPageConfig = mainPageConfig;
 		this.year = year;
 		this.projectName = projectName;
@@ -95,7 +91,6 @@ public class ProjectEvent extends BaseEntity {
 		this.endDate = endDate;
 		this.participantCount = participantCount;
 		this.description = description;
-		this.priority = priority;
 	}
 
 	/**
@@ -160,13 +155,6 @@ public class ProjectEvent extends BaseEntity {
 	 * @return 프로젝트 설명
 	 */
 	public String getDescription() { return description; }
-
-	/**
-	 * 노출 순서를 반환합니다.
-	 *
-	 * @return 노출 순서
-	 */
-	public Integer getPriority() { return priority; }
 
 	/**
 	 * 프로젝트 사진 목록을 반환합니다.
