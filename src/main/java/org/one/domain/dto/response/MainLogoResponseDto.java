@@ -17,6 +17,12 @@ public class MainLogoResponseDto {
 	@Schema(description = "로고 이미지 URL", example = "https://cdn.example.com/logo.png")
 	private String logoUrl;
 
+	/**
+	 * 로고 URL로부터 응답 DTO를 생성합니다.
+	 *
+	 * @param logoUrl 로고 이미지 URL
+	 * @return 로고 수정 응답 DTO
+	 */
 	public static MainLogoResponseDto from(String logoUrl) {
 		return MainLogoResponseDto.builder()
 				.logoUrl(logoUrl)

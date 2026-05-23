@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 import org.one.global.entity.BaseEntity;
 
 /**
- * 메인 페이지의 로고, 소개 설정을 저장하는 싱글톤 엔티티입니다.
+ * 메인 페이지의 로고 설정을 저장하는 싱글톤 엔티티입니다.
  */
 @Entity
 @Table(name = "main_page")
@@ -18,9 +18,6 @@ public class MainPageConfig extends BaseEntity {
 
 	@Column(length = 500)
 	private String logoUrl;
-
-	@Column(columnDefinition = "TEXT")
-	private String description;
 
 	/**
 	 * JPA 엔티티 생성을 위한 기본 생성자입니다.
@@ -53,27 +50,11 @@ public class MainPageConfig extends BaseEntity {
 	public String getLogoUrl() { return logoUrl; }
 
 	/**
-	 * 메인 페이지 소개 문구를 반환합니다.
-	 *
-	 * @return 소개 문구
-	 */
-	public String getDescription() { return description; }
-
-	/**
 	 * 메인 페이지 로고 URL을 수정합니다.
 	 *
 	 * @param logoUrl 변경할 로고 URL
 	 */
 	public void updateLogo(String logoUrl) {
 		this.logoUrl = logoUrl;
-	}
-
-	/**
-	 * 메인 페이지 소개 문구를 수정합니다.
-	 *
-	 * @param description 변경할 소개 문구
-	 */
-	public void updateIntro(String description) {
-		this.description = description;
 	}
 }
