@@ -2,8 +2,12 @@ package org.one.domain.service;
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.one.domain.dto.request.ActivityCardUpdateRequestDto;
+import org.one.domain.dto.response.ActivityCardResponseDto;
 import org.one.domain.dto.response.MainLogoResponseDto;
+import org.one.domain.entity.ActivityCard;
 import org.one.domain.entity.MainPageConfig;
+import org.one.domain.repository.ActivityCardRepository;
 import org.one.domain.repository.MainPageConfigRepository;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
@@ -21,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class AdminMainService {
 
 	private final MainPageConfigRepository mainPageConfigRepository;
+	private final ActivityCardRepository activityCardRepository;
 	private final MinioService minioService;
 
 	/**
@@ -46,5 +51,19 @@ public class AdminMainService {
 		String url = minioService.uploadFile(logo, objectKey);
 		config.updateLogo(url);
 		return MainLogoResponseDto.from(url);
+	}
+
+	/**
+	 * 주요활동 카드 내용을 수정합니다.
+	 *
+	 * @param cardId 수정할 카드 ID
+	 * @param request 카드 수정 요청 DTO
+	 * @return 수정된 카드 응답 DTO
+	 */
+	public ActivityCardResponseDto updateActivityCard(Long cardId, ActivityCardUpdateRequestDto request) {
+		ActivityCard card = activityCardRepository.findById(cardId)
+				.orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
+		card.update(request.getTitle(), request.getContent());
+		return ActivityCardResponseDto.from(card);
 	}
 }
