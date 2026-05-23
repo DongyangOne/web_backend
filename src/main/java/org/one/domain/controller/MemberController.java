@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.one.domain.dto.request.MemberListRequestDto;
 import org.one.domain.dto.request.MemberRegisterRequestDto;
+import org.one.domain.dto.response.MemberDetailResponseDto;
 import org.one.domain.dto.response.MemberListResponseDto;
 import org.one.domain.service.MemberService;
 import org.springframework.http.ResponseEntity;
@@ -64,5 +65,21 @@ public class MemberController {
 
         //오류없이 넘어왔을 경우 성공 처리
         return ResponseEntity.ok("부원 등록이 성공적으로 완료되었습니다.");
+    }
+
+    /**
+     * 부원 상세 정보 조회 API : 부원 수정 시 정보를 불러오기 위한 api
+     * 요청 시, memberId를 @PathVariable로 url을 통해 전달
+     *
+     * api 요청 예시 : GET /api/members/{memberId}
+     *
+     * 응답 데이터 : 특정 부원에 대한 상세 정보
+     */
+    @Operation(summary = "부원 상세 정보 조회", description = "관리자 권한(ADMIN)이 있는 계정만 부원 상세 정보를 조회할 수 있습니다.")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{memberId}")
+    public ResponseEntity<MemberDetailResponseDto> getMemberDetail(@PathVariable Long memberId){
+        MemberDetailResponseDto responseDto= memberService.getMemberDetail(memberId);
+        return ResponseEntity.ok(responseDto);
     }
 }

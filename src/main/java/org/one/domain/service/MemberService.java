@@ -4,6 +4,7 @@ package org.one.domain.service;
 import lombok.RequiredArgsConstructor;
 import org.one.domain.dto.request.MemberListRequestDto;
 import org.one.domain.dto.request.MemberRegisterRequestDto;
+import org.one.domain.dto.response.MemberDetailResponseDto;
 import org.one.domain.dto.response.MemberListResponseDto;
 import org.one.domain.entity.Member;
 import org.one.domain.enums.Gender;
@@ -56,8 +57,21 @@ public class MemberService {
 
         //새로 생성한 부원 객체를 save(insert)해줌.
         memberRepository.save(member);
-
     }
+
+    /**
+     * 요청값(memberId)를 통해 해당 부원의 상세 정보를 불러옴.
+     * Param : memberId
+     * return : MemberDetailResponseDto
+     */
+    public MemberDetailResponseDto getMemberDetail(Long memberId){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("부원을 찾을 수 없습니다."));
+        return new MemberDetailResponseDto(member);
+    }
+
+
+
 
 
 }
