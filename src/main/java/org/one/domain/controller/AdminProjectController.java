@@ -5,16 +5,19 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.one.domain.dto.request.ProjectSaveRequestDto;
 import org.one.domain.dto.request.ProjectUpdateRequestDto;
 import org.one.domain.dto.response.ProjectDetailResponseDto;
 import org.one.domain.service.AdminProjectService;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +33,23 @@ import org.springframework.web.multipart.MultipartFile;
 public class AdminProjectController {
 
 	private final AdminProjectService adminProjectService;
+
+	/**
+	 * 프로젝트를 생성합니다.
+	 *
+	 * @param request 생성 요청 DTO
+	 * @param photos 사진 파일 목록 (선택, 최대 3개, 이미지만 허용)
+	 * @return 생성된 프로젝트 상세 정보
+	 */
+	@Operation(summary = "프로젝트 생성", description = "새로운 프로젝트를 등록합니다.")
+	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<ApiResponse<ProjectDetailResponseDto>> save(
+			@RequestPart @Valid ProjectSaveRequestDto request,
+			@RequestPart(required = false) List<MultipartFile> photos) {
+		ProjectDetailResponseDto response = adminProjectService.save(request, photos);
+		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
+	}
 
 	/**
 	 * 프로젝트 정보를 수정합니다.
