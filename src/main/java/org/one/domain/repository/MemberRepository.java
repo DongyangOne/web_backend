@@ -31,4 +31,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	//동아리에 소속중인 부원들의 모든 정보를 가져와 리스트로 만듦.
 	@Query("SELECT m FROM Member m")
 	List<Member> findAllByAdmin(Pageable pageable);
+
 }

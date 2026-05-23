@@ -3,19 +3,23 @@ package org.one.domain.service;
 
 import lombok.RequiredArgsConstructor;
 import org.one.domain.dto.request.MemberListRequestDto;
+import org.one.domain.dto.request.MemberRegisterRequestDto;
 import org.one.domain.dto.response.MemberListResponseDto;
 import org.one.domain.entity.Member;
+import org.one.domain.enums.Gender;
+import org.one.domain.enums.MemberStatus;
 import org.one.domain.repository.MemberRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MemberListService {
+public class MemberService {
     private final MemberRepository memberRepository;
 
     public List<MemberListResponseDto> getMemberListByAdmin(MemberListRequestDto requestDto) {
@@ -30,4 +34,30 @@ public class MemberListService {
                 .map(MemberListResponseDto::new)    //(member -> new MemberListResponseDto(member))
                 .toList();
     }
+
+    /**
+     * 새로운 부원을 추가함
+     * Param : MemberRegisterRequestDto 부원 추가 dto
+     */
+    @Transactional
+    public void registerMember(MemberRegisterRequestDto requestDto){
+        //요청데이터인 dto를 사용하여 새로운 Member엔티티 설정
+        Member member = Member.builder()
+                .name(requestDto.getName())
+                .grade(requestDto.getGrade())
+                .studentId(requestDto.getStudentId())
+                .age(requestDto.getAge())
+                .phoneNumber(requestDto.getPhoneNum())
+                .status(MemberStatus.ACTIVE) //status는 기본 값 , 테이블 오류로 아래는 더미 데이터임 -> 해결예정
+                .department("웹응용소프트웨어공학과")
+                .birthday(LocalDate.of(2000, 1, 1))
+                .gender(Gender.FEMALE)
+                .build();
+
+        //새로 생성한 부원 객체를 save(insert)해줌.
+        memberRepository.save(member);
+
+    }
+
+
 }

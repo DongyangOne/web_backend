@@ -2,17 +2,15 @@ package org.one.domain.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.one.domain.dto.request.MemberListRequestDto;
+import org.one.domain.dto.request.MemberRegisterRequestDto;
 import org.one.domain.dto.response.MemberListResponseDto;
-import org.one.domain.service.MemberListService;
-import org.one.global.pagination.ResponsePagingDto;
+import org.one.domain.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/members")
 public class MemberController {
-    private final MemberListService memberListService;
+    private final MemberService memberService;
 
     /**
      * 명부 전체 조회 API
@@ -37,8 +35,34 @@ public class MemberController {
     public ResponseEntity<List<MemberListResponseDto>> getMemberList(@ModelAttribute MemberListRequestDto requestDto){
 
         //
-        List<MemberListResponseDto> response = memberListService.getMemberListByAdmin(requestDto);
+        List<MemberListResponseDto> response = memberService.getMemberListByAdmin(requestDto);
 
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 부원 등록 API
+     * 요청 시, requestBody를 이용 MemberRegisterRequestDto 필드 입력
+     *
+     * api 요청 예시 : POST /api/members
+     *
+     * requestBody 예시
+     * "name" : "aa",
+     * "grade" : 1,
+     * "studentId" : "20991111",
+     * "age" : 22,
+     * "phoneNum" : "010-1111-2222"
+     *
+     * 응답 데이터 : 성공 메세지
+     */
+    @Operation(summary = "부원 등록", description = "관리자 권한(ADMIN)이 있는 계정만 전체 부원 명부를 조회할 수 있습니다.")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public ResponseEntity<String> registerMember(@RequestBody @Valid MemberRegisterRequestDto requestDto){
+        //등록 정보를 service로 넘겨 부원 등록 진행
+        memberService.registerMember(requestDto);
+
+        //오류없이 넘어왔을 경우 성공 처리
+        return ResponseEntity.ok("부원 등록이 성공적으로 완료되었습니다.");
     }
 }
