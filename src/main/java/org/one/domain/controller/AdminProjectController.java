@@ -13,6 +13,7 @@ import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -67,5 +68,20 @@ public class AdminProjectController {
 			@RequestBody @Valid ProjectUpdateRequestDto request) {
 		ProjectDetailResponseDto response = adminProjectService.update(projectId, request);
 		return ResponseEntity.ok(ApiResponse.success(response));
+	}
+
+	/**
+	 * 프로젝트를 삭제합니다.
+	 *
+	 * @param projectId 삭제할 프로젝트 ID
+	 * @return 삭제 완료 응답
+	 */
+	@Operation(summary = "프로젝트 삭제", description = "프로젝트를 삭제합니다.")
+	@ApiErrorExceptions({ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INTERNAL_SERVER_ERROR})
+	@DeleteMapping("/{projectId}")
+	public ResponseEntity<ApiResponse<Void>> delete(
+			@PathVariable Long projectId) {
+		adminProjectService.delete(projectId);
+		return ResponseEntity.ok(ApiResponse.success(null));
 	}
 }
