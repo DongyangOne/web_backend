@@ -112,6 +112,19 @@ public class AdminCalendarService {
 	}
 
 	/**
+	 * 선택한 캘린더 일정을 일괄 삭제합니다.
+	 *
+	 * @param calendarIds 삭제할 일정 ID 목록
+	 */
+	public void delete(List<Long> calendarIds) {
+		long existCount = calendarScheduleRepository.countByCalendarIdIn(calendarIds);
+		if (existCount != calendarIds.size()) {
+			throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND);
+		}
+		calendarScheduleRepository.deleteAllById(calendarIds);
+	}
+
+	/**
 	 * 시작일이 종료일보다 늦지 않은지 검증합니다.
 	 *
 	 * @param start 시작일
