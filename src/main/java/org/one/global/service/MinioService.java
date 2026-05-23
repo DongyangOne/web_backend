@@ -52,7 +52,7 @@ public class MinioService {
 	 * 파일을 MinIO에 업로드하고 접근 URL을 반환합니다.
 	 *
 	 * @param file 업로드할 파일
-	 * @param objectKey 저장할 객체 키
+	 * @param objectKey 저장할 객체 키 (예: "projects/uuid")
 	 * @return 파일 접근 URL
 	 */
 	public String uploadFile(MultipartFile file, String objectKey) {
@@ -101,9 +101,9 @@ public class MinioService {
 	}
 
 	/**
-	 * URL에서 MinIO 객체 키를 추출합니다.
+	 * MinIO 파일 URL에서 객체 키를 추출합니다.
 	 *
-	 * @param url 파일 접근 URL
+	 * @param url MinIO 파일 URL
 	 * @return 객체 키
 	 */
 	public String extractObjectKey(String url) {
