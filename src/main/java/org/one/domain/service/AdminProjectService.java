@@ -135,6 +135,20 @@ public class AdminProjectService {
 	}
 
 	/**
+	 * 프로젝트를 삭제합니다.
+	 * 연관된 사진 파일을 MinIO에서 먼저 삭제합니다.
+	 *
+	 * @param projectId 삭제할 프로젝트 ID
+	 */
+	public void delete(Long projectId) {
+		ProjectEvent project = projectEventRepository.findById(projectId)
+				.orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
+		project.getPhotos().forEach(photo ->
+				minioService.deleteFile(minioService.extractObjectKey(photo.getPhotoUrl())));
+		projectEventRepository.delete(project);
+	}
+
+	/**
 	 * photoKey 목록이 올바른 경로 prefix를 가지며 중복이 없는지 검증합니다.
 	 *
 	 * @param photoKeys 검증할 objectKey 목록
