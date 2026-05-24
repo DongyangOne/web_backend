@@ -143,10 +143,11 @@ public class AdminProjectService {
 		Set<String> seen = new HashSet<>();
 		for (String key : photoKeys) {
 			if (!key.startsWith(PHOTO_KEY_PREFIX)) {
-				throw new BusinessException(ErrorCode.INVALID_INPUT);
+				throw new BusinessException(ErrorCode.INVALID_OBJECT_KEY,
+						"프로젝트 사진은 projects/ 경로의 objectKey만 허용됩니다.");
 			}
 			if (!seen.add(key)) {
-				throw new BusinessException(ErrorCode.INVALID_INPUT);
+				throw new BusinessException(ErrorCode.DUPLICATE_RESOURCE, "동일한 objectKey가 중복 포함되어 있습니다.");
 			}
 		}
 	}
