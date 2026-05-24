@@ -8,9 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import org.one.domain.enums.Gender;
 import org.one.domain.enums.MemberStatus;
 import org.one.global.entity.BaseEntity;
 
@@ -32,14 +30,8 @@ public class Member extends BaseEntity {
 	@Column(nullable = false, length = 100)
 	private String name;
 
-	@Column(nullable = false, length = 100)
-	private String department;
-
 	@Column(nullable = false, unique = true, length = 8)
 	private String studentId;
-
-	@Column(nullable = false)
-	private LocalDate birthday;
 
 	@Column(nullable = false)
 	private Integer grade;
@@ -49,10 +41,6 @@ public class Member extends BaseEntity {
 
 	@Column(nullable = false, length = 20)
 	private String phoneNumber;
-
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, length = 10)
-	private Gender gender;
 
 	@Column
 	private LocalDateTime lastPromotionAt;
@@ -67,25 +55,19 @@ public class Member extends BaseEntity {
 	 *
 	 * @param status 부원 상태
 	 * @param name 이름
-	 * @param department 학과
 	 * @param studentId 학번
-	 * @param birthday 생년월일
 	 * @param grade 학년
 	 * @param age 나이
 	 * @param phoneNumber 연락처
-	 * @param gender 성별
 	 */
-	public Member(MemberStatus status, String name, String department, String studentId,
-			LocalDate birthday, Integer grade, Integer age, String phoneNumber, Gender gender) {
+	public Member(MemberStatus status, String name, String studentId,
+			Integer grade, Integer age, String phoneNumber) {
 		this.status = status;
 		this.name = name;
-		this.department = department;
 		this.studentId = studentId;
-		this.birthday = birthday;
 		this.grade = grade;
 		this.age = age;
 		this.phoneNumber = phoneNumber;
-		this.gender = gender;
 	}
 
 	/**
@@ -110,25 +92,11 @@ public class Member extends BaseEntity {
 	public String getName() { return name; }
 
 	/**
-	 * 부원 학과를 반환합니다.
-	 *
-	 * @return 학과
-	 */
-	public String getDepartment() { return department; }
-
-	/**
 	 * 부원 학번을 반환합니다.
 	 *
 	 * @return 학번
 	 */
 	public String getStudentId() { return studentId; }
-
-	/**
-	 * 부원 생년월일을 반환합니다.
-	 *
-	 * @return 생년월일
-	 */
-	public LocalDate getBirthday() { return birthday; }
 
 	/**
 	 * 부원 학년을 반환합니다.
@@ -150,13 +118,6 @@ public class Member extends BaseEntity {
 	 * @return 연락처
 	 */
 	public String getPhoneNumber() { return phoneNumber; }
-
-	/**
-	 * 부원 성별을 반환합니다.
-	 *
-	 * @return 성별
-	 */
-	public Gender getGender() { return gender; }
 
 	/**
 	 * 부원 등록 시각을 반환합니다.
@@ -183,15 +144,12 @@ public class Member extends BaseEntity {
 	 * 부원 기본 정보를 수정합니다.
 	 *
 	 * @param name 이름
-	 * @param department 학과
 	 * @param phoneNumber 연락처
 	 * @param grade 학년
 	 * @param age 나이
 	 */
-	public void updateInfo(String name, String department, String phoneNumber,
-			Integer grade, Integer age) {
+	public void updateInfo(String name, String phoneNumber, Integer grade, Integer age) {
 		this.name = name;
-		this.department = department;
 		this.phoneNumber = phoneNumber;
 		this.grade = grade;
 		this.age = age;
