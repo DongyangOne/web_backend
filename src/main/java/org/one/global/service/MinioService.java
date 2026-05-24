@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.one.global.config.minio.MinioConfig;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class MinioService {
+
+	private static final Logger log = LoggerFactory.getLogger(MinioService.class);
 
 	private final MinioClient minioClient;
 	private final MinioConfig minioConfig;
@@ -67,6 +71,7 @@ public class MinioService {
 			);
 			return minioConfig.getUrl() + "/" + minioConfig.getBucketName() + "/" + objectKey;
 		} catch (Exception e) {
+			log.error("[MinioService] 파일 업로드 실패: objectKey={}", objectKey, e);
 			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -85,6 +90,7 @@ public class MinioService {
 							.build()
 			);
 		} catch (Exception e) {
+			log.error("[MinioService] 파일 삭제 실패: objectKey={}", objectKey, e);
 			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -122,6 +128,7 @@ public class MinioService {
 							.build()
 			);
 		} catch (Exception e) {
+			log.error("[MinioService] Presigned URL 생성 실패: objectKey={}", objectKey, e);
 			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
 		}
 	}

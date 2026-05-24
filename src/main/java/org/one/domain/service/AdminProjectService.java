@@ -105,7 +105,7 @@ public class AdminProjectService {
 	 */
 	private void validatePhotoCount(int totalCount) {
 		if (totalCount > 3) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.PHOTO_LIMIT_EXCEEDED);
 		}
 	}
 
@@ -120,7 +120,7 @@ public class AdminProjectService {
 				.map(ProjectPhoto::getPhotoId)
 				.collect(Collectors.toSet());
 		if (!existingIds.containsAll(keepPhotoIds)) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.INVALID_INPUT, "유지할 사진 ID가 해당 프로젝트에 속하지 않습니다.");
 		}
 	}
 
@@ -133,7 +133,7 @@ public class AdminProjectService {
 		for (MultipartFile photo : photos) {
 			String contentType = photo.getContentType();
 			if (contentType == null || !contentType.startsWith("image/")) {
-				throw new BusinessException(ErrorCode.INVALID_INPUT);
+				throw new BusinessException(ErrorCode.INVALID_INPUT, "이미지 파일만 업로드할 수 있습니다.");
 			}
 			String originalFilename = photo.getOriginalFilename();
 			if (originalFilename != null) {
@@ -142,7 +142,8 @@ public class AdminProjectService {
 						? originalFilename.substring(dotIndex + 1).toLowerCase()
 						: "";
 				if (!ALLOWED_EXTENSIONS.contains(ext)) {
-					throw new BusinessException(ErrorCode.INVALID_INPUT);
+					throw new BusinessException(ErrorCode.INVALID_INPUT,
+							"허용되지 않는 확장자입니다. (허용: jpg, jpeg, png, gif, webp)");
 				}
 			}
 		}
@@ -156,7 +157,7 @@ public class AdminProjectService {
 	 */
 	private void validateDateRange(LocalDate start, LocalDate end) {
 		if (start != null && end != null && start.isAfter(end)) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.INVALID_DATE_RANGE, "시작일은 종료일보다 늦을 수 없습니다.");
 		}
 	}
 }
