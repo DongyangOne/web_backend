@@ -41,8 +41,12 @@ public class AdminRecruitmentService {
 	public RecruitmentResponseDto update(RecruitmentUpdateRequestDto request) {
 		validateDateRange(request.getRecruitmentStart(), request.getRecruitmentEnd());
 		validateDateRange(request.getInterviewStart(), request.getInterviewEnd());
+		validateRecruitmentInterviewOrder(request.getRecruitmentEnd(), request.getInterviewStart());
 
 		Recruitment recruitment = recruitmentRepository.findRecruitment();
+		if (recruitment == null) {
+			throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND);
+		}
 		recruitment.update(
 				request.getTarget(),
 				request.getField(),
@@ -63,6 +67,19 @@ public class AdminRecruitmentService {
 	 */
 	private void validateDateRange(LocalDate start, LocalDate end) {
 		if (start != null && end != null && start.isAfter(end)) {
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
+		}
+	}
+
+	/**
+	 * 면접 시작일이 모집 종료일보다 이르지 않은지 검증합니다.
+	 * 면접은 모집이 끝난 이후에 시작되어야 합니다.
+	 *
+	 * @param recruitmentEnd 모집 종료일
+	 * @param interviewStart 면접 시작일
+	 */
+	private void validateRecruitmentInterviewOrder(LocalDate recruitmentEnd, LocalDate interviewStart) {
+		if (recruitmentEnd != null && interviewStart != null && interviewStart.isBefore(recruitmentEnd)) {
 			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
 	}
