@@ -90,6 +90,17 @@ public class MinioService {
 	}
 
 	/**
+	 * 객체 키로 MinIO 정적 접근 URL을 반환합니다.
+	 * 클라이언트가 Presigned PUT URL로 업로드 완료 후, 저장할 URL을 얻을 때 사용합니다.
+	 *
+	 * @param objectKey 객체 키 (예: "logo/uuid", "projects/uuid")
+	 * @return 정적 접근 URL
+	 */
+	public String getObjectUrl(String objectKey) {
+		return minioConfig.getUrl() + "/" + minioConfig.getBucketName() + "/" + objectKey;
+	}
+
+	/**
 	 * URL에서 MinIO 객체 키를 추출합니다.
 	 *
 	 * @param url 파일 접근 URL

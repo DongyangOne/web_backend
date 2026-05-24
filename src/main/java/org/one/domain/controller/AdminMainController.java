@@ -2,19 +2,19 @@ package org.one.domain.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.one.domain.dto.request.MainLogoUpdateRequestDto;
 import org.one.domain.dto.response.MainLogoResponseDto;
 import org.one.domain.service.AdminMainService;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 관리자 메인 페이지 API 요청을 받고 서비스 계층으로 위임합니다.
@@ -28,17 +28,20 @@ public class AdminMainController {
 	private final AdminMainService adminMainService;
 
 	/**
-	 * 메인 페이지 로고 이미지를 수정합니다. MinIO에 업로드 후 URL을 저장합니다.
+	 * 메인 페이지 로고 URL을 수정합니다.
+	 * 클라이언트는 먼저 {@code GET /api/v1/files/upload-url?type=logo} 로 Presigned URL을 발급받아
+	 * 파일을 MinIO에 직접 업로드한 뒤, 응답의 objectKey를 이 API에 전달합니다.
 	 *
-	 * @param logo 로고 이미지 파일 (이미지만 허용)
+	 * @param request objectKey를 담은 요청 DTO
 	 * @return 수정된 로고 응답
 	 */
-	@Operation(summary = "관리자 메인 로고 수정", description = "로고 이미지를 업로드합니다. 이미지 파일만 허용됩니다.")
+	@Operation(summary = "관리자 메인 로고 수정",
+			description = "Presigned URL로 MinIO에 직접 업로드 완료 후, objectKey를 전달해 로고 URL을 저장합니다.")
 	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
-	@PatchMapping(value = "/logo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PatchMapping("/logo")
 	public ResponseEntity<ApiResponse<MainLogoResponseDto>> update(
-			@RequestPart MultipartFile logo) {
-		MainLogoResponseDto response = adminMainService.update(logo);
+			@RequestBody @Valid MainLogoUpdateRequestDto request) {
+		MainLogoResponseDto response = adminMainService.update(request.getObjectKey());
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 }
