@@ -2,10 +2,14 @@ package org.one.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
+import org.one.domain.enums.Gender;
 import org.one.global.entity.BaseEntity;
 
 /**
@@ -22,14 +26,24 @@ public class ApplicantMember extends BaseEntity {
 	@Column(nullable = false, length = 100)
 	private String name;
 
+	@Column(nullable = false, length = 100)
+	private String department;
+
 	@Column(nullable = false, length = 8)
 	private String studentId;
+
+	@Column(nullable = false)
+	private LocalDate birthday;
 
 	@Column(nullable = false)
 	private Integer grade;
 
 	@Column(nullable = false, length = 20)
 	private String phoneNumber;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, length = 10)
+	private Gender gender;
 
 	@Column(nullable = false, columnDefinition = "TEXT")
 	private String motivation;
@@ -58,22 +72,28 @@ public class ApplicantMember extends BaseEntity {
 	 * 가입 신청 정보를 저장할 엔티티를 생성합니다.
 	 *
 	 * @param name 신청자 이름
+	 * @param department 신청자 학과
 	 * @param studentId 신청자 학번
+	 * @param birthday 신청자 생년월일
 	 * @param grade 신청자 학년
 	 * @param phoneNumber 신청자 연락처
+	 * @param gender 신청자 성별
 	 * @param motivation 지원 동기
 	 * @param techStack 기술 스택
 	 * @param desiredActivity 희망 활동
 	 * @param finalWords 마지막으로 하고 싶은 말
 	 * @param privacyConsent 개인정보 수집 동의 여부
 	 */
-	public ApplicantMember(String name, String studentId, Integer grade, String phoneNumber,
-			String motivation, String techStack, String desiredActivity,
-			String finalWords, Boolean privacyConsent) {
+	public ApplicantMember(String name, String department, String studentId, LocalDate birthday,
+			Integer grade, String phoneNumber, Gender gender, String motivation,
+			String techStack, String desiredActivity, String finalWords, Boolean privacyConsent) {
 		this.name = name;
+		this.department = department;
 		this.studentId = studentId;
+		this.birthday = birthday;
 		this.grade = grade;
 		this.phoneNumber = phoneNumber;
+		this.gender = gender;
 		this.motivation = motivation;
 		this.techStack = techStack;
 		this.desiredActivity = desiredActivity;
@@ -97,11 +117,25 @@ public class ApplicantMember extends BaseEntity {
 	public String getName() { return name; }
 
 	/**
+	 * 신청자 학과를 반환합니다.
+	 *
+	 * @return 신청자 학과
+	 */
+	public String getDepartment() { return department; }
+
+	/**
 	 * 신청자 학번을 반환합니다.
 	 *
 	 * @return 신청자 학번
 	 */
 	public String getStudentId() { return studentId; }
+
+	/**
+	 * 신청자 생년월일을 반환합니다.
+	 *
+	 * @return 생년월일
+	 */
+	public LocalDate getBirthday() { return birthday; }
 
 	/**
 	 * 신청자 학년을 반환합니다.
@@ -116,6 +150,13 @@ public class ApplicantMember extends BaseEntity {
 	 * @return 연락처
 	 */
 	public String getPhoneNumber() { return phoneNumber; }
+
+	/**
+	 * 신청자 성별을 반환합니다.
+	 *
+	 * @return 성별
+	 */
+	public Gender getGender() { return gender; }
 
 	/**
 	 * 지원 동기를 반환합니다.
