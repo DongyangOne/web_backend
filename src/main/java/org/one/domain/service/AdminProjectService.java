@@ -137,16 +137,28 @@ public class AdminProjectService {
 
 	/**
 	 * 프로젝트를 삭제합니다.
-	 * 연관된 사진 파일을 MinIO에서 먼저 삭제합니다.
+	 * DB에서 먼저 삭제한 뒤 MinIO의 사진 파일을 삭제합니다.
+	 * MinIO 삭제 실패 시 예외를 던지지 않고 로그를 남깁니다.
 	 *
 	 * @param projectId 삭제할 프로젝트 ID
 	 */
 	public void delete(Long projectId) {
 		ProjectEvent project = projectEventRepository.findById(projectId)
 				.orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
-		project.getPhotos().forEach(photo ->
-				minioService.deleteFile(minioService.extractObjectKey(photo.getPhotoUrl())));
+
+		List<String> objectKeys = project.getPhotos().stream()
+				.map(photo -> minioService.extractObjectKey(photo.getPhotoUrl()))
+				.collect(Collectors.toList());
+
 		projectEventRepository.delete(project);
+
+		for (String objectKey : objectKeys) {
+			try {
+				minioService.deleteFile(objectKey);
+			} catch (Exception e) {
+				log.warn("[AdminProjectService] MinIO 사진 삭제 실패: {}", objectKey, e);
+			}
+		}
 	}
 
 	/**
