@@ -116,7 +116,7 @@ public class AdminProjectService {
 	 */
 	private void validatePhotoCount(int totalCount) {
 		if (totalCount > 3) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.PHOTO_LIMIT_EXCEEDED);
 		}
 	}
 
@@ -143,7 +143,7 @@ public class AdminProjectService {
 	 */
 	private void validateDateRange(LocalDate start, LocalDate end) {
 		if (start != null && end != null && start.isAfter(end)) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.INVALID_DATE_RANGE);
 		}
 	}
 }
