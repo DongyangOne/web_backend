@@ -66,6 +66,7 @@ public class AdminProjectService {
 			project.getPhotos().add(new ProjectPhoto(project, url, i));
 		}
 
+		projectEventRepository.flush();
 		return ProjectDetailResponseDto.from(project);
 	}
 
