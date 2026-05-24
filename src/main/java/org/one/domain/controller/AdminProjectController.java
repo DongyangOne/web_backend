@@ -83,7 +83,7 @@ public class AdminProjectController {
 	@ApiErrorExceptions({ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INTERNAL_SERVER_ERROR})
 	@DeleteMapping("/{projectId}")
 	public ResponseEntity<ApiResponse<Void>> delete(
-			@PathVariable Long projectId) {
+			@PathVariable @Positive(message = "프로젝트 ID는 양수여야 합니다.") Long projectId) {
 		adminProjectService.delete(projectId);
 		return ResponseEntity.ok(ApiResponse.success(null));
 	}
