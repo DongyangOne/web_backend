@@ -79,7 +79,7 @@ public class AdminMainController {
 	@ApiErrorExceptions({ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INTERNAL_SERVER_ERROR})
 	@DeleteMapping("/activity/{cardId}")
 	public ResponseEntity<ApiResponse<Void>> clearActivityCard(
-			@PathVariable Long cardId) {
+			@PathVariable @Positive(message = "카드 ID는 양수여야 합니다.") Long cardId) {
 		adminMainService.clearActivityCard(cardId);
 		return ResponseEntity.ok(ApiResponse.success(null));
 	}
