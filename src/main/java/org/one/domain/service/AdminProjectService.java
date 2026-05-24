@@ -15,6 +15,8 @@ import org.one.domain.repository.ProjectEventRepository;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
 import org.one.global.service.MinioService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +28,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @RequiredArgsConstructor
 public class AdminProjectService {
+
+	private static final Logger log = LoggerFactory.getLogger(AdminProjectService.class);
+	private static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "gif", "webp");
 
 	private final ProjectEventRepository projectEventRepository;
 	private final MinioService minioService;
@@ -57,7 +62,13 @@ public class AdminProjectService {
 
 		project.getPhotos().stream()
 				.filter(photo -> !keepPhotoIds.contains(photo.getPhotoId()))
-				.forEach(photo -> minioService.deleteFile(minioService.extractObjectKey(photo.getPhotoUrl())));
+				.forEach(photo -> {
+					try {
+						minioService.deleteFile(minioService.extractObjectKey(photo.getPhotoUrl()));
+					} catch (Exception e) {
+						log.warn("[AdminProjectService] MinIO 사진 삭제 실패: {}", photo.getPhotoUrl(), e);
+					}
+				});
 		project.getPhotos().removeIf(photo -> !keepPhotoIds.contains(photo.getPhotoId()));
 
 		project.update(
@@ -114,7 +125,7 @@ public class AdminProjectService {
 	}
 
 	/**
-	 * 사진 파일의 콘텐츠 타입이 이미지인지 검증합니다. 동영상 파일은 허용하지 않습니다.
+	 * 사진 파일의 콘텐츠 타입이 이미지인지, 확장자가 허용된 형식인지 검증합니다.
 	 *
 	 * @param photos 검증할 사진 파일 목록
 	 */
@@ -123,6 +134,16 @@ public class AdminProjectService {
 			String contentType = photo.getContentType();
 			if (contentType == null || !contentType.startsWith("image/")) {
 				throw new BusinessException(ErrorCode.INVALID_INPUT);
+			}
+			String originalFilename = photo.getOriginalFilename();
+			if (originalFilename != null) {
+				int dotIndex = originalFilename.lastIndexOf('.');
+				String ext = dotIndex >= 0
+						? originalFilename.substring(dotIndex + 1).toLowerCase()
+						: "";
+				if (!ALLOWED_EXTENSIONS.contains(ext)) {
+					throw new BusinessException(ErrorCode.INVALID_INPUT);
+				}
 			}
 		}
 	}
