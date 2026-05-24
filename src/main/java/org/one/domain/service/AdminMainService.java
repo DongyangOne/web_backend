@@ -7,6 +7,8 @@ import org.one.domain.repository.MainPageConfigRepository;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
 import org.one.global.service.MinioService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,13 +20,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AdminMainService {
 
+	private static final Logger log = LoggerFactory.getLogger(AdminMainService.class);
+
 	private final MainPageConfigRepository mainPageConfigRepository;
 	private final MinioService minioService;
 
 	/**
 	 * 메인 페이지 로고 URL을 수정합니다.
 	 * 클라이언트가 Presigned URL로 MinIO에 직접 업로드한 뒤, objectKey를 전달합니다.
-	 * 기존 로고가 있으면 MinIO에서 삭제합니다.
+	 * DB를 먼저 갱신한 뒤 기존 로고를 MinIO에서 삭제합니다.
+	 * MinIO 삭제 실패 시 예외를 던지지 않고 경고 로그를 남깁니다.
 	 *
 	 * @param objectKey Presigned URL 발급 시 받은 객체 키 (예: "logo/uuid")
 	 * @return 수정된 로고 응답 DTO
@@ -33,13 +38,19 @@ public class AdminMainService {
 		validateObjectKey(objectKey);
 
 		MainPageConfig config = mainPageConfigRepository.getConfig();
-
-		if (config.getLogoUrl() != null) {
-			minioService.deleteFile(minioService.extractObjectKey(config.getLogoUrl()));
-		}
+		String oldLogoUrl = config.getLogoUrl();
 
 		String url = minioService.getObjectUrl(objectKey);
 		config.updateLogo(url);
+
+		if (oldLogoUrl != null) {
+			try {
+				minioService.deleteFile(minioService.extractObjectKey(oldLogoUrl));
+			} catch (Exception e) {
+				log.warn("[AdminMainService] 기존 로고 MinIO 삭제 실패: {}", oldLogoUrl, e);
+			}
+		}
+
 		return MainLogoResponseDto.from(url);
 	}
 

@@ -9,6 +9,7 @@ import org.one.domain.dto.response.PresignedUploadResponseDto;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
+import org.one.global.exception.BusinessException;
 import org.one.global.service.MinioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,11 +49,14 @@ public class FileController {
 			description = "클라이언트가 MinIO에 직접 파일을 업로드할 수 있는 Presigned PUT URL을 발급합니다. "
 					+ "type=logo 이면 logo/ 경로, type=project 이면 projects/ 경로로 objectKey가 생성됩니다."
 	)
-	@ApiErrorExceptions({ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
+	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
 	@GetMapping("/upload-url")
 	public ResponseEntity<ApiResponse<PresignedUploadResponseDto>> getUploadUrl(
 			@Parameter(description = "업로드 대상 유형 (logo | project)", example = "logo")
 			@RequestParam String type) {
+		if (!"logo".equals(type) && !"project".equals(type)) {
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
+		}
 		String prefix = "project".equals(type) ? "projects/" : "logo/";
 		String objectKey = prefix + UUID.randomUUID();
 		String uploadUrl = minioService.generateUploadUrl(objectKey);
