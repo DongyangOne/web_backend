@@ -1,6 +1,7 @@
 package org.one.domain.service;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminProjectService {
 
 	private static final Logger log = LoggerFactory.getLogger(AdminProjectService.class);
+	private static final String PHOTO_KEY_PREFIX = "projects/";
 
 	private final MainPageConfigRepository mainPageConfigRepository;
 	private final ProjectEventRepository projectEventRepository;
@@ -47,6 +49,7 @@ public class AdminProjectService {
 
 		List<String> photoKeys = request.getPhotoKeys() != null ? request.getPhotoKeys() : List.of();
 		validatePhotoCount(photoKeys.size());
+		validatePhotoKeys(photoKeys);
 
 		ProjectEvent project = new ProjectEvent(
 				mainPageConfigRepository.getConfig(),
@@ -94,6 +97,7 @@ public class AdminProjectService {
 
 		validatePhotoCount(keepPhotoIds.size() + newPhotoKeys.size());
 		validatePhotosBelongToProject(keepPhotoIds, project);
+		validatePhotoKeys(newPhotoKeys);
 
 		project.getPhotos().stream()
 				.filter(photo -> !keepPhotoIds.contains(photo.getPhotoId()))
@@ -128,6 +132,23 @@ public class AdminProjectService {
 		}
 
 		return ProjectDetailResponseDto.from(project);
+	}
+
+	/**
+	 * photoKey 목록이 올바른 경로 prefix를 가지며 중복이 없는지 검증합니다.
+	 *
+	 * @param photoKeys 검증할 objectKey 목록
+	 */
+	private void validatePhotoKeys(List<String> photoKeys) {
+		Set<String> seen = new HashSet<>();
+		for (String key : photoKeys) {
+			if (!key.startsWith(PHOTO_KEY_PREFIX)) {
+				throw new BusinessException(ErrorCode.INVALID_INPUT);
+			}
+			if (!seen.add(key)) {
+				throw new BusinessException(ErrorCode.INVALID_INPUT);
+			}
+		}
 	}
 
 	/**
