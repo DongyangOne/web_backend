@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException exception) {
 		ErrorCode errorCode = exception.getErrorCode();
 		return ResponseEntity.status(errorCode.getStatus())
-				.body(ApiResponse.error(errorCode));
+				.body(ApiResponse.error(errorCode.getCode(), exception.getMessage()));
 	}
 
 	/**
