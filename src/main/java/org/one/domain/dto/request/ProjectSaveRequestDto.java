@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 
 /**
  * 프로젝트 생성 요청 DTO입니다.
+ *
+ * <p>사진 첨부 시 먼저 {@code GET /api/v1/files/upload-url?type=project} 로 Presigned URL을 발급받아
+ * 파일을 MinIO에 직접 업로드한 뒤, 응답의 objectKey 목록을 photoKeys에 담아 전달합니다.
  */
 @Schema(description = "프로젝트 생성 요청")
 @Getter
@@ -51,4 +54,8 @@ public class ProjectSaveRequestDto {
 
 	@Schema(description = "프로젝트 소개")
 	private String description;
+
+	@Schema(description = "업로드된 사진 objectKey 목록 (Presigned URL 발급 후 업로드 완료한 키, 최대 3개)",
+			example = "[\"projects/550e8400-e29b-41d4-a716-446655440000\"]")
+	private List<String> photoKeys;
 }
