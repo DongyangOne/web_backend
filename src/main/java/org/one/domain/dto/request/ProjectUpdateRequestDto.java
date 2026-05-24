@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -46,6 +47,7 @@ public class ProjectUpdateRequestDto {
 
 	@Schema(description = "팀원 수", example = "6")
 	@NotNull(message = "팀원 수를 입력해주세요.")
+	@Positive(message = "팀원 수는 1명 이상이어야 합니다.")
 	private Integer participantCount;
 
 	@Schema(description = "기술 스택 목록", example = "[\"React\", \"Spring Boot\", \"MySQL\"]")

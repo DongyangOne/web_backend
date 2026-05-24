@@ -144,10 +144,11 @@ public class AdminProjectService {
 		Set<String> seen = new HashSet<>();
 		for (String key : photoKeys) {
 			if (!key.startsWith(PHOTO_KEY_PREFIX)) {
-				throw new BusinessException(ErrorCode.INVALID_INPUT);
+				throw new BusinessException(ErrorCode.INVALID_OBJECT_KEY,
+						"프로젝트 사진은 projects/ 경로의 objectKey만 허용됩니다.");
 			}
 			if (!seen.add(key)) {
-				throw new BusinessException(ErrorCode.INVALID_INPUT);
+				throw new BusinessException(ErrorCode.DUPLICATE_RESOURCE, "동일한 objectKey가 중복 포함되어 있습니다.");
 			}
 		}
 	}
@@ -159,7 +160,7 @@ public class AdminProjectService {
 	 */
 	private void validatePhotoCount(int totalCount) {
 		if (totalCount > 3) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.PHOTO_LIMIT_EXCEEDED);
 		}
 	}
 
@@ -174,7 +175,7 @@ public class AdminProjectService {
 				.map(ProjectPhoto::getPhotoId)
 				.collect(Collectors.toSet());
 		if (!existingIds.containsAll(keepPhotoIds)) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.INVALID_INPUT, "유지할 사진 ID가 해당 프로젝트에 속하지 않습니다.");
 		}
 	}
 
@@ -186,7 +187,7 @@ public class AdminProjectService {
 	 */
 	private void validateDateRange(LocalDate start, LocalDate end) {
 		if (start != null && end != null && start.isAfter(end)) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.INVALID_DATE_RANGE, "시작일은 종료일보다 늦을 수 없습니다.");
 		}
 	}
 }
