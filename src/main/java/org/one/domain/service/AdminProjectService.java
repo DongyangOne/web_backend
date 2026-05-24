@@ -2,8 +2,6 @@ package org.one.domain.service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.one.domain.dto.request.ProjectSaveRequestDto;
@@ -21,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 프로젝트 관련 비즈니스 로직을 처리합니다.
@@ -32,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class AdminProjectService {
 
 	private static final Logger log = LoggerFactory.getLogger(AdminProjectService.class);
-	private static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "gif", "webp");
 
 	private final MainPageConfigRepository mainPageConfigRepository;
 	private final ProjectEventRepository projectEventRepository;
@@ -40,18 +36,17 @@ public class AdminProjectService {
 
 	/**
 	 * 프로젝트를 생성합니다.
-	 * 사진은 선택 사항이며, 제공된 경우 MinIO에 업로드 후 URL을 저장합니다.
+	 * 사진은 선택 사항이며, 클라이언트가 Presigned URL로 MinIO에 직접 업로드한 뒤
+	 * objectKey 목록을 DTO의 photoKeys에 담아 전달합니다.
 	 *
-	 * @param request 생성 요청 DTO
-	 * @param photos 사진 파일 목록 (선택, 최대 3개, 이미지만 허용)
+	 * @param request 생성 요청 DTO (photoKeys: 업로드 완료한 objectKey 목록, 최대 3개)
 	 * @return 생성된 프로젝트 상세 응답 DTO
 	 */
-	public ProjectDetailResponseDto save(ProjectSaveRequestDto request, List<MultipartFile> photos) {
+	public ProjectDetailResponseDto save(ProjectSaveRequestDto request) {
 		validateDateRange(request.getStartDate(), request.getEndDate());
-		if (photos != null && !photos.isEmpty()) {
-			validatePhotoCount(photos.size());
-			validatePhotoTypes(photos);
-		}
+
+		List<String> photoKeys = request.getPhotoKeys() != null ? request.getPhotoKeys() : List.of();
+		validatePhotoCount(photoKeys.size());
 
 		ProjectEvent project = new ProjectEvent(
 				mainPageConfigRepository.getConfig(),
@@ -69,12 +64,9 @@ public class AdminProjectService {
 
 		projectEventRepository.save(project);
 
-		if (photos != null) {
-			for (int i = 0; i < photos.size(); i++) {
-				String objectKey = "projects/" + UUID.randomUUID();
-				String url = minioService.uploadFile(photos.get(i), objectKey);
-				project.getPhotos().add(new ProjectPhoto(project, url, i));
-			}
+		for (int i = 0; i < photoKeys.size(); i++) {
+			String url = minioService.getObjectUrl(photoKeys.get(i));
+			project.getPhotos().add(new ProjectPhoto(project, url, i));
 		}
 
 		return ProjectDetailResponseDto.from(project);
@@ -82,28 +74,25 @@ public class AdminProjectService {
 
 	/**
 	 * 프로젝트 정보를 수정합니다.
-	 * keepPhotoIds에 포함되지 않은 기존 사진은 MinIO에서 삭제되고,
-	 * newPhotos로 전달된 파일은 MinIO에 업로드되어 추가됩니다.
+	 * keepPhotoIds에 포함되지 않은 기존 사진은 MinIO에서 삭제됩니다.
+	 * 새 사진은 클라이언트가 Presigned URL로 MinIO에 직접 업로드한 뒤
+	 * objectKey 목록을 DTO의 newPhotoKeys에 담아 전달합니다.
 	 *
 	 * @param projectId 수정할 프로젝트 ID
-	 * @param request 수정 요청 DTO (keepPhotoIds: 유지할 기존 사진 ID 목록)
-	 * @param newPhotos 새로 추가할 사진 파일 목록 (없으면 null)
+	 * @param request 수정 요청 DTO (keepPhotoIds: 유지할 기존 사진 ID / newPhotoKeys: 새 사진 objectKey)
 	 * @return 수정된 프로젝트 상세 응답 DTO
 	 */
-	public ProjectDetailResponseDto update(Long projectId, ProjectUpdateRequestDto request, List<MultipartFile> newPhotos) {
+	public ProjectDetailResponseDto update(Long projectId, ProjectUpdateRequestDto request) {
 		validateDateRange(request.getStartDate(), request.getEndDate());
 
 		ProjectEvent project = projectEventRepository.findById(projectId)
 				.orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
 
 		List<Long> keepPhotoIds = request.getKeepPhotoIds() != null ? request.getKeepPhotoIds() : List.of();
-		int newCount = newPhotos != null ? newPhotos.size() : 0;
+		List<String> newPhotoKeys = request.getNewPhotoKeys() != null ? request.getNewPhotoKeys() : List.of();
 
-		validatePhotoCount(keepPhotoIds.size() + newCount);
+		validatePhotoCount(keepPhotoIds.size() + newPhotoKeys.size());
 		validatePhotosBelongToProject(keepPhotoIds, project);
-		if (newPhotos != null) {
-			validatePhotoTypes(newPhotos);
-		}
 
 		project.getPhotos().stream()
 				.filter(photo -> !keepPhotoIds.contains(photo.getPhotoId()))
@@ -131,13 +120,10 @@ public class AdminProjectService {
 		request.getTechStacks().forEach(name ->
 				project.getTechStacks().add(new ProjectTechStack(project, name)));
 
-		if (newPhotos != null) {
-			int priorityStart = project.getPhotos().size();
-			for (int i = 0; i < newPhotos.size(); i++) {
-				String objectKey = "projects/" + UUID.randomUUID();
-				String url = minioService.uploadFile(newPhotos.get(i), objectKey);
-				project.getPhotos().add(new ProjectPhoto(project, url, priorityStart + i));
-			}
+		int priorityStart = project.getPhotos().size();
+		for (int i = 0; i < newPhotoKeys.size(); i++) {
+			String url = minioService.getObjectUrl(newPhotoKeys.get(i));
+			project.getPhotos().add(new ProjectPhoto(project, url, priorityStart + i));
 		}
 
 		return ProjectDetailResponseDto.from(project);
@@ -166,31 +152,6 @@ public class AdminProjectService {
 				.collect(Collectors.toSet());
 		if (!existingIds.containsAll(keepPhotoIds)) {
 			throw new BusinessException(ErrorCode.INVALID_INPUT, "유지할 사진 ID가 해당 프로젝트에 속하지 않습니다.");
-		}
-	}
-
-	/**
-	 * 사진 파일의 콘텐츠 타입이 이미지인지, 확장자가 허용된 형식인지 검증합니다.
-	 *
-	 * @param photos 검증할 사진 파일 목록
-	 */
-	private void validatePhotoTypes(List<MultipartFile> photos) {
-		for (MultipartFile photo : photos) {
-			String contentType = photo.getContentType();
-			if (contentType == null || !contentType.startsWith("image/")) {
-				throw new BusinessException(ErrorCode.INVALID_INPUT, "이미지 파일만 업로드할 수 있습니다.");
-			}
-			String originalFilename = photo.getOriginalFilename();
-			if (originalFilename != null) {
-				int dotIndex = originalFilename.lastIndexOf('.');
-				String ext = dotIndex >= 0
-						? originalFilename.substring(dotIndex + 1).toLowerCase()
-						: "";
-				if (!ALLOWED_EXTENSIONS.contains(ext)) {
-					throw new BusinessException(ErrorCode.INVALID_INPUT,
-							"허용되지 않는 확장자입니다. (허용: jpg, jpeg, png, gif, webp)");
-				}
-			}
 		}
 	}
 

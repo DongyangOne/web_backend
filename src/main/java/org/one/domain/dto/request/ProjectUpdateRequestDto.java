@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 
 /**
  * 프로젝트 수정 요청 DTO입니다.
+ *
+ * <p>새 사진 추가 시 먼저 {@code GET /api/v1/files/upload-url?type=project} 로 Presigned URL을 발급받아
+ * 파일을 MinIO에 직접 업로드한 뒤, 응답의 objectKey 목록을 newPhotoKeys에 담아 전달합니다.
  */
 @Schema(description = "프로젝트 수정 요청")
 @Getter
@@ -54,4 +57,8 @@ public class ProjectUpdateRequestDto {
 
 	@Schema(description = "유지할 기존 사진 ID 목록 (생략 또는 빈 배열이면 기존 사진 전체 삭제)", example = "[1, 3]")
 	private List<Long> keepPhotoIds;
+
+	@Schema(description = "새로 추가할 사진 objectKey 목록 (Presigned URL 발급 후 업로드 완료한 키)",
+			example = "[\"projects/550e8400-e29b-41d4-a716-446655440000\"]")
+	private List<String> newPhotoKeys;
 }
