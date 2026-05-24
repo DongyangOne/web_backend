@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.one.domain.dto.response.MainLogoResponseDto;
 import org.one.domain.entity.MainPageConfig;
 import org.one.domain.repository.MainPageConfigRepository;
+import org.one.global.enums.ErrorCode;
+import org.one.global.exception.BusinessException;
 import org.one.global.service.MinioService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,8 @@ public class AdminMainService {
 	 * @return 수정된 로고 응답 DTO
 	 */
 	public MainLogoResponseDto update(String objectKey) {
+		validateObjectKey(objectKey);
+
 		MainPageConfig config = mainPageConfigRepository.getConfig();
 
 		if (config.getLogoUrl() != null) {
@@ -37,5 +41,16 @@ public class AdminMainService {
 		String url = minioService.getObjectUrl(objectKey);
 		config.updateLogo(url);
 		return MainLogoResponseDto.from(url);
+	}
+
+	/**
+	 * objectKey가 로고 경로("logo/")로 시작하는지 검증합니다.
+	 *
+	 * @param objectKey 검증할 객체 키
+	 */
+	private void validateObjectKey(String objectKey) {
+		if (!objectKey.startsWith("logo/")) {
+			throw new BusinessException(ErrorCode.INVALID_INPUT);
+		}
 	}
 }

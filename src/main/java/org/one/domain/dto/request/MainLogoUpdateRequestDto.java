@@ -1,6 +1,7 @@
 package org.one.domain.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,7 @@ import lombok.NoArgsConstructor;
 public class MainLogoUpdateRequestDto {
 
 	@Schema(description = "Presigned URL 발급 시 받은 objectKey", example = "logo/550e8400-e29b-41d4-a716-446655440000")
+	@NotBlank(message = "objectKey는 필수입니다.")
 	@Size(max = 500, message = "objectKey는 500자 이하여야 합니다.")
 	private String objectKey;
 }
