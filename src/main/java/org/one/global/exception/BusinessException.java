@@ -20,6 +20,17 @@ public class BusinessException extends RuntimeException {
 	}
 
 	/**
+	 * ErrorCode와 함께 상황에 맞는 커스텀 메시지를 지정합니다.
+	 *
+	 * @param errorCode 공통 에러 코드 (HTTP 상태·코드 결정에 사용)
+	 * @param customMessage 실제 응답에 포함할 메시지
+	 */
+	public BusinessException(ErrorCode errorCode, String customMessage) {
+		super(customMessage);
+		this.errorCode = errorCode;
+	}
+
+	/**
 	 * 응답 상태와 코드 생성을 위한 ErrorCode를 반환합니다.
 	 *
 	 * @return 공통 에러 코드

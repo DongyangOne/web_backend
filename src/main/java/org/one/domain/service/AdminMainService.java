@@ -50,7 +50,7 @@ public class AdminMainService {
 	 */
 	private void validateObjectKey(String objectKey) {
 		if (!objectKey.startsWith("logo/")) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.INVALID_OBJECT_KEY, "logo/ 경로의 objectKey만 허용됩니다.");
 		}
 	}
 }

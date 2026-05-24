@@ -14,6 +14,9 @@ public enum ErrorCode {
 	FORBIDDEN(HttpStatus.FORBIDDEN, "FORBIDDEN", "접근 권한이 없습니다."),
 	RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "RESOURCE_NOT_FOUND", "요청한 리소스를 찾을 수 없습니다."),
 	DUPLICATE_RESOURCE(HttpStatus.CONFLICT, "DUPLICATE_RESOURCE", "이미 존재하는 데이터입니다."),
+	INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "INVALID_DATE_RANGE", "날짜 범위가 올바르지 않습니다."),
+	PHOTO_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "PHOTO_LIMIT_EXCEEDED", "사진은 최대 3장까지 업로드할 수 있습니다."),
+	INVALID_OBJECT_KEY(HttpStatus.BAD_REQUEST, "INVALID_OBJECT_KEY", "유효하지 않은 파일 경로입니다."),
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", "서버 오류가 발생했습니다.");
 
 	private final HttpStatus status;
