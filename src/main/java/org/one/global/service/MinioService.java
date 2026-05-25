@@ -77,7 +77,7 @@ public class MinioService {
 	 * @return 정적 접근 URL
 	 */
 	public String getObjectUrl(String objectKey) {
-		return minioConfig.getUrl() + "/" + minioConfig.getBucketName() + "/" + objectKey;
+		return minioConfig.getPublicUrl() + "/" + minioConfig.getBucketName() + "/" + objectKey;
 	}
 
 	/**
@@ -87,13 +87,13 @@ public class MinioService {
 	 * @return 객체 키
 	 */
 	public String extractObjectKey(String url) {
-		String prefix = minioConfig.getUrl() + "/" + minioConfig.getBucketName() + "/";
+		String prefix = minioConfig.getPublicUrl() + "/" + minioConfig.getBucketName() + "/";
 		return url.substring(prefix.length());
 	}
 
 	private String getPresignedUrl(Method method, String objectKey) {
 		try {
-			return minioClient.getPresignedObjectUrl(
+			String internalUrl = minioClient.getPresignedObjectUrl(
 					GetPresignedObjectUrlArgs.builder()
 							.method(method)
 							.bucket(minioConfig.getBucketName())
@@ -101,6 +101,8 @@ public class MinioService {
 							.expiry(minioConfig.getPresignedExpiry(), TimeUnit.SECONDS)
 							.build()
 			);
+			// MinioClient는 내부 URL로 서명하므로, 외부 공개 URL로 호스트를 교체한다.
+			return internalUrl.replace(minioConfig.getUrl(), minioConfig.getPublicUrl());
 		} catch (Exception e) {
 			log.error("[MinioService] Presigned URL 생성 실패: objectKey={}", objectKey, e);
 			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
