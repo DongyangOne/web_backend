@@ -10,9 +10,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ProjectEventRepository extends JpaRepository<ProjectEvent, Long> {
 
 	/**
-	 * 모든 프로젝트 행사를 노출 순서 오름차순으로 조회합니다.
+	 * 모든 프로젝트 행사를 년도 오름차순으로 조회합니다.
 	 *
 	 * @return 정렬된 프로젝트 행사 목록
 	 */
-	List<ProjectEvent> findAllByOrderByPriorityAsc();
+	List<ProjectEvent> findAllByOrderByYearAsc();
 }
