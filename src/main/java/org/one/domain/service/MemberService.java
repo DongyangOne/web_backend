@@ -57,7 +57,7 @@ public class MemberService {
     }
 
     /**
-     * 요청값(memberId)를 통해 해당 부원의 상세 정보를 불러옴.
+     * 요청값(memberId)를 통해 해당 부원의 정보를 불러옴.
      * Param : memberId
      * return : MemberDetailResponseDto
      */

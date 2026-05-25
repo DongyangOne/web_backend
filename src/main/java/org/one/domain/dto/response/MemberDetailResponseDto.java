@@ -9,7 +9,7 @@ import lombok.Getter;
 import org.one.domain.entity.Member;
 
 /**
- * 멤버 상세 조회 성공 시 응답하는 dto
+ * 특정 부원 정보 조회 성공 시 응답하는 dto
  */
 @Schema(description = "부원 상세 정보 응답")
 @Getter
