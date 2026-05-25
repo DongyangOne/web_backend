@@ -2,12 +2,15 @@ package org.one.global.service;
 
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
+import io.minio.RemoveObjectArgs;
 import io.minio.http.Method;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.one.global.config.minio.MinioConfig;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,6 +22,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MinioService {
+
+	private static final Logger log = LoggerFactory.getLogger(MinioService.class);
 
 	private final MinioClient minioClient;
 	private final MinioConfig minioConfig;
@@ -45,9 +50,50 @@ public class MinioService {
 		return getPresignedUrl(Method.GET, objectKey);
 	}
 
+	/**
+	 * MinIO에서 파일을 삭제합니다.
+	 *
+	 * @param objectKey 삭제할 객체 키
+	 */
+	public void deleteFile(String objectKey) {
+		try {
+			minioClient.removeObject(
+					RemoveObjectArgs.builder()
+							.bucket(minioConfig.getBucketName())
+							.object(objectKey)
+							.build()
+			);
+		} catch (Exception e) {
+			log.error("[MinioService] 파일 삭제 실패: objectKey={}", objectKey, e);
+			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	/**
+	 * 객체 키로 MinIO 정적 접근 URL을 반환합니다.
+	 * 클라이언트가 Presigned PUT URL로 업로드 완료 후, 저장할 URL을 얻을 때 사용합니다.
+	 *
+	 * @param objectKey 객체 키 (예: "logo/uuid", "projects/uuid")
+	 * @return 정적 접근 URL
+	 */
+	public String getObjectUrl(String objectKey) {
+		return minioConfig.getPublicUrl() + "/" + minioConfig.getBucketName() + "/" + objectKey;
+	}
+
+	/**
+	 * URL에서 MinIO 객체 키를 추출합니다.
+	 *
+	 * @param url 파일 접근 URL
+	 * @return 객체 키
+	 */
+	public String extractObjectKey(String url) {
+		String prefix = minioConfig.getPublicUrl() + "/" + minioConfig.getBucketName() + "/";
+		return url.substring(prefix.length());
+	}
+
 	private String getPresignedUrl(Method method, String objectKey) {
 		try {
-			return minioClient.getPresignedObjectUrl(
+			String internalUrl = minioClient.getPresignedObjectUrl(
 					GetPresignedObjectUrlArgs.builder()
 							.method(method)
 							.bucket(minioConfig.getBucketName())
@@ -55,7 +101,10 @@ public class MinioService {
 							.expiry(minioConfig.getPresignedExpiry(), TimeUnit.SECONDS)
 							.build()
 			);
+			// MinioClient는 내부 URL로 서명하므로, 외부 공개 URL로 호스트를 교체한다.
+			return internalUrl.replace(minioConfig.getUrl(), minioConfig.getPublicUrl());
 		} catch (Exception e) {
+			log.error("[MinioService] Presigned URL 생성 실패: objectKey={}", objectKey, e);
 			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
 		}
 	}
