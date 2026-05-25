@@ -74,6 +74,17 @@ public class AdminMainService {
 	}
 
 	/**
+	 * 주요활동 카드 내용을 초기화합니다.
+	 *
+	 * @param cardId 초기화할 카드 ID
+	 */
+	public void clearActivityCard(Long cardId) {
+		ActivityCard card = activityCardRepository.findById(cardId)
+				.orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
+		card.clear();
+	}
+
+	/**
 	 * objectKey가 로고 경로("logo/")로 시작하는지 검증합니다.
 	 *
 	 * @param objectKey 검증할 객체 키

@@ -78,4 +78,12 @@ public class ActivityCard extends BaseEntity {
 		this.title = title;
 		this.content = content;
 	}
+
+	/**
+	 * 카드 제목과 내용을 초기화합니다.
+	 */
+	public void clear() {
+		this.title = "";
+		this.content = "";
+	}
 }

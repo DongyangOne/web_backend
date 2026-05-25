@@ -14,6 +14,7 @@ import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,5 +67,20 @@ public class AdminMainController {
 			@RequestBody @Valid ActivityCardUpdateRequestDto request) {
 		ActivityCardResponseDto response = adminMainService.updateActivityCard(cardId, request);
 		return ResponseEntity.ok(ApiResponse.success(response));
+	}
+
+	/**
+	 * 주요활동 카드 내용을 초기화합니다.
+	 *
+	 * @param cardId 초기화할 카드 ID
+	 * @return 초기화 완료 응답
+	 */
+	@Operation(summary = "주요활동 카드 초기화", description = "주요활동 카드 제목과 내용을 초기화합니다.")
+	@ApiErrorExceptions({ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INTERNAL_SERVER_ERROR})
+	@DeleteMapping("/activity/{cardId}")
+	public ResponseEntity<ApiResponse<Void>> clearActivityCard(
+			@PathVariable @Positive(message = "카드 ID는 양수여야 합니다.") Long cardId) {
+		adminMainService.clearActivityCard(cardId);
+		return ResponseEntity.ok(ApiResponse.success(null));
 	}
 }
