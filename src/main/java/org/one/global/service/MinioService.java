@@ -2,7 +2,6 @@ package org.one.global.service;
 
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import io.minio.http.Method;
 import java.util.concurrent.TimeUnit;
@@ -13,7 +12,6 @@ import org.one.global.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * MinIO 객체 스토리지와 연동하여 Presigned URL을 생성합니다.
@@ -50,30 +48,6 @@ public class MinioService {
 	 */
 	public String generateDownloadUrl(String objectKey) {
 		return getPresignedUrl(Method.GET, objectKey);
-	}
-
-	/**
-	 * 파일을 MinIO에 업로드하고 접근 URL을 반환합니다.
-	 *
-	 * @param file 업로드할 파일
-	 * @param objectKey 저장할 객체 키
-	 * @return 파일 접근 URL
-	 */
-	public String uploadFile(MultipartFile file, String objectKey) {
-		try {
-			minioClient.putObject(
-					PutObjectArgs.builder()
-							.bucket(minioConfig.getBucketName())
-							.object(objectKey)
-							.stream(file.getInputStream(), file.getSize(), -1)
-							.contentType(file.getContentType())
-							.build()
-			);
-			return minioConfig.getUrl() + "/" + minioConfig.getBucketName() + "/" + objectKey;
-		} catch (Exception e) {
-			log.error("[MinioService] 파일 업로드 실패: objectKey={}", objectKey, e);
-			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
-		}
 	}
 
 	/**

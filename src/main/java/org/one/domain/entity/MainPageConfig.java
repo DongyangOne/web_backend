@@ -68,12 +68,4 @@ public class MainPageConfig extends BaseEntity {
 		this.logoUrl = logoUrl;
 	}
 
-	/**
-	 * 메인 페이지 소개 문구를 수정합니다.
-	 *
-	 * @param description 변경할 소개 문구
-	 */
-	public void updateIntro(String description) {
-		this.description = description;
-	}
 }
