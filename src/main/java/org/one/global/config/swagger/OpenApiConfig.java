@@ -54,6 +54,7 @@ public class OpenApiConfig {
 						.addResponses("BadRequest", badRequestResponse())
 						.addResponses("Unauthorized", unauthorizedResponse())
 						.addResponses("Forbidden", forbiddenResponse())
+						.addResponses("NotFound", notFoundResponse())
 						.addResponses("InternalServerError", internalServerErrorResponse()))
 				.addSecurityItem(new SecurityRequirement().addList(BEARER_SCHEME));
 	}
@@ -125,6 +126,19 @@ public class OpenApiConfig {
 				.content(new Content().addMediaType("application/json",
 						new MediaType().addExamples("FORBIDDEN", new Example().value(
 								errorExample("FORBIDDEN", "접근 권한이 없습니다.")))));
+	}
+
+	/**
+	 * 리소스 미존재 공통 응답 예시를 생성합니다.
+	 *
+	 * @return 404 공통 응답
+	 */
+	private ApiResponse notFoundResponse() {
+		return new ApiResponse()
+				.description("리소스 없음")
+				.content(new Content().addMediaType("application/json",
+						new MediaType().addExamples("RESOURCE_NOT_FOUND", new Example().value(
+								errorExample("RESOURCE_NOT_FOUND", "요청한 리소스를 찾을 수 없습니다.")))));
 	}
 
 	/**

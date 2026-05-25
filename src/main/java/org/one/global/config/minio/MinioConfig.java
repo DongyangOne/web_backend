@@ -20,6 +20,9 @@ public class MinioConfig {
 	/** MinIO 서버 주소 (예: http://localhost:9000) */
 	private String url;
 
+	/** 외부 접근용 MinIO 공개 URL (Presigned URL, 파일 접근 URL 생성에 사용) */
+	private String publicUrl;
+
 	/** MinIO Access Key */
 	private String accessKey;
 
