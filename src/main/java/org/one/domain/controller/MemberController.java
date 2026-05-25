@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.one.domain.dto.request.MemberListRequestDto;
 import org.one.domain.dto.request.MemberRegisterRequestDto;
+import org.one.domain.dto.request.MemberUpdateRequestDto;
 import org.one.domain.dto.response.MemberDetailResponseDto;
 import org.one.domain.dto.response.MemberListResponseDto;
 import org.one.domain.service.MemberService;
@@ -82,4 +83,26 @@ public class MemberController {
         MemberDetailResponseDto responseDto= memberService.getMemberDetail(memberId);
         return ResponseEntity.ok(responseDto);
     }
+
+    /**
+     * 부원 정보 수정 api
+     * 요청 시,
+     * @PathVariable와 @requestBody를 통해 memberId와 MemberUpdateReqeustDto전달
+     *
+     * api 요청 예시 : PATCH /api/members/{memberId}
+     *
+     * 응답 데이터 : 수정 완료 메시지
+     */
+    @Operation(summary = "부원 수정", description = "관리자 권한(ADMIN)이 있는 계정만 특정 부원의 정보를 일부 수정할 수 있습니다.")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{memberId}")
+    public ResponseEntity<String> updateMember(
+            @PathVariable Long memberId,
+            @RequestBody MemberUpdateRequestDto requestDto)
+    {
+        memberService.updateMember(memberId, requestDto);
+
+        return ResponseEntity.ok("부원 정보가 성공적으로 수정되었습니다.");
+    }
+
 }

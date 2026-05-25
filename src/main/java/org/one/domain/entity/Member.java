@@ -150,12 +150,14 @@ public class Member extends BaseEntity {
 	 * 부원 기본 정보를 수정합니다.
 	 *
 	 * @param name 이름
+	 * @param studentId 학번
 	 * @param phoneNumber 연락처
 	 * @param grade 학년
 	 * @param age 나이
 	 */
-	public void updateInfo(String name, String phoneNumber, Integer grade, Integer age) {
+	public void updateInfo(String name,String studentId, String phoneNumber, Integer grade, Integer age) {
 		this.name = name;
+		this.studentId = studentId;
 		this.phoneNumber = phoneNumber;
 		this.grade = grade;
 		this.age = age;

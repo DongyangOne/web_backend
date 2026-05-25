@@ -4,6 +4,7 @@ package org.one.domain.service;
 import lombok.RequiredArgsConstructor;
 import org.one.domain.dto.request.MemberListRequestDto;
 import org.one.domain.dto.request.MemberRegisterRequestDto;
+import org.one.domain.dto.request.MemberUpdateRequestDto;
 import org.one.domain.dto.response.MemberDetailResponseDto;
 import org.one.domain.dto.response.MemberListResponseDto;
 import org.one.domain.entity.Member;
@@ -65,6 +66,14 @@ public class MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("부원을 찾을 수 없습니다."));
         return new MemberDetailResponseDto(member);
+    }
+
+    @Transactional
+    public void updateMember(Long memberId, MemberUpdateRequestDto requestDto){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 부원입니다."));
+
+        member.updateInfo(requestDto.getName(), requestDto.getStudentId(), requestDto.getPhoneNum(), requestDto.getGrade(), requestDto.getAge());
     }
 
 
