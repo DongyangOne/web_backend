@@ -48,10 +48,7 @@ public class MemberService {
                 .studentId(requestDto.getStudentId())
                 .age(requestDto.getAge())
                 .phoneNumber(requestDto.getPhoneNum())
-                .status(MemberStatus.ACTIVE) //status는 기본 값 , 테이블 오류로 아래는 더미 데이터임 -> 해결예정
-                .department("웹응용소프트웨어공학과")
-                .birthday(LocalDate.of(2000, 1, 1))
-                .gender(Gender.FEMALE)
+                .status(MemberStatus.ACTIVE) //status는 기본 값(활동중)
                 .build();
 
         //새로 생성한 부원 객체를 save(insert)해줌.
