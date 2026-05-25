@@ -4,11 +4,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import org.one.global.entity.BaseEntity;
 
 /**
- * 메인 페이지의 로고, 소개, 모집 기간 설정을 저장하는 싱글톤 엔티티입니다.
+ * 메인 페이지의 로고, 소개 설정을 저장하는 싱글톤 엔티티입니다.
  */
 @Entity
 @Table(name = "main_page")
@@ -22,10 +21,6 @@ public class MainPageConfig extends BaseEntity {
 
 	@Column(columnDefinition = "TEXT")
 	private String description;
-
-	private LocalDate recruitmentStart;
-
-	private LocalDate recruitmentEnd;
 
 	/**
 	 * JPA 엔티티 생성을 위한 기본 생성자입니다.
@@ -65,32 +60,12 @@ public class MainPageConfig extends BaseEntity {
 	public String getDescription() { return description; }
 
 	/**
-	 * 모집 시작일을 반환합니다.
+	 * 메인 페이지 로고 URL을 수정합니다.
 	 *
-	 * @return 모집 시작일
+	 * @param logoUrl 변경할 로고 URL
 	 */
-	public LocalDate getRecruitmentStart() { return recruitmentStart; }
-
-	/**
-	 * 모집 종료일을 반환합니다.
-	 *
-	 * @return 모집 종료일
-	 */
-	public LocalDate getRecruitmentEnd() { return recruitmentEnd; }
-
-	/**
-	 * 메인 페이지 설정 값을 수정합니다.
-	 *
-	 * @param logoUrl 로고 URL
-	 * @param description 소개 문구
-	 * @param recruitmentStart 모집 시작일
-	 * @param recruitmentEnd 모집 종료일
-	 */
-	public void update(String logoUrl, String description,
-			LocalDate recruitmentStart, LocalDate recruitmentEnd) {
+	public void updateLogo(String logoUrl) {
 		this.logoUrl = logoUrl;
-		this.description = description;
-		this.recruitmentStart = recruitmentStart;
-		this.recruitmentEnd = recruitmentEnd;
 	}
+
 }
