@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.one.domain.dto.request.ProjectSaveRequestDto;
 import org.one.domain.dto.request.ProjectUpdateRequestDto;
 import org.one.domain.dto.response.ProjectDetailResponseDto;
 import org.one.domain.entity.ProjectEvent;
 import org.one.domain.entity.ProjectPhoto;
 import org.one.domain.entity.ProjectTechStack;
+import org.one.domain.repository.MainPageConfigRepository;
 import org.one.domain.repository.ProjectEventRepository;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
@@ -31,8 +33,49 @@ public class AdminProjectService {
 	private static final Logger log = LoggerFactory.getLogger(AdminProjectService.class);
 	private static final String PHOTO_KEY_PREFIX = "projects/";
 
+	private final MainPageConfigRepository mainPageConfigRepository;
 	private final ProjectEventRepository projectEventRepository;
 	private final MinioService minioService;
+
+	/**
+	 * 프로젝트를 생성합니다.
+	 * 사진은 선택 사항이며, 클라이언트가 Presigned URL로 MinIO에 직접 업로드한 뒤
+	 * objectKey 목록을 DTO의 photoKeys에 담아 전달합니다.
+	 *
+	 * @param request 생성 요청 DTO (photoKeys: 업로드 완료한 objectKey 목록, 최대 3개)
+	 * @return 생성된 프로젝트 상세 응답 DTO
+	 */
+	public ProjectDetailResponseDto save(ProjectSaveRequestDto request) {
+		validateDateRange(request.getStartDate(), request.getEndDate());
+
+		List<String> photoKeys = request.getPhotoKeys() != null ? request.getPhotoKeys() : List.of();
+		validatePhotoCount(photoKeys.size());
+		validatePhotoKeys(photoKeys);
+
+		ProjectEvent project = new ProjectEvent(
+				mainPageConfigRepository.getConfig(),
+				request.getYear(),
+				request.getProjectName(),
+				request.getAward(),
+				request.getActivity(),
+				request.getStartDate(),
+				request.getEndDate(),
+				request.getParticipantCount(),
+				request.getDescription()
+		);
+		request.getTechStacks().forEach(name ->
+				project.getTechStacks().add(new ProjectTechStack(project, name)));
+
+		projectEventRepository.save(project);
+
+		for (int i = 0; i < photoKeys.size(); i++) {
+			String url = minioService.getObjectUrl(photoKeys.get(i));
+			project.getPhotos().add(new ProjectPhoto(project, url, i));
+		}
+
+		projectEventRepository.flush();
+		return ProjectDetailResponseDto.from(project);
+	}
 
 	/**
 	 * 프로젝트 정보를 수정합니다.
