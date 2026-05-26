@@ -76,6 +76,14 @@ public class MemberService {
         member.updateInfo(requestDto.getName(), requestDto.getStudentId(), requestDto.getPhoneNum(), requestDto.getGrade(), requestDto.getAge());
     }
 
+    /**
+     * 요청 값(memberIds)에 들어있는 id를 가진 데이터들을 삭제
+     * Param : memberIds
+     */
+    @Transactional
+    public void deleteMembers(List<Long> memberIds){
+        memberRepository.deleteAllById(memberIds);
+    }
 
 
 

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.one.domain.dto.request.MemberDeleteListRequestDto;
 import org.one.domain.dto.request.MemberListRequestDto;
 import org.one.domain.dto.request.MemberRegisterRequestDto;
 import org.one.domain.dto.request.MemberUpdateRequestDto;
@@ -104,5 +105,26 @@ public class MemberController {
 
         return ResponseEntity.ok("부원 정보가 성공적으로 수정되었습니다.");
     }
+
+    /**
+     * 부원 삭제 api
+     * 요청 시,
+     * @requestBody를 통해 memberId리스트를 전달
+     *
+     * api 요청 예시 : Delete /api/members
+     *
+     * requestBody 예시
+     *  "memberIds" : [2, 7]
+     *
+     * 응답 데이터 : 삭제 완료 메시지
+     */
+     @Operation(summary = "부원 삭제", description = "관리자 권한(ADMIN)이 있는 계정만 부원을 삭제할 수 있습니다.")
+     @PreAuthorize("hasRole('ADMIN')")
+     @DeleteMapping
+    public ResponseEntity<String> deleteMembers(@RequestBody @Valid MemberDeleteListRequestDto requestDto){
+         memberService.deleteMembers(requestDto.getMemberIds());
+
+         return ResponseEntity.ok("선택하신 부원들이 성공적으로 삭제되었습니다.");
+     }
 
 }
