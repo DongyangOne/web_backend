@@ -17,7 +17,7 @@ import java.util.List;
 @Tag(name = "ApplicantMember", description = "신청 부원 관리 (관리자 전용)")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/applicantmembers")
+@RequestMapping("/api/v1/applicantMembers")
 public class ApplicantMemberController {
     private final ApplicantMemberService applicantMemberService;
 
@@ -25,7 +25,7 @@ public class ApplicantMemberController {
     /**
      * 신청 부원 조회 api
      *
-     * api 요청 예시 : GET /api/v1/applicantmembers
+     * api 요청 예시 : GET /api/v1/applicantMembers
      *
      * 응답 데이터 : 신청 부원 리스트
      */
