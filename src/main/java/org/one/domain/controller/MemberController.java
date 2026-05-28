@@ -98,7 +98,7 @@ public class MemberController {
     @PatchMapping("/{memberId}")
     public ResponseEntity<String> updateMember(
             @PathVariable Long memberId,
-            @RequestBody MemberUpdateRequestDto requestDto)
+            @Valid @RequestBody MemberUpdateRequestDto requestDto)
     {
         memberService.updateMember(memberId, requestDto);
 
