@@ -27,7 +27,7 @@ public class MemberController {
      * 명부 전체 조회 API
      * 요청 시, 선택적으로 page관련 설정(정렬 등)
      *
-     * 예시 : GET /api/members?page=1&size=10&sort=...
+     * 예시 : GET /api/v1/members?page=1&size=10&sort=...
      *
      * 응답 데이터 : 전체 member의 명부리스트
      */
