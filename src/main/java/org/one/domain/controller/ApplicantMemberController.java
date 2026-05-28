@@ -4,11 +4,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.one.domain.dto.request.ApplicantMemberListRequestDto;
+import org.one.domain.dto.response.ApplicantMemberDetailResponseDto;
 import org.one.domain.dto.response.ApplicantMemberListResponseDto;
 import org.one.domain.service.ApplicantMemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,5 +41,22 @@ public class ApplicantMemberController {
         List<ApplicantMemberListResponseDto> response = applicantMemberService.getApplicantList(requestDto);
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * 신청 부원 상세 정보 조회 API : 신청 부원의 상세 정보를 조회하기 위한 api
+     * 요청 시, applicantMemberId를 @PathVariable로 url을 통해 전달
+     *
+     * api 요청 예시 : GET /api/applicantMembers/{applicantMemberId}
+     *
+     * 응답 데이터 : 특정 신청 부원에 대한 상세 정보
+     */
+    @Operation(summary = "신청 부원 상세 정보 조회", description = "관리자 권한(ADMIN)이 있는 계정만 신청 부원의 상세 정보를 조회할 수 있습니다.")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{applicantMemberId}")
+    public ResponseEntity<ApplicantMemberDetailResponseDto> getMemberDetail(@PathVariable Long applicantMemberId){
+        ApplicantMemberDetailResponseDto responseDto= applicantMemberService.getApplicantMemberDetail(applicantMemberId);
+        return ResponseEntity.ok(responseDto);
+    }
+
 
 }
