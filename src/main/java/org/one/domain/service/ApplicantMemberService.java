@@ -2,6 +2,7 @@ package org.one.domain.service;
 
 import lombok.RequiredArgsConstructor;
 import org.one.domain.dto.request.ApplicantMemberListRequestDto;
+import org.one.domain.dto.response.ApplicantInfoResponseDto;
 import org.one.domain.dto.response.ApplicantMemberDetailResponseDto;
 import org.one.domain.dto.response.ApplicantMemberListResponseDto;
 import org.one.domain.entity.ApplicantMember;
@@ -44,4 +45,16 @@ public class ApplicantMemberService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 신청 부원을 찾을 수 없습니다."));
         return new ApplicantMemberDetailResponseDto(applicantMember);
     }
+
+    /**
+     * 요청값(memberId)를 통해 등록에 사용할 신청 정보를 불러옴.
+     * Param : applicantMemberId
+     * return : ApplicantInfoResponseDto
+     */
+    public ApplicantInfoResponseDto getApplicantInfo(Long applicantMemberId){
+        ApplicantMember applicantMember = applicantMemberRepository.findById(applicantMemberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 신청 부원을 찾을 수가 없습니다."));
+        return new ApplicantInfoResponseDto(applicantMember);
+    }
+
 }
