@@ -1,4 +1,4 @@
-package org.one.domain.controller;
+package org.one.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -7,14 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
-import org.one.global.pagination.ResponsePagingDto;
 import org.one.member.dto.MemberListRequestDto;
 import org.one.member.dto.MemberListResponseDto;
-import org.one.member.service.MemberListService;
+import org.one.member.dto.MemberRegisterRequestDto;
+import org.one.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +43,7 @@ public class MemberController {
     public ResponseEntity<ApiResponse<List<MemberListResponseDto>>> getMemberList(
             @ModelAttribute MemberListRequestDto requestDto){
 
-        List<MemberListResponseDto> response = memberListService.getMemberListByAdmin(requestDto);
+        List<MemberListResponseDto> response = memberService.getMemberListByAdmin(requestDto);
 
         return ResponseEntity.ok(ApiResponse.success(response, "명부 리스트 조회 결과입니다."));
     }
@@ -65,14 +63,15 @@ public class MemberController {
      *
      * 응답 데이터 : 성공 메세지
      */
+    @ApiErrorExceptions({ErrorCode.DUPLICATE_PHONE_NUMBER, ErrorCode.DUPLICATE_STUDENT_ID})
     @Operation(summary = "부원 등록", description = "관리자 권한(ADMIN)이 있는 계정만 전체 부원 명부를 조회할 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<String> registerMember(@RequestBody @Valid MemberRegisterRequestDto requestDto){
+    public ResponseEntity<ApiResponse<Void>> registerMember(@RequestBody @Valid MemberRegisterRequestDto requestDto){
         //등록 정보를 service로 넘겨 부원 등록 진행
         memberService.registerMember(requestDto);
 
         //오류없이 넘어왔을 경우 성공 처리
-        return ResponseEntity.ok("부원 등록이 성공적으로 완료되었습니다.");
+        return ResponseEntity.ok(ApiResponse.success(null, "부원 등록이 성공적으로 완료되었습니다."));
     }
 }

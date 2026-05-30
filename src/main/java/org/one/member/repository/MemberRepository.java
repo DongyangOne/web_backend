@@ -32,4 +32,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	@Query("SELECT m FROM Member m")
 	List<Member> findAllByAdmin(Pageable pageable);
 
+	/**
+	 * 특정 전화번호를 가진 부원이 이미 존재하는지 확인합니다.
+	 *
+	 * @param phoneNumber 전화번호
+	 * @return 존재하면 true
+	 */
+	boolean existsByPhoneNumber(String phoneNumber);
+
 }
