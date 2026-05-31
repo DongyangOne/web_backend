@@ -1,7 +1,10 @@
 package org.one.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.one.global.enums.ErrorCode;
+import org.one.global.exception.BusinessException;
 import org.one.member.domain.ApplicantMember;
+import org.one.member.dto.ApplicantMemberDetailResponseDto;
 import org.one.member.dto.ApplicantMemberListRequestDto;
 import org.one.member.dto.ApplicantMemberListResponseDto;
 import org.one.member.repository.ApplicantMemberRepository;
@@ -40,8 +43,11 @@ public class ApplicantMemberService {
      * return : ApplicantMemberDetailResponseDto
      */
     public ApplicantMemberDetailResponseDto getApplicantMemberDetail(Long applicantMemberId){
+        if(applicantMemberId == null || applicantMemberId <= 0){
+            throw new BusinessException(ErrorCode.INVALID_INPUT);
+        }
         ApplicantMember applicantMember = applicantMemberRepository.findById(applicantMemberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 신청 부원을 찾을 수 없습니다."));
-        return new ApplicantMemberDetailResponseDto(applicantMember);
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        return ApplicantMemberDetailResponseDto.from(applicantMember);
     }
 }
