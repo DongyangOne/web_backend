@@ -3,6 +3,7 @@ package org.one.member.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
@@ -42,11 +43,11 @@ public class MemberController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<MemberListResponseDto>>> getMemberList(
-            @ModelAttribute MemberListRequestDto requestDto){
+            @ModelAttribute @Valid MemberListRequestDto requestDto){
 
         List<MemberListResponseDto> response = memberService.getMemberListByAdmin(requestDto);
 
-        return ResponseEntity.ok(ApiResponse.success(response, "명부 리스트 조회 결과입니다."));
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     /**
@@ -62,9 +63,9 @@ public class MemberController {
      * "age" : 22,
      * "phoneNum" : "010-1111-2222"
      *
-     * 응답 데이터 : 성공 메세지
+     * 응답 데이터 : x
      */
-    @ApiErrorExceptions({ErrorCode.DUPLICATE_PHONE_NUMBER, ErrorCode.DUPLICATE_STUDENT_ID})
+    @ApiErrorExceptions({ErrorCode.DUPLICATE_PHONE_NUMBER, ErrorCode.DUPLICATE_STUDENT_ID, ErrorCode.INVALID_INPUT})
     @Operation(summary = "부원 등록", description = "관리자 권한(ADMIN)이 있는 계정만 전체 부원 명부를 조회할 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
@@ -73,23 +74,24 @@ public class MemberController {
         memberService.registerMember(requestDto);
 
         //오류없이 넘어왔을 경우 성공 처리
-        return ResponseEntity.ok(ApiResponse.success(null, "부원 등록이 성공적으로 완료되었습니다."));
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 
     /**
-     * 부원 상세 정보 조회 API : 부원 수정 시 정보를 불러오기 위한 api
+     * 특정 부원 정보 조회 API : 부원 수정 시 정보를 불러오기 위한 api
      * 요청 시, memberId를 @PathVariable로 url을 통해 전달
      *
      * api 요청 예시 : GET /api/members/{memberId}
      *
-     * 응답 데이터 : 특정 부원에 대한 상세 정보
+     * 응답 데이터 : 특정 부원에 대한 정보
      */
-    @Operation(summary = "부원 상세 정보 조회", description = "관리자 권한(ADMIN)이 있는 계정만 부원 상세 정보를 조회할 수 있습니다.")
+    @ApiErrorExceptions({ErrorCode.MEMBER_NOT_FOUND, ErrorCode.INVALID_INPUT})
+    @Operation(summary = "부원 정보 가져오기", description = "관리자 권한(ADMIN)이 있는 계정만 부원 상세 정보를 조회할 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{memberId}")
-    public ResponseEntity<MemberDetailResponseDto> getMemberDetail(@PathVariable Long memberId){
+    public ResponseEntity<ApiResponse<MemberDetailResponseDto>> getMemberDetail(@PathVariable  Long memberId){
         MemberDetailResponseDto responseDto= memberService.getMemberDetail(memberId);
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
 
     /**

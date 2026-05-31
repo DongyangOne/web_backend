@@ -6,6 +6,7 @@ import org.one.auth.repository.AdminRepository;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
 import org.one.member.domain.Member;
+import org.one.member.dto.MemberDetailResponseDto;
 import org.one.member.dto.MemberListRequestDto;
 import org.one.member.dto.MemberListResponseDto;
 import org.one.member.dto.MemberRegisterRequestDto;
@@ -26,23 +27,6 @@ public class MemberService {
     private final AdminRepository adminRepository;
 
     public List<MemberListResponseDto> getMemberListByAdmin(MemberListRequestDto requestDto) {
-        //size가 비정상적일 경우 예외처리
-        if(requestDto.getSize() <= 0 ||requestDto.getSize() > 100){
-            throw new BusinessException(ErrorCode.INVALID_INPUT);
-        }
-
-        //허용되지 않는 정렬 값을 넣을 경우 예외처리
-        String sort = requestDto.getSort();
-        if(!"createdAt".equals(sort) && !"grade".equals(sort)){
-            throw new BusinessException(ErrorCode.INVALID_INPUT);
-        }
-
-        //오름차순 내림차순 외 예외처리
-        String direction = requestDto.getDirection();
-        if(!"ASC".equalsIgnoreCase(direction) && !"DESC".equalsIgnoreCase(direction)){
-            throw new BusinessException(ErrorCode.INVALID_INPUT);
-        }
-
         //requestDto로 설정한 sort, size 등을 바탕으로 Pageable객체를 만듦.
         Pageable pageable = requestDto.toPageable();
 
@@ -86,14 +70,18 @@ public class MemberService {
     }
 
     /**
-     * 요청값(memberId)를 통해 해당 부원의 상세 정보를 불러옴.
+     * 요청값(memberId)를 통해 해당 부원의 정보를 불러옴.
      * Param : memberId
      * return : MemberDetailResponseDto
      */
     public MemberDetailResponseDto getMemberDetail(Long memberId){
+        if(memberId == null || memberId <= 0){
+            throw new BusinessException(ErrorCode.INVALID_INPUT);
+        }
+
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("부원을 찾을 수 없습니다."));
-        return new MemberDetailResponseDto(member);
+                .orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        return MemberDetailResponseDto.from(member);
     }
 
     @Transactional
