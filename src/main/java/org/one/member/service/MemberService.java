@@ -74,6 +74,10 @@ public class MemberService {
      * return : MemberDetailResponseDto
      */
     public MemberDetailResponseDto getMemberDetail(Long memberId){
+        if(memberId == null || memberId <= 0){
+            throw new BusinessException(ErrorCode.INVALID_INPUT);
+        }
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         return MemberDetailResponseDto.from(member);

@@ -11,19 +11,19 @@ import org.one.member.domain.Member;
 @Schema(description = "부원 상세 정보 응답")
 @Getter
 public class MemberDetailResponseDto {
-    @Schema(description = "부원 이름")
+    @Schema(description = "부원 이름", example = "홍길동")
     private String name;
 
-    @Schema(description = "부원 학년")
+    @Schema(description = "부원 학년", example = "2")
     private Integer grade;
 
-    @Schema(description = "부원 학번")
+    @Schema(description = "부원 학번", example = "20991234")
     private String studentId;
 
-    @Schema(description = "부원 나이")
+    @Schema(description = "부원 나이", example = "22")
     private Integer age;
 
-    @Schema(description = "부원 전화번호")
+    @Schema(description = "부원 전화번호", example = "010-1111-2222")
     private String phoneNum;
 
     private MemberDetailResponseDto(Member member){
