@@ -1,12 +1,9 @@
-package org.one.domain.dto.response;
+package org.one.member.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import org.one.domain.entity.Member;
+import org.one.member.domain.Member;
+
 
 /**
  * 멤버 상세 조회 성공 시 응답하는 dto

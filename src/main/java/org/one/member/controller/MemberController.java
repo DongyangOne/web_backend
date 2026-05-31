@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
+import org.one.member.dto.MemberDetailResponseDto;
 import org.one.member.dto.MemberListRequestDto;
 import org.one.member.dto.MemberListResponseDto;
 import org.one.member.dto.MemberRegisterRequestDto;
