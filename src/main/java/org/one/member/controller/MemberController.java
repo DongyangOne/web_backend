@@ -41,11 +41,11 @@ public class MemberController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<MemberListResponseDto>>> getMemberList(
-            @ModelAttribute MemberListRequestDto requestDto){
+            @ModelAttribute @Valid MemberListRequestDto requestDto){
 
         List<MemberListResponseDto> response = memberService.getMemberListByAdmin(requestDto);
 
-        return ResponseEntity.ok(ApiResponse.success(response, "명부 리스트 조회 결과입니다."));
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     /**

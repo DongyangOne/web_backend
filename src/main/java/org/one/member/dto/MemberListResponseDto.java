@@ -11,19 +11,19 @@ import org.one.member.enums.MemberStatus;
 @Schema(description = "명부 리스트 조회 응답")
 @Getter
 public class MemberListResponseDto {
-    @Schema(description = "부원 id")
+    @Schema(description = "부원 id", example = "2")
     private Long memberId;
-    @Schema(description = "부원 이름")
+    @Schema(description = "부원 이름", example = "홍길동")
     private String name;
-    @Schema(description = "부원 학번")
+    @Schema(description = "부원 학번", example = "20991234")
     private String studentId;
-    @Schema(description = "부원 학년")
+    @Schema(description = "부원 학년", example = "4")
     private Integer grade;
-    @Schema(description = "부원 나이")
+    @Schema(description = "부원 나이", example = "22")
     private Integer age;
-    @Schema(description = "부원 전화번호")
+    @Schema(description = "부원 전화번호", example = "010-1234-5678")
     private String phoneNumber;
-    @Schema(description = "부원 활동 상태")
+    @Schema(description = "부원 활동 상태", example = "ACTIVE")
     private MemberStatus status;
 
     private MemberListResponseDto(Member member){

@@ -25,23 +25,6 @@ public class MemberService {
     private final AdminRepository adminRepository;
 
     public List<MemberListResponseDto> getMemberListByAdmin(MemberListRequestDto requestDto) {
-        //size가 비정상적일 경우 예외처리
-        if(requestDto.getSize() <= 0 ||requestDto.getSize() > 100){
-            throw new BusinessException(ErrorCode.INVALID_INPUT);
-        }
-
-        //허용되지 않는 정렬 값을 넣을 경우 예외처리
-        String sort = requestDto.getSort();
-        if(!"createdAt".equals(sort) && !"grade".equals(sort)){
-            throw new BusinessException(ErrorCode.INVALID_INPUT);
-        }
-
-        //오름차순 내림차순 외 예외처리
-        String direction = requestDto.getDirection();
-        if(!"ASC".equalsIgnoreCase(direction) && !"DESC".equalsIgnoreCase(direction)){
-            throw new BusinessException(ErrorCode.INVALID_INPUT);
-        }
-
         //requestDto로 설정한 sort, size 등을 바탕으로 Pageable객체를 만듦.
         Pageable pageable = requestDto.toPageable();
 
