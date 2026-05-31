@@ -11,11 +11,11 @@ import java.util.List;
 public class ResponsePagingDto<T> {
 
     private List<T> content;
-    private int page;
-    private int size;
-    private long totalElements;
-    private int totalPages;
-    private boolean last;
+    private Integer page;
+    private Integer size;
+    private Long totalElements;
+    private Integer totalPages;
+    private Boolean last;
 
     public static <T> ResponsePagingDto<T> from(Page<T> page) {
         return ResponsePagingDto.<T>builder()
