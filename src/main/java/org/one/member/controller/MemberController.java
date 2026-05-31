@@ -122,15 +122,15 @@ public class MemberController {
      * requestBody 예시
      *  "memberIds" : [2, 7]
      *
-     * 응답 데이터 : 삭제 완료 메시지
+     * 응답 데이터 : x
      */
+    @ApiErrorExceptions({ErrorCode.MEMBER_NOT_FOUND, ErrorCode.INVALID_INPUT})
      @Operation(summary = "부원 삭제", description = "관리자 권한(ADMIN)이 있는 계정만 부원을 삭제할 수 있습니다.")
      @PreAuthorize("hasRole('ADMIN')")
      @DeleteMapping
-    public ResponseEntity<String> deleteMembers(@RequestBody @Valid MemberDeleteListRequestDto requestDto){
+    public ResponseEntity<ApiResponse<Void>> deleteMembers(@RequestBody @Valid MemberDeleteListRequestDto requestDto){
          memberService.deleteMembers(requestDto.getMemberIds());
-
-         return ResponseEntity.ok("선택하신 부원들이 성공적으로 삭제되었습니다.");
+         return ResponseEntity.ok(ApiResponse.success(null));
      }
 
 }

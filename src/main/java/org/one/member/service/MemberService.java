@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -110,8 +112,20 @@ public class MemberService {
      * Param : memberIds
      */
     @Transactional
-    public void deleteMembers(List<Long> memberIds){
-        memberRepository.deleteAllById(memberIds);
+    public void deleteMembers(List<Long> memberIds)
+    {
+        //리스트 내 중복값 있을 경우 예외처리
+        Set<Long> uniqueIds = new HashSet<>(memberIds);
+        if (memberIds.size() != uniqueIds.size()) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT);
+        }
+        //리스트 내 id 중 db에 없는 값이 하나라도 있을 경우 예외처리
+        List<Member> existingMembers = memberRepository.findAllById(uniqueIds);
+        if (existingMembers.size() != uniqueIds.size()) {
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        memberRepository.deleteAllByIdInBatch(memberIds);
     }
 
 
