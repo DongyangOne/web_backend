@@ -1,8 +1,8 @@
-package org.one.domain.dto.response;
+package org.one.member.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import org.one.domain.entity.ApplicantMember;
+import org.one.member.domain.ApplicantMember;
 
 import java.time.LocalDateTime;
 
@@ -12,19 +12,29 @@ import java.time.LocalDateTime;
 @Schema(description = "신청 부원 리스트 요소 데이터 구조")
 @Getter
 public class ApplicantMemberListResponseDto {
+    @Schema(description = "신청 부원 id", example = "3")
     private Long applicantId;
+    @Schema(description = "신청 부원 이름", example = "홍길동")
     private String name;
+    @Schema(description = "신청 부원 학번", example = "20991234")
     private String studentId;
+    @Schema(description = "신청 부원 전화번호", example = "3")
     private String phoneNum;
+    @Schema(description = "신청 부원 신청 날짜", example = "2026-08-08")
     private LocalDateTime createdAt;
+    @Schema(description = "신청 부원 정보 조회 여부", example = "true")
     private Boolean isFirstView;
 
-    public ApplicantMemberListResponseDto(ApplicantMember applicantMember){
+    private ApplicantMemberListResponseDto(ApplicantMember applicantMember){
         this.applicantId = applicantMember.getApplicantId();
         this.name = applicantMember.getName();
         this.studentId = applicantMember.getStudentId();
         this.phoneNum = applicantMember.getPhoneNumber();
         this.createdAt = applicantMember.getCreatedAt();
         this.isFirstView = applicantMember.getIsFirstView();
+    }
+
+    public static ApplicantMemberListResponseDto from(ApplicantMember applicantMember){
+        return new ApplicantMemberListResponseDto(applicantMember);
     }
 }

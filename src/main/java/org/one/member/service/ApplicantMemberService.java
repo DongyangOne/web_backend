@@ -1,10 +1,10 @@
-package org.one.domain.service;
+package org.one.member.service;
 
 import lombok.RequiredArgsConstructor;
-import org.one.domain.dto.request.ApplicantMemberListRequestDto;
-import org.one.domain.dto.response.ApplicantMemberListResponseDto;
-import org.one.domain.entity.ApplicantMember;
-import org.one.domain.repository.ApplicantMemberRepository;
+import org.one.member.domain.ApplicantMember;
+import org.one.member.dto.ApplicantMemberListRequestDto;
+import org.one.member.dto.ApplicantMemberListResponseDto;
+import org.one.member.repository.ApplicantMemberRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +29,7 @@ public class ApplicantMemberService {
 
         //엔티티에서 dto형태로 구조를 변환하여 리스트를 만들어 반환
         return applicantMemberList.stream()
-                .map(ApplicantMemberListResponseDto::new)
+                .map(ApplicantMemberListResponseDto::from)
                 .toList();
     }
 }
