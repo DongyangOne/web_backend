@@ -6,10 +6,7 @@ import org.one.auth.repository.AdminRepository;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
 import org.one.member.domain.Member;
-import org.one.member.dto.MemberDetailResponseDto;
-import org.one.member.dto.MemberListRequestDto;
-import org.one.member.dto.MemberListResponseDto;
-import org.one.member.dto.MemberRegisterRequestDto;
+import org.one.member.dto.*;
 import org.one.member.enums.MemberStatus;
 import org.one.member.repository.MemberRepository;
 import org.springframework.data.domain.Pageable;
@@ -86,8 +83,24 @@ public class MemberService {
 
     @Transactional
     public void updateMember(Long memberId, MemberUpdateRequestDto requestDto){
+        if(memberId == null || memberId <= 0){
+            throw new BusinessException(ErrorCode.INVALID_INPUT);
+        }
+
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 부원입니다."));
+                .orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+
+        //중복 값 예외처리(학번, 전화번호)
+        if(!member.getStudentId().equals(requestDto.getStudentId())) {
+            if(memberRepository.existsByStudentId(requestDto.getStudentId())) {
+                throw new BusinessException(ErrorCode.DUPLICATE_STUDENT_ID);
+            }
+        }
+        if(!member.getPhoneNumber().equals(requestDto.getPhoneNum())) {
+            if(memberRepository.existsByPhoneNumber(requestDto.getPhoneNum())) {
+                throw new BusinessException(ErrorCode.DUPLICATE_PHONE_NUMBER);
+            }
+        }
 
         member.updateInfo(requestDto.getName(), requestDto.getStudentId(), requestDto.getPhoneNum(), requestDto.getGrade(), requestDto.getAge());
     }

@@ -3,15 +3,11 @@ package org.one.member.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
-import org.one.member.dto.MemberDetailResponseDto;
-import org.one.member.dto.MemberListRequestDto;
-import org.one.member.dto.MemberListResponseDto;
-import org.one.member.dto.MemberRegisterRequestDto;
+import org.one.member.dto.*;
 import org.one.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -103,16 +99,17 @@ public class MemberController {
      *
      * 응답 데이터 : 수정 완료 메시지
      */
+    @ApiErrorExceptions({ErrorCode.MEMBER_NOT_FOUND, ErrorCode.INVALID_INPUT, ErrorCode.DUPLICATE_PHONE_NUMBER, ErrorCode.DUPLICATE_STUDENT_ID})
     @Operation(summary = "부원 수정", description = "관리자 권한(ADMIN)이 있는 계정만 특정 부원의 정보를 일부 수정할 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{memberId}")
-    public ResponseEntity<String> updateMember(
+    public ResponseEntity<ApiResponse<Void>> updateMember(
             @PathVariable Long memberId,
             @Valid @RequestBody MemberUpdateRequestDto requestDto)
     {
         memberService.updateMember(memberId, requestDto);
 
-        return ResponseEntity.ok("부원 정보가 성공적으로 수정되었습니다.");
+        return ResponseEntity.ok(null);
     }
 
 }
