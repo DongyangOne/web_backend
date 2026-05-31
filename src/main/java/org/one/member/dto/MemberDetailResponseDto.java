@@ -1,12 +1,9 @@
-package org.one.domain.dto.response;
+package org.one.member.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import org.one.domain.entity.Member;
+import org.one.member.domain.Member;
+
 
 /**
  * 특정 부원 정보 조회 성공 시 응답하는 dto
@@ -29,12 +26,15 @@ public class MemberDetailResponseDto {
     @Schema(description = "부원 전화번호")
     private String phoneNum;
 
-    //생성자를 통해 Member엔티티에서 필요한 정보만 dto 필드로 저장
-    public MemberDetailResponseDto(Member member){
+    private MemberDetailResponseDto(Member member){
         this.name = member.getName();
         this.grade = member.getGrade();
         this.studentId = member.getStudentId();
         this.age = member.getAge();
         this.phoneNum = member.getPhoneNumber();
+    }
+
+    public static MemberDetailResponseDto from(Member member){
+        return new MemberDetailResponseDto(member);
     }
 }

@@ -6,6 +6,7 @@ import org.one.auth.repository.AdminRepository;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
 import org.one.member.domain.Member;
+import org.one.member.dto.MemberDetailResponseDto;
 import org.one.member.dto.MemberListRequestDto;
 import org.one.member.dto.MemberListResponseDto;
 import org.one.member.dto.MemberRegisterRequestDto;
@@ -91,12 +92,7 @@ public class MemberService {
      */
     public MemberDetailResponseDto getMemberDetail(Long memberId){
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("부원을 찾을 수 없습니다."));
-        return new MemberDetailResponseDto(member);
+                .orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        return MemberDetailResponseDto.from(member);
     }
-
-
-
-
-
 }
