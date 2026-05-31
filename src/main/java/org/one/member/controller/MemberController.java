@@ -61,7 +61,7 @@ public class MemberController {
      * "age" : 22,
      * "phoneNum" : "010-1111-2222"
      *
-     * 응답 데이터 : 성공 메세지
+     * 응답 데이터 : x
      */
     @ApiErrorExceptions({ErrorCode.DUPLICATE_PHONE_NUMBER, ErrorCode.DUPLICATE_STUDENT_ID, ErrorCode.INVALID_INPUT})
     @Operation(summary = "부원 등록", description = "관리자 권한(ADMIN)이 있는 계정만 전체 부원 명부를 조회할 수 있습니다.")
@@ -72,6 +72,6 @@ public class MemberController {
         memberService.registerMember(requestDto);
 
         //오류없이 넘어왔을 경우 성공 처리
-        return ResponseEntity.ok(ApiResponse.success(null, "부원 등록이 성공적으로 완료되었습니다."));
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

@@ -65,6 +65,5 @@ public class MemberService {
 
         //새로 생성한 부원 객체를 save(insert)해줌.
         memberRepository.save(member);
-
     }
 }
