@@ -16,9 +16,8 @@ import org.springframework.data.domain.Sort;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestPagingDto {
-
-    private int page = 0;
-    private int size = 10;
+    private Integer page = 0;
+    private Integer size = 10;
     private String sort = "id";
     private String direction = "DESC";
 
