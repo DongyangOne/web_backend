@@ -9,6 +9,7 @@ import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
 import org.one.main.dto.response.VisitorMainResponseDto;
 import org.one.main.service.VisitorMainService;
+import org.one.recruitment.dto.response.MainRecruitmentResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,4 +39,19 @@ public class VisitorMainController {
         return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
 
+    /**
+     * 모집 공고 조회(방문자) API
+     *
+     * api 요청 예시 : GET /api/v1/visitor/main/recruitment
+     *
+     * 응답 데이터 : 메인페이지 데이터
+     */
+    @ApiErrorExceptions({ErrorCode.RESOURCE_NOT_FOUND})
+    @Operation(summary = "모집 공고 조회", description = "모집 공고를 조회합니다.")
+    @SecurityRequirements()
+    @GetMapping("/recruitment")
+    public ResponseEntity<ApiResponse<MainRecruitmentResponseDto>> getRecruitment(){
+        MainRecruitmentResponseDto responseDto = visitorMainService.getRecruitment();
+        return ResponseEntity.ok(ApiResponse.success(responseDto));
+    }
 }
