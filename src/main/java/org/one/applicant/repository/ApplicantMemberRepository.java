@@ -1,7 +1,7 @@
-package org.one.member.repository;
+package org.one.applicant.repository;
 
 import java.time.LocalDateTime;
-import org.one.member.domain.ApplicantMember;
+import org.one.applicant.domain.ApplicantMember;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;

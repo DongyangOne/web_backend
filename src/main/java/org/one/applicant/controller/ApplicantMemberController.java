@@ -1,4 +1,4 @@
-package org.one.member.controller;
+package org.one.applicant.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -7,11 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
-import org.one.member.dto.ApplicantInfoResponseDto;
-import org.one.member.dto.ApplicantMemberDetailResponseDto;
-import org.one.member.dto.ApplicantMemberListRequestDto;
-import org.one.member.dto.ApplicantMemberListResponseDto;
-import org.one.member.service.ApplicantMemberService;
+import org.one.applicant.dto.response.ApplicantInfoResponseDto;
+import org.one.applicant.dto.response.ApplicantMemberDetailResponseDto;
+import org.one.applicant.dto.request.ApplicantMemberListRequestDto;
+import org.one.applicant.dto.response.ApplicantMemberListResponseDto;
+import org.one.applicant.service.ApplicantMemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +25,7 @@ import java.util.List;
 @Tag(name = "ApplicantMember", description = "신청 부원 관리 (관리자 전용)")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/applicantMembers")
+@RequestMapping("/api/v1/admin/applicantMembers")
 public class ApplicantMemberController {
     private final ApplicantMemberService applicantMemberService;
 

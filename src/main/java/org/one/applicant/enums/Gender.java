@@ -1,4 +1,4 @@
-package org.one.member.enums;
+package org.one.applicant.enums;
 
 /**
  * 지원자와 부원의 성별 값을 표현합니다.

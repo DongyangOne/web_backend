@@ -22,7 +22,7 @@ import java.util.List;
 @Tag(name = "Member", description = "부원 명부 관리 (관리자 전용)")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/members")
+@RequestMapping("/api/v1/admin/members")
 public class MemberController {
     private final MemberService memberService;
 
@@ -30,7 +30,7 @@ public class MemberController {
      * 명부 전체 조회 API
      * 요청 시, 선택적으로 page관련 설정(정렬 등)
      *
-     * api 요청 예시 : GET /api/v1/members?page=1&size=10&sort=...
+     * api 요청 예시 : GET /api/v1/admin/members?page=1&size=10&sort=...
      *
      * 응답 데이터 : 전체 member의 명부리스트
      */
@@ -50,7 +50,7 @@ public class MemberController {
      * 부원 등록 API
      * 요청 시, requestBody를 이용 MemberRegisterRequestDto 필드 입력
      *
-     * api 요청 예시 : POST /api/v1/members
+     * api 요청 예시 : POST /api/v1/admin/members
      *
      * requestBody 예시
      * "name" : "aa",
@@ -77,7 +77,7 @@ public class MemberController {
      * 특정 부원 정보 조회 API : 부원 수정 시 정보를 불러오기 위한 api
      * 요청 시, memberId를 @PathVariable로 url을 통해 전달
      *
-     * api 요청 예시 : GET /api/members/{memberId}
+     * api 요청 예시 : GET /api/v1/admin/members/{memberId}
      *
      * 응답 데이터 : 특정 부원에 대한 정보
      */
@@ -95,7 +95,7 @@ public class MemberController {
      * 요청 시,
      * @PathVariable와 @requestBody를 통해 memberId와 MemberUpdateReqeustDto전달
      *
-     * api 요청 예시 : PATCH /api/members/{memberId}
+     * api 요청 예시 : PATCH /api/v1/admin/members/{memberId}
      *
      * 응답 데이터 : 수정 완료 메시지
      */
@@ -117,7 +117,7 @@ public class MemberController {
      * 요청 시,
      * @requestBody를 통해 memberId리스트를 전달
      *
-     * api 요청 예시 : Delete /api/members
+     * api 요청 예시 : Delete /api/v1/admin/members
      *
      * requestBody 예시
      *  "memberIds" : [2, 7]

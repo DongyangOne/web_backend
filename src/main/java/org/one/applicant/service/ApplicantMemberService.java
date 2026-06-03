@@ -1,14 +1,14 @@
-package org.one.member.service;
+package org.one.applicant.service;
 
 import lombok.RequiredArgsConstructor;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
-import org.one.member.domain.ApplicantMember;
-import org.one.member.dto.ApplicantInfoResponseDto;
-import org.one.member.dto.ApplicantMemberDetailResponseDto;
-import org.one.member.dto.ApplicantMemberListRequestDto;
-import org.one.member.dto.ApplicantMemberListResponseDto;
-import org.one.member.repository.ApplicantMemberRepository;
+import org.one.applicant.domain.ApplicantMember;
+import org.one.applicant.dto.response.ApplicantInfoResponseDto;
+import org.one.applicant.dto.response.ApplicantMemberDetailResponseDto;
+import org.one.applicant.dto.request.ApplicantMemberListRequestDto;
+import org.one.applicant.dto.response.ApplicantMemberListResponseDto;
+import org.one.applicant.repository.ApplicantMemberRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
