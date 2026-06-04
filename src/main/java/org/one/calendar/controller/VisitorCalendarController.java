@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Calendar(visitor)", description = "캘린더 관련 작업을 수행합니다.")
+@Tag(name = "Calendar(visitor)", description = "캘린더 조회(방문자 전용)")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/visitor/calendar")
