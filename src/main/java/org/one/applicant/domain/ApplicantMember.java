@@ -1,4 +1,4 @@
-package org.one.member.domain;
+package org.one.applicant.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
-import org.one.member.enums.Gender;
+import org.one.applicant.enums.Gender;
 import org.one.global.entity.BaseEntity;
 
 /**

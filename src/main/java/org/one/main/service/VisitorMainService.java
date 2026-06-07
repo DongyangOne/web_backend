@@ -47,5 +47,20 @@ public class VisitorMainService {
         return VisitorMainResponseDto.of(mainPageConfig, activityCards, projectCards);
     }
 
+    /**
+     * 모집 공고 불러오기
+     * @return MainRecruitmentResponseDto 모집공고응답
+     */
+    public MainRecruitmentResponseDto getRecruitment(){
+        Recruitment recruitment = recruitmentRepository.findById(1)
+                .orElseThrow(()->new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        //서버 시간 기준 모집 중인지 확인
+        LocalDate today = LocalDate.now();
+        boolean isRecruiting = !today.isBefore(recruitment.getRecruitmentStart())
+                && !today.isAfter(recruitment.getRecruitmentEnd());
+        return MainRecruitmentResponseDto.of(recruitment, isRecruiting);
+    }
+
 
 }

@@ -1,10 +1,10 @@
-package org.one.member.dto;
+package org.one.applicant.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import org.one.member.domain.ApplicantMember;
-import org.one.member.enums.Gender;
+import org.one.applicant.domain.ApplicantMember;
+import org.one.applicant.enums.Gender;
 
 import java.time.LocalDate;
 
