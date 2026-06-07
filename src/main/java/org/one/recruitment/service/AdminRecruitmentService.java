@@ -67,7 +67,7 @@ public class AdminRecruitmentService {
 	 */
 	private void validateDateRange(LocalDate start, LocalDate end) {
 		if (start != null && end != null && start.isAfter(end)) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.INVALID_DATE_RANGE);
 		}
 	}
 
@@ -80,7 +80,7 @@ public class AdminRecruitmentService {
 	 */
 	private void validateRecruitmentInterviewOrder(LocalDate recruitmentEnd, LocalDate interviewStart) {
 		if (recruitmentEnd != null && interviewStart != null && interviewStart.isBefore(recruitmentEnd)) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.INVALID_DATE_RANGE);
 		}
 	}
 

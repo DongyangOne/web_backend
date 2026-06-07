@@ -21,6 +21,7 @@ public class RecruitmentUpdateRequestDto {
 	private String target;
 
 	@Schema(description = "지원 분야", example = "프론트엔드, 백엔드")
+	@Size(max = 1000, message = "지원 분야는 1000자 이내로 입력해주세요.")
 	private String field;
 
 	@Schema(description = "모집 시작일", example = "2026-05-10")
