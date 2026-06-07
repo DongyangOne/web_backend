@@ -10,6 +10,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import org.one.member.enums.MemberStatus;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.one.global.entity.BaseEntity;
 
 /**
@@ -17,6 +20,8 @@ import org.one.global.entity.BaseEntity;
  */
 @Entity
 @Table(name = "member")
+@Builder
+@AllArgsConstructor
 public class Member extends BaseEntity {
 
 	@Id

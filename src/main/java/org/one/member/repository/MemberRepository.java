@@ -31,4 +31,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	//동아리에 소속중인 부원들의 모든 정보를 가져와 리스트로 만듦.
 	@Query("SELECT m FROM Member m")
 	List<Member> findAllByAdmin(Pageable pageable);
+
+	/**
+	 * 특정 전화번호를 가진 부원이 이미 존재하는지 확인합니다.
+	 *
+	 * @param phoneNumber 전화번호
+	 * @return 존재하면 true
+	 */
+	boolean existsByPhoneNumber(String phoneNumber);
+
 }
