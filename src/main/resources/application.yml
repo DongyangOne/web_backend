@@ -11,6 +11,8 @@ spring:
       max-request-size: 10MB
   flyway:
     enabled: true
+    # V3.1 보강 migration은 기존 V4~V7 적용 DB에서도 checksum 변경 없이 실행되어야 합니다.
+    out-of-order: true
   web:
     error:
       include-message: never

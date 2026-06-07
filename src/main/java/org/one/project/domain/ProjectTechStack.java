@@ -9,13 +9,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.one.global.entity.BaseEntity;
 
 /**
  * 프로젝트에 사용된 기술 스택 정보를 저장하는 엔티티입니다.
  */
 @Entity
 @Table(name = "project_tech_stack")
-public class ProjectTechStack {
+public class ProjectTechStack extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

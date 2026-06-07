@@ -1,31 +1,40 @@
 package org.one.global.scheduler;
 
+import java.time.LocalDateTime;
+import org.one.applicant.repository.ApplicantMemberRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 도메인 정리 작업이 준비되기 전까지 스케줄 실행 지점을 보존하는 placeholder 스케줄러입니다.
+ * 오래된 가입 신청 데이터를 주기적으로 정리하는 스케줄러입니다.
  */
 @Component
 public class CleanupScheduler {
 
 	private static final Logger log = LoggerFactory.getLogger(CleanupScheduler.class);
 
+	private final ApplicantMemberRepository applicantMemberRepository;
+
 	/**
-	 * 매월 1일 03시에 오래된 가입 신청 정리 작업을 실행할 자리입니다.
+	 * 신청자 저장소를 주입받습니다.
+	 *
+	 * @param applicantMemberRepository 가입 신청자 저장소
 	 */
-	@Scheduled(cron = "0 0 3 1 * *", zone = "Asia/Seoul")
-	public void deleteOldApplications() {
-		log.info("[CleanupScheduler] Scheduled cleanup placeholder - implement when domain ready");
+	public CleanupScheduler(ApplicantMemberRepository applicantMemberRepository) {
+		this.applicantMemberRepository = applicantMemberRepository;
 	}
 
 	/**
-	 * 매년 3월 1일 03시 30분에 부원 학년/나이 갱신 작업을 실행할 자리입니다.
+	 * 매월 1일 03시에 생성된 지 1년이 지난 가입 신청 데이터를 하드 딜리트합니다.
 	 */
-	@Scheduled(cron = "0 30 3 1 3 *", zone = "Asia/Seoul")
-	public void incrementMemberGradeAndAge() {
-		log.info("[CleanupScheduler] Scheduled member update placeholder - implement when domain ready");
+	@Scheduled(cron = "0 0 3 1 * *", zone = "Asia/Seoul")
+	@Transactional
+	public void deleteOldApplications() {
+		LocalDateTime cutoff = LocalDateTime.now().minusYears(1);
+		int deletedCount = applicantMemberRepository.deleteByCreatedAtBefore(cutoff);
+		log.info("Deleted {} applicant applications created before {}", deletedCount, cutoff);
 	}
 }
