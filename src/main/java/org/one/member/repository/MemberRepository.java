@@ -1,9 +1,12 @@
 package org.one.member.repository;
 
 import org.one.member.domain.Member;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 /**
  * 정규 부원 데이터 조회와 일괄 갱신을 담당하는 JPA Repository입니다.
@@ -24,4 +27,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	@Modifying
 	@Query("UPDATE Member m SET m.grade = m.grade + 1, m.age = m.age + 1")
 	void incrementGradeAndAge();
+
+	//동아리에 소속중인 부원들의 모든 정보를 가져와 리스트로 만듦.
+	@Query("SELECT m FROM Member m")
+	List<Member> findAllByAdmin(Pageable pageable);
 }
