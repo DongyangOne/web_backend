@@ -3,6 +3,7 @@ package org.one.main.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.one.main.dto.request.ActivityCardUpdateRequestDto;
@@ -76,10 +77,13 @@ public class AdminMainController {
 	 * @return 초기화 완료 응답
 	 */
 	@Operation(summary = "주요활동 카드 초기화", description = "주요활동 카드 제목과 내용을 초기화합니다.")
-	@ApiErrorExceptions({ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INTERNAL_SERVER_ERROR})
+	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INTERNAL_SERVER_ERROR})
 	@DeleteMapping("/activity/{cardId}")
 	public ResponseEntity<ApiResponse<Void>> clearActivityCard(
-			@PathVariable @Positive(message = "카드 ID는 양수여야 합니다.") Long cardId) {
+			@PathVariable
+			@Positive(message = "카드 ID는 양수여야 합니다.")
+			@Max(value = 4, message = "주요활동 카드는 1번부터 4번까지만 초기화할 수 있습니다.")
+			Long cardId) {
 		adminMainService.clearActivityCard(cardId);
 		return ResponseEntity.ok(ApiResponse.success(null));
 	}
