@@ -9,6 +9,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.one.applicant.enums.Gender;
 import org.one.global.entity.BaseEntity;
 
@@ -17,6 +20,8 @@ import org.one.global.entity.BaseEntity;
  */
 @Entity
 @Table(name = "applicant_member")
+@Builder
+@AllArgsConstructor
 public class ApplicantMember extends BaseEntity {
 
 	@Id
