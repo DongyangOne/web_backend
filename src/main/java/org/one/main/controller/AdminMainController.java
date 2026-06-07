@@ -3,6 +3,7 @@ package org.one.main.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.one.main.dto.request.ActivityCardUpdateRequestDto;
@@ -63,7 +64,10 @@ public class AdminMainController {
 	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INTERNAL_SERVER_ERROR})
 	@PatchMapping("/activity/{cardId}")
 	public ResponseEntity<ApiResponse<ActivityCardResponseDto>> updateActivityCard(
-			@PathVariable @Positive(message = "카드 ID는 양수여야 합니다.") Long cardId,
+			@PathVariable
+			@Positive(message = "카드 ID는 양수여야 합니다.")
+			@Max(value = 4, message = "주요활동 카드는 1번부터 4번까지만 수정할 수 있습니다.")
+			Long cardId,
 			@RequestBody @Valid ActivityCardUpdateRequestDto request) {
 		ActivityCardResponseDto response = adminMainService.updateActivityCard(cardId, request);
 		return ResponseEntity.ok(ApiResponse.success(response));
