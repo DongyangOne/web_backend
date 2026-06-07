@@ -1,7 +1,10 @@
 package org.one.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.one.global.enums.ErrorCode;
+import org.one.global.exception.BusinessException;
 import org.one.member.domain.ApplicantMember;
+import org.one.member.dto.ApplicantMemberDetailResponseDto;
 import org.one.member.dto.ApplicantMemberListRequestDto;
 import org.one.member.dto.ApplicantMemberListResponseDto;
 import org.one.member.repository.ApplicantMemberRepository;
@@ -31,5 +34,20 @@ public class ApplicantMemberService {
         return applicantMemberList.stream()
                 .map(ApplicantMemberListResponseDto::from)
                 .toList();
+    }
+
+
+    /**
+     * 요청값(memberId)를 통해 해당 신청 부원의 상세 정보를 불러옴.
+     * Param : applicantMemberId
+     * return : ApplicantMemberDetailResponseDto
+     */
+    public ApplicantMemberDetailResponseDto getApplicantMemberDetail(Long applicantMemberId){
+        if(applicantMemberId == null || applicantMemberId <= 0){
+            throw new BusinessException(ErrorCode.INVALID_INPUT);
+        }
+        ApplicantMember applicantMember = applicantMemberRepository.findById(applicantMemberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        return ApplicantMemberDetailResponseDto.from(applicantMember);
     }
 }
