@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
 import org.one.member.domain.ApplicantMember;
+import org.one.member.dto.ApplicantInfoResponseDto;
 import org.one.member.dto.ApplicantMemberDetailResponseDto;
 import org.one.member.dto.ApplicantMemberListRequestDto;
 import org.one.member.dto.ApplicantMemberListResponseDto;
@@ -50,4 +51,19 @@ public class ApplicantMemberService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         return ApplicantMemberDetailResponseDto.from(applicantMember);
     }
+
+    /**
+     * 요청값(memberId)를 통해 등록에 사용할 신청 정보를 불러옴.
+     * Param : applicantMemberId
+     * return : ApplicantInfoResponseDto
+     */
+    public ApplicantInfoResponseDto getApplicantInfo(Long applicantMemberId){
+        if(applicantMemberId == null || applicantMemberId <= 0){
+            throw new BusinessException(ErrorCode.INVALID_INPUT);
+        }
+        ApplicantMember applicantMember = applicantMemberRepository.findById(applicantMemberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        return ApplicantInfoResponseDto.from(applicantMember);
+    }
+
 }

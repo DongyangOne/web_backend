@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
+import org.one.member.dto.ApplicantInfoResponseDto;
 import org.one.member.dto.ApplicantMemberDetailResponseDto;
 import org.one.member.dto.ApplicantMemberListRequestDto;
 import org.one.member.dto.ApplicantMemberListResponseDto;
@@ -62,5 +63,21 @@ public class ApplicantMemberController {
         return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
 
+    /**
+     * 부원(Member) 등록 시 신청 정보 불러오기 API : 신청 부원의 정보를 불러오기 위한 api
+     * 요청 시, applicantMemberId를 @PathVariable로 url을 통해 전달
+     *
+     * api 요청 예시 : GET /api/v1/applicantMembers/{applicantMemberId}/registration-form
+     *
+     * 응답 데이터 : 특정 신청 부원의 등록 시 사용할 정보
+     */
+    @ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.MEMBER_NOT_FOUND})
+    @Operation(summary = "신청 정보 불러오기", description = "관리자 권한(ADMIN)이 있는 계정만 신청 정보를 불러올 수 있습니다.")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{applicantMemberId}/registration-form")
+    public ResponseEntity<ApiResponse<ApplicantInfoResponseDto>> getApplicantInfo(@PathVariable Long applicantMemberId){
+        ApplicantInfoResponseDto responseDto = applicantMemberService.getApplicantInfo(applicantMemberId);
+        return ResponseEntity.ok(ApiResponse.success(responseDto));
+    }
 
 }
