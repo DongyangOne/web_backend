@@ -84,6 +84,19 @@ public class OpenApiConfig {
 				.pathsToMatch("/api/v1/**")
 				.build();
 	}
+	
+	/**
+	 * 방문자용 API 경로를 모아 보여주는 Swagger 그룹을 생성합니다.
+	 *
+	 * @return 방문자 API 그룹
+	 */
+	@Bean
+	public GroupedOpenApi visitorApi() {
+		return GroupedOpenApi.builder()
+				.group("방문자") // 드롭다운에 보일 예쁜 이름
+				.pathsToMatch("/api/v1/visitor/**") // 이 주소로 시작하는 건 다 여기 모아라!
+				.build();
+	}
 
 	/**
 	 * 요청 검증 실패 공통 응답 예시를 생성합니다.

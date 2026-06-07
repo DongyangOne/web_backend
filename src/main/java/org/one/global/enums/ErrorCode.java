@@ -20,7 +20,9 @@ public enum ErrorCode {
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", "서버 오류가 발생했습니다."),
 	DUPLICATE_STUDENT_ID(HttpStatus.CONFLICT, "DUPLICATE_STUDENT_ID", "이미 존재하는 학번입니다."),
 	DUPLICATE_PHONE_NUMBER(HttpStatus.CONFLICT, "DUPLICATE_PHONE_NUMBER", "이미 존재하는 전화번호입니다."),
-	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_NOT_FOUND", "존재하지 않는 부원입니다.");
+	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_NOT_FOUND", "존재하지 않는 부원입니다."),
+	MAINPAGE_CONFIG_NOT_FOUND(HttpStatus.NOT_FOUND, "MAINPAGE_CONFIG_NOT_FOUND", "메인 페이지 설정 데이터가 db에 없습니다.");
+
 
 
 	private final HttpStatus status;
