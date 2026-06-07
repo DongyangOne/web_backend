@@ -6,13 +6,17 @@ import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * 컨트롤러에서 발생한 예외를 공통 ApiResponse 형식으로 변환합니다.
@@ -63,11 +67,52 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler({
 			HttpMessageNotReadableException.class,
 			MissingServletRequestParameterException.class,
-			ConstraintViolationException.class
+			ConstraintViolationException.class,
+			MethodArgumentTypeMismatchException.class
 	})
 	public ResponseEntity<ApiResponse<Void>> handleInvalidRequestException(Exception exception) {
 		return ResponseEntity.badRequest()
 				.body(ApiResponse.error(ErrorCode.INVALID_INPUT));
+	}
+
+	/**
+	 * 지원하지 않는 HTTP 메서드 요청을 METHOD_NOT_ALLOWED 응답으로 변환합니다.
+	 *
+	 * @param exception 지원하지 않는 HTTP 메서드 예외
+	 * @return 메서드 미지원 실패 응답
+	 */
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	public ResponseEntity<ApiResponse<Void>> handleMethodNotAllowedException(
+			HttpRequestMethodNotSupportedException exception) {
+		return ResponseEntity.status(ErrorCode.METHOD_NOT_ALLOWED.getStatus())
+				.body(ApiResponse.error(ErrorCode.METHOD_NOT_ALLOWED));
+	}
+
+	/**
+	 * 지원하지 않는 Content-Type 요청을 UNSUPPORTED_MEDIA_TYPE 응답으로 변환합니다.
+	 *
+	 * @param exception 지원하지 않는 콘텐츠 타입 예외
+	 * @return 콘텐츠 타입 미지원 실패 응답
+	 */
+	@ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+	public ResponseEntity<ApiResponse<Void>> handleUnsupportedMediaTypeException(
+			HttpMediaTypeNotSupportedException exception) {
+		return ResponseEntity.status(ErrorCode.UNSUPPORTED_MEDIA_TYPE.getStatus())
+				.body(ApiResponse.error(ErrorCode.UNSUPPORTED_MEDIA_TYPE));
+	}
+
+	/**
+	 * 데이터베이스 제약 조건 위반을 중복 데이터 응답으로 변환합니다.
+	 *
+	 * @param exception 데이터 무결성 위반 예외
+	 * @return 중복 데이터 실패 응답
+	 */
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<ApiResponse<Void>> handleDataIntegrityViolationException(
+			DataIntegrityViolationException exception) {
+		log.warn("Data integrity violation occurred", exception);
+		return ResponseEntity.status(ErrorCode.DUPLICATE_RESOURCE.getStatus())
+				.body(ApiResponse.error(ErrorCode.DUPLICATE_RESOURCE));
 	}
 
 	/**

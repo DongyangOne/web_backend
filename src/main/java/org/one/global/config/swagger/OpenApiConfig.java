@@ -55,6 +55,10 @@ public class OpenApiConfig {
 						.addResponses("Unauthorized", unauthorizedResponse())
 						.addResponses("Forbidden", forbiddenResponse())
 						.addResponses("NotFound", notFoundResponse())
+						.addResponses("MethodNotAllowed", methodNotAllowedResponse())
+						.addResponses("Conflict", conflictResponse())
+						.addResponses("UnsupportedMediaType", unsupportedMediaTypeResponse())
+						.addResponses("UnprocessableContent", unprocessableContentResponse())
 						.addResponses("InternalServerError", internalServerErrorResponse()))
 				.addSecurityItem(new SecurityRequirement().addList(BEARER_SCHEME));
 	}
@@ -81,10 +85,23 @@ public class OpenApiConfig {
 	public GroupedOpenApi adminApi() {
 		return GroupedOpenApi.builder()
 				.group("관리자")
-				.pathsToMatch("/api/v1/**")
+				.pathsToMatch("/api/v1/admin/**")
 				.build();
 	}
-	
+
+	/**
+	 * 파일 API 경로를 모아 보여주는 Swagger 그룹을 생성합니다.
+	 *
+	 * @return 파일 API 그룹
+	 */
+	@Bean
+	public GroupedOpenApi fileApi() {
+		return GroupedOpenApi.builder()
+				.group("파일")
+				.pathsToMatch("/api/v1/files/**")
+				.build();
+	}
+
 	/**
 	 * 방문자용 API 경로를 모아 보여주는 Swagger 그룹을 생성합니다.
 	 *
@@ -93,8 +110,8 @@ public class OpenApiConfig {
 	@Bean
 	public GroupedOpenApi visitorApi() {
 		return GroupedOpenApi.builder()
-				.group("방문자") // 드롭다운에 보일 예쁜 이름
-				.pathsToMatch("/api/v1/visitor/**") // 이 주소로 시작하는 건 다 여기 모아라!
+				.group("방문자")
+				.pathsToMatch("/api/v1/visitor/**")
 				.build();
 	}
 
@@ -152,6 +169,59 @@ public class OpenApiConfig {
 				.content(new Content().addMediaType("application/json",
 						new MediaType().addExamples("RESOURCE_NOT_FOUND", new Example().value(
 								errorExample("RESOURCE_NOT_FOUND", "요청한 리소스를 찾을 수 없습니다.")))));
+	}
+
+	/**
+	 * HTTP 메서드 미지원 공통 응답 예시를 생성합니다.
+	 *
+	 * @return 405 공통 응답
+	 */
+	private ApiResponse methodNotAllowedResponse() {
+		return new ApiResponse()
+				.description("지원하지 않는 HTTP 메서드")
+				.content(new Content().addMediaType("application/json",
+						new MediaType().addExamples("METHOD_NOT_ALLOWED", new Example().value(
+								errorExample("METHOD_NOT_ALLOWED", "지원하지 않는 HTTP 메서드입니다.")))));
+	}
+
+	/**
+	 * 데이터 충돌 공통 응답 예시를 생성합니다.
+	 *
+	 * @return 409 공통 응답
+	 */
+	private ApiResponse conflictResponse() {
+		return new ApiResponse()
+				.description("데이터 충돌")
+				.content(new Content().addMediaType("application/json",
+						new MediaType().addExamples("DUPLICATE_RESOURCE", new Example().value(
+								errorExample("DUPLICATE_RESOURCE", "이미 존재하는 데이터입니다.")))));
+	}
+
+	/**
+	 * 콘텐츠 타입 미지원 공통 응답 예시를 생성합니다.
+	 *
+	 * @return 415 공통 응답
+	 */
+	private ApiResponse unsupportedMediaTypeResponse() {
+		return new ApiResponse()
+				.description("지원하지 않는 콘텐츠 타입")
+				.content(new Content().addMediaType("application/json",
+						new MediaType().addExamples("UNSUPPORTED_MEDIA_TYPE", new Example().value(
+								errorExample("UNSUPPORTED_MEDIA_TYPE", "지원하지 않는 콘텐츠 타입입니다.")))));
+	}
+
+	/**
+	 * 처리할 수 없는 요청 공통 응답 예시를 생성합니다.
+	 *
+	 * @return 422 공통 응답
+	 */
+	private ApiResponse unprocessableContentResponse() {
+		return new ApiResponse()
+				.description("처리할 수 없는 요청")
+				.content(new Content().addMediaType("application/json",
+						new MediaType().addExamples("PRIVACY_POLICY_NOT_AGREED", new Example().value(
+								errorExample("PRIVACY_POLICY_NOT_AGREED",
+										"개인정보 수집 및 이용에 동의해야 회원가입이 가능합니다.")))));
 	}
 
 	/**

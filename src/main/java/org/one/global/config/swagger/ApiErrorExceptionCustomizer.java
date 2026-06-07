@@ -38,6 +38,10 @@ public class ApiErrorExceptionCustomizer implements OperationCustomizer {
 				case 401 -> "#/components/responses/Unauthorized";
 				case 403 -> "#/components/responses/Forbidden";
 				case 404 -> "#/components/responses/NotFound";
+				case 405 -> "#/components/responses/MethodNotAllowed";
+				case 409 -> "#/components/responses/Conflict";
+				case 415 -> "#/components/responses/UnsupportedMediaType";
+				case 422 -> "#/components/responses/UnprocessableContent";
 				case 500 -> "#/components/responses/InternalServerError";
 				default -> null;
 			};
