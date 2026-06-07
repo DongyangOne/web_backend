@@ -6,6 +6,7 @@ import org.one.auth.repository.AdminRepository;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
 import org.one.member.domain.Member;
+import org.one.member.dto.MemberDetailResponseDto;
 import org.one.member.dto.MemberListRequestDto;
 import org.one.member.dto.MemberListResponseDto;
 import org.one.member.dto.MemberRegisterRequestDto;
@@ -65,5 +66,20 @@ public class MemberService {
 
         //새로 생성한 부원 객체를 save(insert)해줌.
         memberRepository.save(member);
+    }
+
+    /**
+     * 요청값(memberId)를 통해 해당 부원의 정보를 불러옴.
+     * Param : memberId
+     * return : MemberDetailResponseDto
+     */
+    public MemberDetailResponseDto getMemberDetail(Long memberId){
+        if(memberId == null || memberId <= 0){
+            throw new BusinessException(ErrorCode.INVALID_INPUT);
+        }
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        return MemberDetailResponseDto.from(member);
     }
 }

@@ -3,10 +3,12 @@ package org.one.member.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
+import org.one.member.dto.MemberDetailResponseDto;
 import org.one.member.dto.MemberListRequestDto;
 import org.one.member.dto.MemberListResponseDto;
 import org.one.member.dto.MemberRegisterRequestDto;
@@ -73,5 +75,22 @@ public class MemberController {
 
         //오류없이 넘어왔을 경우 성공 처리
         return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    /**
+     * 특정 부원 정보 조회 API : 부원 수정 시 정보를 불러오기 위한 api
+     * 요청 시, memberId를 @PathVariable로 url을 통해 전달
+     *
+     * api 요청 예시 : GET /api/members/{memberId}
+     *
+     * 응답 데이터 : 특정 부원에 대한 정보
+     */
+    @ApiErrorExceptions({ErrorCode.MEMBER_NOT_FOUND, ErrorCode.INVALID_INPUT})
+    @Operation(summary = "부원 정보 가져오기", description = "관리자 권한(ADMIN)이 있는 계정만 부원 상세 정보를 조회할 수 있습니다.")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{memberId}")
+    public ResponseEntity<ApiResponse<MemberDetailResponseDto>> getMemberDetail(@PathVariable  Long memberId){
+        MemberDetailResponseDto responseDto= memberService.getMemberDetail(memberId);
+        return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
 }
