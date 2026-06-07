@@ -68,10 +68,7 @@ public class AdminCalendarService {
 				));
 
 		return grouped.entrySet().stream()
-				.map(entry -> CalendarMonthlyResponseDto.builder()
-						.yearMonth(entry.getKey())
-						.schedules(entry.getValue())
-						.build())
+				.map(entry -> CalendarMonthlyResponseDto.of(entry.getKey(), entry.getValue()))
 				.toList();
 	}
 
