@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.one.calendar.dto.request.CalendarSaveRequestDto;
@@ -97,7 +98,7 @@ public class AdminCalendarController {
 	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INTERNAL_SERVER_ERROR})
 	@PatchMapping("/{calendarId}")
 	public ResponseEntity<ApiResponse<CalendarResponseDto>> update(
-			@PathVariable Long calendarId,
+			@PathVariable @Positive(message = "캘린더 ID는 양수여야 합니다.") Long calendarId,
 			@RequestBody @Valid CalendarUpdateRequestDto request) {
 		CalendarResponseDto response = adminCalendarService.update(calendarId, request);
 		return ResponseEntity.ok(ApiResponse.success(response));
