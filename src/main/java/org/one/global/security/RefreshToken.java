@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import org.one.global.entity.BaseEntity;
 
@@ -13,14 +14,17 @@ import org.one.global.entity.BaseEntity;
  * 관리자 Refresh Token의 해시 값과 만료/폐기 상태를 저장하는 엔티티입니다.
  */
 @Entity
-@Table(name = "refresh_token")
+@Table(
+		name = "refresh_token",
+		uniqueConstraints = @UniqueConstraint(name = "uk_refresh_token_user_id", columnNames = "user_id")
+)
 public class RefreshToken extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(name = "user_id", nullable = false)
 	private Long userId;
 
 	@Column(name = "token_hash", nullable = false, unique = true, length = 128)
