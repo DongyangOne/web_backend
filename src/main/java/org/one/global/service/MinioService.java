@@ -4,6 +4,7 @@ import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
 import io.minio.RemoveObjectArgs;
 import io.minio.http.Method;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.one.global.config.minio.MinioConfig;
@@ -36,7 +37,19 @@ public class MinioService {
 	 * @return Presigned PUT URL
 	 */
 	public String generateUploadUrl(String objectKey) {
-		return getPresignedUrl(Method.PUT, objectKey);
+		return getPresignedUrl(Method.PUT, objectKey, Map.of());
+	}
+
+	/**
+	 * 파일 업로드용 Presigned PUT URL을 Content-Type 조건과 함께 생성합니다.
+	 * 클라이언트는 발급 요청 때 전달한 Content-Type과 동일한 헤더로 PUT 업로드해야 합니다.
+	 *
+	 * @param objectKey 저장할 객체 키 (예: "projects/uuid")
+	 * @param contentType 업로드 요청에 사용할 Content-Type
+	 * @return Presigned PUT URL
+	 */
+	public String generateUploadUrl(String objectKey, String contentType) {
+		return getPresignedUrl(Method.PUT, objectKey, Map.of("Content-Type", contentType));
 	}
 
 	/**
@@ -47,7 +60,7 @@ public class MinioService {
 	 * @return Presigned GET URL
 	 */
 	public String generateDownloadUrl(String objectKey) {
-		return getPresignedUrl(Method.GET, objectKey);
+		return getPresignedUrl(Method.GET, objectKey, Map.of());
 	}
 
 	/**
@@ -91,13 +104,14 @@ public class MinioService {
 		return url.substring(prefix.length());
 	}
 
-	private String getPresignedUrl(Method method, String objectKey) {
+	private String getPresignedUrl(Method method, String objectKey, Map<String, String> extraHeaders) {
 		try {
 			String internalUrl = minioClient.getPresignedObjectUrl(
 					GetPresignedObjectUrlArgs.builder()
 							.method(method)
 							.bucket(minioConfig.getBucketName())
 							.object(objectKey)
+							.extraHeaders(extraHeaders)
 							.expiry(minioConfig.getPresignedExpiry(), TimeUnit.SECONDS)
 							.build()
 			);

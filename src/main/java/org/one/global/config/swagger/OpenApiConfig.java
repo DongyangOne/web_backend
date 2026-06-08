@@ -124,8 +124,11 @@ public class OpenApiConfig {
 		return new ApiResponse()
 				.description("잘못된 요청")
 				.content(new Content().addMediaType("application/json",
-						new MediaType().addExamples("INVALID_INPUT", new Example().value(
-								errorExample("INVALID_INPUT", "입력값이 올바르지 않습니다.")))));
+						new MediaType()
+								.addExamples("INVALID_INPUT", new Example().value(
+										errorExample("INVALID_INPUT", "입력값이 올바르지 않습니다.")))
+								.addExamples("INVALID_FILE_TYPE", new Example().value(
+										errorExample("INVALID_FILE_TYPE", "이미지 파일만 업로드할 수 있습니다.")))));
 	}
 
 	/**
