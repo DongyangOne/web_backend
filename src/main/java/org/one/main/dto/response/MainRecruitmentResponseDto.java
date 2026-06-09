@@ -1,4 +1,4 @@
-package org.one.recruitment.dto.response;
+package org.one.main.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,8 +35,7 @@ public class MainRecruitmentResponseDto {
     private String notificationDate;
 
     @Schema(description = "현재 모집 중 여부", example = "true")
-    @JsonProperty("isRecruiting")
-    private boolean isRecruiting;
+    private Boolean recruiting;
 
     public static MainRecruitmentResponseDto of(Recruitment recruitment, boolean isRecruiting) {
         return MainRecruitmentResponseDto.builder()
@@ -47,7 +46,7 @@ public class MainRecruitmentResponseDto {
                 .interviewStart(recruitment.getInterviewStart() != null ? recruitment.getInterviewStart().toString() : null)
                 .interviewEnd(recruitment.getInterviewEnd() != null ? recruitment.getInterviewEnd().toString() : null)
                 .notificationDate(recruitment.getNotificationDate() != null ? recruitment.getNotificationDate().toString() : null)
-                .isRecruiting(isRecruiting)
+                .recruiting(isRecruiting)
                 .build();
     }
 }

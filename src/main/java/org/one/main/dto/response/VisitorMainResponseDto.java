@@ -6,14 +6,11 @@ import lombok.Builder;
 import lombok.Getter;
 import org.one.main.domain.MainPageConfig;
 import org.one.project.dto.response.MainProjectCardResponseDto;
-import org.one.project.dto.response.ProjectDetailResponseDto;
-import org.one.recruitment.dto.response.MainRecruitmentResponseDto;
-import org.one.recruitment.dto.response.RecruitmentResponseDto;
 
 import java.util.List;
 
 /**
- *  방문자 메인 페이지 dto
+ * 방문자 메인 페이지 dto
  */
 @Schema(description = "메인페이지(방문자)")
 @Getter
