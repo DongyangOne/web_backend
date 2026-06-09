@@ -22,7 +22,8 @@ public enum ErrorCode {
     DUPLICATE_PHONE_NUMBER(HttpStatus.CONFLICT, "DUPLICATE_PHONE_NUMBER", "이미 존재하는 전화번호입니다."),
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_NOT_FOUND", "존재하지 않는 부원입니다."),
     MAINPAGE_CONFIG_NOT_FOUND(HttpStatus.NOT_FOUND, "MAINPAGE_CONFIG_NOT_FOUND", "메인 페이지 설정 데이터가 db에 없습니다."),
-    PRIVACY_POLICY_NOT_AGREED(HttpStatus.UNPROCESSABLE_CONTENT, "PRIVACY_POLICY_NOT_AGREED", "개인정보 수집 및 이용에 동의해야 회원가입이 가능합니다.");
+    PRIVACY_POLICY_NOT_AGREED(HttpStatus.UNPROCESSABLE_CONTENT, "PRIVACY_POLICY_NOT_AGREED", "개인정보 수집 및 이용에 동의해야 회원가입이 가능합니다."),
+    DUPLICATE_SELECT_MEMBER(HttpStatus.BAD_REQUEST, "DUPLICATE_SELECT_MEMBER", "중복되는 부원 선택이 있습니다.");
 
 
     private final HttpStatus status;

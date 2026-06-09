@@ -43,14 +43,14 @@ public class MemberService {
      * Param : MemberRegisterRequestDto 부원 추가 dto
      */
     @Transactional
-    public void registerMember(MemberRegisterRequestDto requestDto){
+    public void registerMember(MemberRegisterRequestDto requestDto) {
         //학번 중복 시 예외처리
-        if(memberRepository.existsByStudentId(requestDto.getStudentId())) {
+        if (memberRepository.existsByStudentId(requestDto.getStudentId())) {
             throw new BusinessException(ErrorCode.DUPLICATE_STUDENT_ID);
         }
 
         //전화번호 중복 시 예외처리
-        if(memberRepository.existsByPhoneNumber(requestDto.getPhoneNum())) {
+        if (memberRepository.existsByPhoneNumber(requestDto.getPhoneNum())) {
             throw new BusinessException(ErrorCode.DUPLICATE_PHONE_NUMBER);
         }
 
@@ -73,33 +73,33 @@ public class MemberService {
      * Param : memberId
      * return : MemberDetailResponseDto
      */
-    public MemberDetailResponseDto getMemberDetail(Long memberId){
-        if(memberId == null || memberId <= 0){
+    public MemberDetailResponseDto getMemberDetail(Long memberId) {
+        if (memberId == null || memberId <= 0) {
             throw new BusinessException(ErrorCode.INVALID_INPUT);
         }
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         return MemberDetailResponseDto.from(member);
     }
 
     @Transactional
-    public void updateMember(Long memberId, MemberUpdateRequestDto requestDto){
-        if(memberId == null || memberId <= 0){
+    public void updateMember(Long memberId, MemberUpdateRequestDto requestDto) {
+        if (memberId == null || memberId <= 0) {
             throw new BusinessException(ErrorCode.INVALID_INPUT);
         }
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
         //중복 값 예외처리(학번, 전화번호)
-        if(!member.getStudentId().equals(requestDto.getStudentId())) {
-            if(memberRepository.existsByStudentId(requestDto.getStudentId())) {
+        if (!member.getStudentId().equals(requestDto.getStudentId())) {
+            if (memberRepository.existsByStudentId(requestDto.getStudentId())) {
                 throw new BusinessException(ErrorCode.DUPLICATE_STUDENT_ID);
             }
         }
-        if(!member.getPhoneNumber().equals(requestDto.getPhoneNum())) {
-            if(memberRepository.existsByPhoneNumber(requestDto.getPhoneNum())) {
+        if (!member.getPhoneNumber().equals(requestDto.getPhoneNum())) {
+            if (memberRepository.existsByPhoneNumber(requestDto.getPhoneNum())) {
                 throw new BusinessException(ErrorCode.DUPLICATE_PHONE_NUMBER);
             }
         }
@@ -108,27 +108,30 @@ public class MemberService {
     }
 
     /**
-     * 요청 값(memberIds)에 들어있는 id를 가진 데이터들을 삭제
+     * 요청 값(memberIds)에 들어있는 id를 가진 데이터들을 일괄 삭제
      * Param : memberIds
      */
     @Transactional
-    public void deleteMembers(List<Long> memberIds)
-    {
-        //리스트 내 중복값 있을 경우 예외처리
-        Set<Long> uniqueIds = new HashSet<>(memberIds);
-        if (memberIds.size() != uniqueIds.size()) {
+    public void deleteMembers(List<Long> memberIds) {
+        // 방어 로직: 빈 리스트 방지
+        if (memberIds == null || memberIds.isEmpty()) {
             throw new BusinessException(ErrorCode.INVALID_INPUT);
         }
-        //리스트 내 id 중 db에 없는 값이 하나라도 있을 경우 예외처리
+
+        // 리스트 내 중복값 있을 경우 예외처리
+        Set<Long> uniqueIds = new HashSet<>(memberIds);
+        if (memberIds.size() != uniqueIds.size()) {
+            throw new BusinessException(ErrorCode.DUPLICATE_SELECT_MEMBER);
+        }
+
+        // 리스트 내 id 중 db에 없는 값이 하나라도 있을 경우 예외처리
         List<Member> existingMembers = memberRepository.findAllById(uniqueIds);
         if (existingMembers.size() != uniqueIds.size()) {
             throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
-        memberRepository.deleteAllByIdInBatch(memberIds);
+        memberRepository.deleteAllByIdInBatch(uniqueIds);
     }
-
-
 
 
 }

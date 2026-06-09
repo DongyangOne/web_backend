@@ -1,8 +1,12 @@
 package org.one.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
@@ -11,6 +15,7 @@ import org.one.member.dto.*;
 import org.one.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +28,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/members")
+@Validated
 public class MemberController {
     private final MemberService memberService;
 
@@ -39,7 +45,7 @@ public class MemberController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<MemberListResponseDto>>> getMemberList(
-            @ModelAttribute @Valid MemberListRequestDto requestDto){
+            @ModelAttribute @Valid MemberListRequestDto requestDto) {
 
         List<MemberListResponseDto> response = memberService.getMemberListByAdmin(requestDto);
 
@@ -65,7 +71,7 @@ public class MemberController {
     @Operation(summary = "부원 등록", description = "관리자 권한(ADMIN)이 있는 계정만 전체 부원 명부를 조회할 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> registerMember(@RequestBody @Valid MemberRegisterRequestDto requestDto){
+    public ResponseEntity<ApiResponse<Void>> registerMember(@RequestBody @Valid MemberRegisterRequestDto requestDto) {
         //등록 정보를 service로 넘겨 부원 등록 진행
         memberService.registerMember(requestDto);
 
@@ -85,14 +91,15 @@ public class MemberController {
     @Operation(summary = "부원 정보 가져오기", description = "관리자 권한(ADMIN)이 있는 계정만 부원 상세 정보를 조회할 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{memberId}")
-    public ResponseEntity<ApiResponse<MemberDetailResponseDto>> getMemberDetail(@PathVariable  Long memberId){
-        MemberDetailResponseDto responseDto= memberService.getMemberDetail(memberId);
+    public ResponseEntity<ApiResponse<MemberDetailResponseDto>> getMemberDetail(@PathVariable Long memberId) {
+        MemberDetailResponseDto responseDto = memberService.getMemberDetail(memberId);
         return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
 
     /**
      * 부원 정보 수정 api
      * 요청 시,
+     *
      * @PathVariable와 @requestBody를 통해 memberId와 MemberUpdateReqeustDto전달
      *
      * api 요청 예시 : PATCH /api/v1/admin/members/{memberId}
@@ -105,32 +112,33 @@ public class MemberController {
     @PatchMapping("/{memberId}")
     public ResponseEntity<ApiResponse<Void>> updateMember(
             @PathVariable Long memberId,
-            @Valid @RequestBody MemberUpdateRequestDto requestDto)
-    {
+            @Valid @RequestBody MemberUpdateRequestDto requestDto) {
         memberService.updateMember(memberId, requestDto);
 
         return ResponseEntity.ok(null);
     }
 
     /**
-     * 부원 삭제 api
-     * 요청 시,
-     * @requestBody를 통해 memberId리스트를 전달
+     * 부원 일괄 삭제 API
+     * 요청 시, URL 쿼리 파라미터를 통해 memberIds 리스트를 전달 (HTTP Body 사용 안 함)
      *
-     * api 요청 예시 : Delete /api/v1/admin/members
+     * API 요청 예시 : DELETE /api/v1/admin/members?memberIds=12&memberIds=15
      *
-     * requestBody 예시
-     *  "memberIds" : [2, 7]
-     *
-     * 응답 데이터 : x
+     * 응답 데이터 : 공통 성공 응답 포맷 (data: null)
      */
-    @ApiErrorExceptions({ErrorCode.MEMBER_NOT_FOUND, ErrorCode.INVALID_INPUT})
-     @Operation(summary = "부원 삭제", description = "관리자 권한(ADMIN)이 있는 계정만 부원을 삭제할 수 있습니다.")
-     @PreAuthorize("hasRole('ADMIN')")
-     @DeleteMapping
-    public ResponseEntity<ApiResponse<Void>> deleteMembers(@RequestBody @Valid MemberDeleteListRequestDto requestDto){
-         memberService.deleteMembers(requestDto.getMemberIds());
-         return ResponseEntity.ok(ApiResponse.success(null));
-     }
+    @ApiErrorExceptions({ErrorCode.MEMBER_NOT_FOUND, ErrorCode.INVALID_INPUT, ErrorCode.DUPLICATE_SELECT_MEMBER})
+    @Operation(summary = "부원 일괄 삭제", description = "관리자 권한(ADMIN)이 있는 계정만 여러 부원을 한 번에 삭제할 수 있습니다. 성공 시 빈 데이터를 포함한 공통 응답 포맷을 반환합니다.")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<Void>> deleteMembers(
+            @RequestParam("memberIds")
+            @NotEmpty(message = "삭제할 부원(들)의 id를 입력해주세요.")
+            @Schema(description = "삭제할 부원들의 id", example = "5")
+            List<@NotNull @Positive(message = "올바르지 않은 부원의 id가 포함되어있습니다.") Long> memberIds
+    ) {
+
+        memberService.deleteMembers(memberIds);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
 
 }
