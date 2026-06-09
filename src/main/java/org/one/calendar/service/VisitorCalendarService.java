@@ -45,7 +45,6 @@ public class VisitorCalendarService {
      * @param year 연도
      * @return 월별 그룹핑된 일정 목록
      */
-    @Transactional(readOnly = true)
     public List<CalendarMonthlyResponseDto> getYearScheduleList(int year) {
         LocalDate start = LocalDate.of(year, 1, 1);
         LocalDate end = LocalDate.of(year, 12, 31);
