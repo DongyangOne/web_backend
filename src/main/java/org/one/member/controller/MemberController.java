@@ -138,5 +138,4 @@ public class MemberController {
         memberService.deleteMembers(requestDto.getMemberIds());
         return ResponseEntity.ok(ApiResponse.success(null));
     }
-
 }

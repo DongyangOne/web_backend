@@ -5,13 +5,20 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import okhttp3.Response;
+import org.one.applicant.dto.request.ApplicantMemberListRequestDto;
 import org.one.applicant.dto.request.ApplyRequestDto;
+import org.one.applicant.dto.response.ApplicantMemberListResponseDto;
 import org.one.applicant.service.VisitorApplicantMemberService;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
+import org.one.member.dto.request.MemberRegisterRequestDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "ApplicantMember(visitor)", description = "신청 부원 관리 (방문자 전용)")
 @RestController

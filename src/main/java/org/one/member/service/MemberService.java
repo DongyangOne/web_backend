@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -126,7 +127,6 @@ public class MemberService {
         if (existingMembers.size() != uniqueIds.size()) {
             throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
-
         memberRepository.deleteAllByIdInBatch(memberIds);
     }
 
