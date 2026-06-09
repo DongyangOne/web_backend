@@ -7,7 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
-import org.one.member.dto.*;
+import org.one.member.dto.request.MemberDeleteListRequestDto;
+import org.one.member.dto.request.MemberListRequestDto;
+import org.one.member.dto.request.MemberRegisterRequestDto;
+import org.one.member.dto.request.MemberUpdateRequestDto;
+import org.one.member.dto.response.MemberDetailResponseDto;
+import org.one.member.dto.response.MemberListResponseDto;
 import org.one.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +27,7 @@ import java.util.List;
 @Tag(name = "Member", description = "부원 명부 관리 (관리자 전용)")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/members")
+@RequestMapping("/api/v1/admin/members")
 public class MemberController {
     private final MemberService memberService;
 
@@ -30,7 +35,7 @@ public class MemberController {
      * 명부 전체 조회 API
      * 요청 시, 선택적으로 page관련 설정(정렬 등)
      *
-     * api 요청 예시 : GET /api/v1/members?page=1&size=10&sort=...
+     * api 요청 예시 : GET /api/v1/admin/members?page=1&size=10&sort=...
      *
      * 응답 데이터 : 전체 member의 명부리스트
      */
@@ -50,7 +55,7 @@ public class MemberController {
      * 부원 등록 API
      * 요청 시, requestBody를 이용 MemberRegisterRequestDto 필드 입력
      *
-     * api 요청 예시 : POST /api/v1/members
+     * api 요청 예시 : POST /api/v1/admin/members
      *
      * requestBody 예시
      * "name" : "aa",
@@ -77,7 +82,7 @@ public class MemberController {
      * 특정 부원 정보 조회 API : 부원 수정 시 정보를 불러오기 위한 api
      * 요청 시, memberId를 @PathVariable로 url을 통해 전달
      *
-     * api 요청 예시 : GET /api/members/{memberId}
+     * api 요청 예시 : GET /api/v1/admin/members/{memberId}
      *
      * 응답 데이터 : 특정 부원에 대한 정보
      */
@@ -96,7 +101,7 @@ public class MemberController {
      *
      * @PathVariable와 @requestBody를 통해 memberId와 MemberUpdateReqeustDto전달
      *
-     * api 요청 예시 : PATCH /api/members/{memberId}
+     * api 요청 예시 : PATCH /api/v1/admin/members/{memberId}
      *
      * 응답 데이터 : 수정 완료 메시지
      */
@@ -109,6 +114,28 @@ public class MemberController {
             @Valid @RequestBody MemberUpdateRequestDto requestDto) {
         memberService.updateMember(memberId, requestDto);
 
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    /**
+     * 부원 삭제 api
+     * 요청 시,
+     *
+     * @requestBody를 통해 memberId리스트를 전달
+     *
+     * api 요청 예시 : Delete /api/v1/admin/members
+     *
+     * requestBody 예시
+     * "memberIds" : [2, 7]
+     *
+     * 응답 데이터 : x
+     */
+    @ApiErrorExceptions({ErrorCode.MEMBER_NOT_FOUND, ErrorCode.INVALID_INPUT})
+    @Operation(summary = "부원 삭제", description = "관리자 권한(ADMIN)이 있는 계정만 부원을 삭제할 수 있습니다.")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<Void>> deleteMembers(@RequestBody @Valid MemberDeleteListRequestDto requestDto) {
+        memberService.deleteMembers(requestDto.getMemberIds());
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 

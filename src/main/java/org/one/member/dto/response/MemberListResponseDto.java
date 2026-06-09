@@ -1,4 +1,4 @@
-package org.one.member.dto;
+package org.one.member.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,7 +26,7 @@ public class MemberListResponseDto {
     @Schema(description = "부원 활동 상태", example = "ACTIVE")
     private MemberStatus status;
 
-    private MemberListResponseDto(Member member){
+    private MemberListResponseDto(Member member) {
         this.memberId = member.getMemberId();
         this.name = member.getName();
         this.studentId = member.getStudentId();
@@ -36,7 +36,7 @@ public class MemberListResponseDto {
         this.status = member.getStatus();
     }
 
-    public static MemberListResponseDto from(Member member){
+    public static MemberListResponseDto from(Member member) {
         return new MemberListResponseDto(member);
     }
 }

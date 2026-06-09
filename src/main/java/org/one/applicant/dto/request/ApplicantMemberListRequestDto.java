@@ -1,4 +1,4 @@
-package org.one.member.dto;
+package org.one.applicant.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
@@ -6,14 +6,13 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import org.one.global.pagination.RequestPagingDto;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
-@Schema(description = "명부 리스트 조회 요청(페이지 설정)")
-public class MemberListRequestDto extends RequestPagingDto {
-    public MemberListRequestDto(){
-        //기본값 세팅
+
+@Schema(description = "신청 부원 리스트 조회 요청 dto")
+@Getter
+public class ApplicantMemberListRequestDto extends RequestPagingDto {
+    //생성자를 통해 기본값설정(페이지 번호, 한번에 가져올 개수, 오래된 순)
+    public ApplicantMemberListRequestDto(){
         this.setPage(0);
         this.setSize(15);
         this.setSort("createdAt");
@@ -36,15 +35,15 @@ public class MemberListRequestDto extends RequestPagingDto {
     }
 
     @Override
-    @Schema(description = "정렬 기준 필드", example = "createdAt")
-    @Pattern(regexp = "^(createdAt|grade)$", message = "정렬 기준은 createdAt 또는 grade만 가능합니다.")
+    @Schema(description = "정렬 기준 필드 [createdAt 고정]", example = "createdAt")
+    @Pattern(regexp = "^(createdAt)$", message = "정렬 기준은 createdAt만 가능합니다.")
     public String getSort() {
         return super.getSort();
     }
 
     @Override
-    @Schema(description = "정렬 방향", example = "ASC")
-    @Pattern(regexp = "^(ASC|DESC)$", message = "정렬 방향은 ASC 또는 DESC만 가능합니다.")
+    @Schema(description = "정렬 방향 [ASC 고정]", example = "ASC")
+    @Pattern(regexp = "^(ASC)$", message = "정렬 방향은 ASC만 가능합니다.")
     public String getDirection() {
         return super.getDirection();
     }
