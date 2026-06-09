@@ -39,7 +39,7 @@ public class MemberController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<MemberListResponseDto>>> getMemberList(
-            @ModelAttribute @Valid MemberListRequestDto requestDto){
+            @ModelAttribute @Valid MemberListRequestDto requestDto) {
 
         List<MemberListResponseDto> response = memberService.getMemberListByAdmin(requestDto);
 
@@ -65,7 +65,7 @@ public class MemberController {
     @Operation(summary = "부원 등록", description = "관리자 권한(ADMIN)이 있는 계정만 전체 부원 명부를 조회할 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> registerMember(@RequestBody @Valid MemberRegisterRequestDto requestDto){
+    public ResponseEntity<ApiResponse<Void>> registerMember(@RequestBody @Valid MemberRegisterRequestDto requestDto) {
         //등록 정보를 service로 넘겨 부원 등록 진행
         memberService.registerMember(requestDto);
 
@@ -85,14 +85,15 @@ public class MemberController {
     @Operation(summary = "부원 정보 가져오기", description = "관리자 권한(ADMIN)이 있는 계정만 부원 상세 정보를 조회할 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{memberId}")
-    public ResponseEntity<ApiResponse<MemberDetailResponseDto>> getMemberDetail(@PathVariable  Long memberId){
-        MemberDetailResponseDto responseDto= memberService.getMemberDetail(memberId);
+    public ResponseEntity<ApiResponse<MemberDetailResponseDto>> getMemberDetail(@PathVariable Long memberId) {
+        MemberDetailResponseDto responseDto = memberService.getMemberDetail(memberId);
         return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
 
     /**
      * 부원 정보 수정 api
      * 요청 시,
+     *
      * @PathVariable와 @requestBody를 통해 memberId와 MemberUpdateReqeustDto전달
      *
      * api 요청 예시 : PATCH /api/members/{memberId}
@@ -105,11 +106,10 @@ public class MemberController {
     @PatchMapping("/{memberId}")
     public ResponseEntity<ApiResponse<Void>> updateMember(
             @PathVariable Long memberId,
-            @Valid @RequestBody MemberUpdateRequestDto requestDto)
-    {
+            @Valid @RequestBody MemberUpdateRequestDto requestDto) {
         memberService.updateMember(memberId, requestDto);
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 
 }
