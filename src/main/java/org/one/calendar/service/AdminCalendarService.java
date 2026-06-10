@@ -3,10 +3,10 @@ package org.one.calendar.service;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.one.calendar.dto.request.CalendarSaveRequestDto;
 import org.one.calendar.dto.request.CalendarUpdateRequestDto;
@@ -56,16 +56,22 @@ public class AdminCalendarService {
 	 */
 	@Transactional(readOnly = true)
 	public List<CalendarMonthlyResponseDto> findAllByYear(int year) {
-		LocalDate start = LocalDate.of(year, 1, 1);
-		LocalDate end = LocalDate.of(year, 12, 31);
-		List<CalendarSchedule> schedules = calendarScheduleRepository.findByDateRange(start, end);
+		LocalDate yearStart = LocalDate.of(year, 1, 1);
+		LocalDate yearEnd = LocalDate.of(year, 12, 31);
+		List<CalendarSchedule> schedules = calendarScheduleRepository.findByDateRange(yearStart, yearEnd);
 
-		Map<String, List<CalendarResponseDto>> grouped = schedules.stream()
-				.collect(Collectors.groupingBy(
-						s -> s.getStartDate().format(YEAR_MONTH_FORMAT),
-						LinkedHashMap::new,
-						Collectors.mapping(CalendarResponseDto::from, Collectors.toList())
-				));
+		Map<String, List<CalendarResponseDto>> grouped = new LinkedHashMap<>();
+		for (CalendarSchedule s : schedules) {
+			LocalDate effectiveStart = s.getStartDate().isBefore(yearStart) ? yearStart : s.getStartDate();
+			LocalDate effectiveEnd = s.getEndDate().isAfter(yearEnd) ? yearEnd : s.getEndDate();
+
+			YearMonth from = YearMonth.from(effectiveStart);
+			YearMonth to = YearMonth.from(effectiveEnd);
+			for (YearMonth ym = from; !ym.isAfter(to); ym = ym.plusMonths(1)) {
+				grouped.computeIfAbsent(ym.format(YEAR_MONTH_FORMAT), k -> new ArrayList<>())
+						.add(CalendarResponseDto.from(s));
+			}
+		}
 
 		return grouped.entrySet().stream()
 				.map(entry -> CalendarMonthlyResponseDto.of(entry.getKey(), entry.getValue()))
