@@ -121,7 +121,7 @@ public class AdminCalendarService {
 		if (existCount != calendarIds.size()) {
 			throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND);
 		}
-		calendarScheduleRepository.deleteAllById(calendarIds);
+		calendarScheduleRepository.deleteAllByIdInBatch(calendarIds);
 	}
 
 	/**
