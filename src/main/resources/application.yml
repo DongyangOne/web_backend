@@ -47,6 +47,11 @@ jwt:
   access-expiration: ${JWT_ACCESS_EXPIRATION:3600000}
   refresh-expiration: ${JWT_REFRESH_EXPIRATION:1209600000}
 
+admin:
+  init:
+    username: ${ADMIN_INIT_USERNAME}
+    password: ${ADMIN_INIT_PASSWORD}
+
 app:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
