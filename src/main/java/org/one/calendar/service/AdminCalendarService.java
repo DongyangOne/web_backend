@@ -38,7 +38,6 @@ public class AdminCalendarService {
 	 * @return 생성된 일정 응답 DTO
 	 */
 	public CalendarResponseDto save(CalendarSaveRequestDto request) {
-		validateDateRange(request.getStartDate(), request.getEndDate());
 		CalendarSchedule schedule = new CalendarSchedule(
 				request.getTitle(),
 				request.getStartDate(),
@@ -100,7 +99,6 @@ public class AdminCalendarService {
 	 * @return 수정된 일정 응답 DTO
 	 */
 	public CalendarResponseDto update(Long calendarId, CalendarUpdateRequestDto request) {
-		validateDateRange(request.getStartDate(), request.getEndDate());
 		CalendarSchedule schedule = calendarScheduleRepository.findById(calendarId)
 				.orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
 		schedule.update(
@@ -124,15 +122,4 @@ public class AdminCalendarService {
 		calendarScheduleRepository.deleteAllById(calendarIds);
 	}
 
-	/**
-	 * 시작일이 종료일보다 늦지 않은지 검증합니다.
-	 *
-	 * @param start 시작일
-	 * @param end 종료일
-	 */
-	private void validateDateRange(LocalDate start, LocalDate end) {
-		if (start != null && end != null && start.isAfter(end)) {
-			throw new BusinessException(ErrorCode.INVALID_DATE_RANGE);
-		}
-	}
 }
