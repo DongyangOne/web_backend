@@ -12,6 +12,7 @@ import org.one.applicant.dto.response.ApplicantMemberDetailResponseDto;
 import org.one.applicant.dto.request.ApplicantMemberListRequestDto;
 import org.one.applicant.dto.response.ApplicantMemberListResponseDto;
 import org.one.applicant.service.ApplicantMemberService;
+import org.one.global.pagination.ResponsePagingDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,8 +42,10 @@ public class ApplicantMemberController {
     @Operation(summary = "신청 부원 조회", description = "관리자 권한(ADMIN)이 있는 계정만 신청 부원을 조회할 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ApplicantMemberListResponseDto>>> getApplicantMemberList(@ModelAttribute @Valid ApplicantMemberListRequestDto requestDto){
-        List<ApplicantMemberListResponseDto> response = applicantMemberService.getApplicantList(requestDto);
+    public ResponseEntity<ApiResponse<ResponsePagingDto<ApplicantMemberListResponseDto>>> getApplicantMemberList(
+            @ModelAttribute @Valid ApplicantMemberListRequestDto requestDto) {
+
+        ResponsePagingDto<ApplicantMemberListResponseDto> response = applicantMemberService.getApplicantList(requestDto);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
@@ -58,8 +61,8 @@ public class ApplicantMemberController {
     @Operation(summary = "신청 부원 상세 정보 조회", description = "관리자 권한(ADMIN)이 있는 계정만 신청 부원의 상세 정보를 조회할 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{applicantMemberId}")
-    public ResponseEntity<ApiResponse<ApplicantMemberDetailResponseDto>> getApplicantMemberDetail(@PathVariable Long applicantMemberId){
-        ApplicantMemberDetailResponseDto responseDto= applicantMemberService.getApplicantMemberDetail(applicantMemberId);
+    public ResponseEntity<ApiResponse<ApplicantMemberDetailResponseDto>> getApplicantMemberDetail(@PathVariable Long applicantMemberId) {
+        ApplicantMemberDetailResponseDto responseDto = applicantMemberService.getApplicantMemberDetail(applicantMemberId);
         return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
 
@@ -75,7 +78,7 @@ public class ApplicantMemberController {
     @Operation(summary = "신청 정보 불러오기", description = "관리자 권한(ADMIN)이 있는 계정만 신청 정보를 불러올 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{applicantMemberId}/registration-form")
-    public ResponseEntity<ApiResponse<ApplicantInfoResponseDto>> getApplicantInfo(@PathVariable Long applicantMemberId){
+    public ResponseEntity<ApiResponse<ApplicantInfoResponseDto>> getApplicantInfo(@PathVariable Long applicantMemberId) {
         ApplicantInfoResponseDto responseDto = applicantMemberService.getApplicantInfo(applicantMemberId);
         return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
