@@ -26,9 +26,8 @@ public class AdminRecruitmentService {
 	 *
 	 * @return 모집 공고 응답 DTO
 	 */
-	@Transactional(readOnly = true)
 	public RecruitmentResponseDto findOne() {
-		Recruitment recruitment = recruitmentRepository.findRecruitment();
+		Recruitment recruitment = getOrInitRecruitment();
 		return RecruitmentResponseDto.from(recruitment, computeIsRecruiting(recruitment));
 	}
 
@@ -43,7 +42,7 @@ public class AdminRecruitmentService {
 		validateDateRange(request.getInterviewStart(), request.getInterviewEnd());
 		validateRecruitmentInterviewOrder(request.getRecruitmentEnd(), request.getInterviewStart());
 
-		Recruitment recruitment = recruitmentRepository.findRecruitment();
+		Recruitment recruitment = getOrInitRecruitment();
 		if (recruitment == null) {
 			throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND);
 		}
@@ -57,6 +56,16 @@ public class AdminRecruitmentService {
 				request.getNotificationDate()
 		);
 		return RecruitmentResponseDto.from(recruitment, computeIsRecruiting(recruitment));
+	}
+
+	/**
+	 * 모집 공고 엔티티를 조회하거나, 없으면 기본값으로 초기화하여 반환합니다.
+	 *
+	 * @return 모집 공고 엔티티
+	 */
+	private Recruitment getOrInitRecruitment() {
+		return recruitmentRepository.findById(1)
+				.orElseGet(() -> recruitmentRepository.save(Recruitment.singleton()));
 	}
 
 	/**
