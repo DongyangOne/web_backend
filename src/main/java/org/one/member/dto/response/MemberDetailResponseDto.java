@@ -1,4 +1,4 @@
-package org.one.member.dto;
+package org.one.member.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class MemberDetailResponseDto {
     @Schema(description = "부원 전화번호", example = "010-1111-2222")
     private String phoneNum;
 
-    private MemberDetailResponseDto(Member member){
+    private MemberDetailResponseDto(Member member) {
         this.name = member.getName();
         this.grade = member.getGrade();
         this.studentId = member.getStudentId();
@@ -34,7 +34,7 @@ public class MemberDetailResponseDto {
         this.phoneNum = member.getPhoneNumber();
     }
 
-    public static MemberDetailResponseDto from(Member member){
+    public static MemberDetailResponseDto from(Member member) {
         return new MemberDetailResponseDto(member);
     }
 }

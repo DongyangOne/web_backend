@@ -11,7 +11,7 @@ import org.one.main.repository.MainPageConfigRepository;
 import org.one.project.dto.response.MainProjectCardResponseDto;
 import org.one.project.repository.ProjectEventRepository;
 import org.one.recruitment.domain.Recruitment;
-import org.one.recruitment.dto.response.MainRecruitmentResponseDto;
+import org.one.main.dto.response.MainRecruitmentResponseDto;
 import org.one.recruitment.repository.RecruitmentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,11 +30,12 @@ public class VisitorMainService {
 
     /**
      * 메인 페이지 불러오기
+     *
      * @return VisitorMainResponseDto
      */
-    public VisitorMainResponseDto getMainPage(){
+    public VisitorMainResponseDto getMainPage() {
         MainPageConfig mainPageConfig = mainPageConfigRepository.findById(1)
-                .orElseThrow(()-> new BusinessException(ErrorCode.MAINPAGE_CONFIG_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MAINPAGE_CONFIG_NOT_FOUND));
 
         List<ActivityCardResponseDto> activityCards = activityCardRepository.findAllByOrderByCardOrderAsc().stream()
                 .map(ActivityCardResponseDto::from)
@@ -49,18 +50,23 @@ public class VisitorMainService {
 
     /**
      * 모집 공고 불러오기
+     *
      * @return MainRecruitmentResponseDto 모집공고응답
      */
-    public MainRecruitmentResponseDto getRecruitment(){
+    public MainRecruitmentResponseDto getRecruitment() {
         Recruitment recruitment = recruitmentRepository.findById(1)
-                .orElseThrow(()->new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
 
-        //서버 시간 기준 모집 중인지 확인
         LocalDate today = LocalDate.now();
-        boolean isRecruiting = !today.isBefore(recruitment.getRecruitmentStart())
-                && !today.isAfter(recruitment.getRecruitmentEnd());
+        LocalDate start = recruitment.getRecruitmentStart();
+        LocalDate end = recruitment.getRecruitmentEnd();
+
+        boolean isRecruiting = false;
+
+        if (start != null && end != null) {
+            isRecruiting = !today.isBefore(start) && !today.isAfter(end);
+        }
+
         return MainRecruitmentResponseDto.of(recruitment, isRecruiting);
     }
-
-
 }

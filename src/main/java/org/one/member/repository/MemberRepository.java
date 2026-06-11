@@ -1,6 +1,7 @@
 package org.one.member.repository;
 
 import org.one.member.domain.Member;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,31 +14,29 @@ import java.util.List;
  */
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-	/**
-	 * 특정 학번의 부원이 이미 존재하는지 확인합니다.
-	 *
-	 * @param studentId 학번
-	 * @return 존재하면 true
-	 */
-	boolean existsByStudentId(String studentId);
+    /**
+     * 특정 학번의 부원이 이미 존재하는지 확인합니다.
+     *
+     * @param studentId 학번
+     * @return 존재하면 true
+     */
+    boolean existsByStudentId(String studentId);
 
-	/**
-	 * 모든 정규 부원의 학년과 나이를 1씩 증가시킵니다.
-	 */
-	@Modifying
-	@Query("UPDATE Member m SET m.grade = m.grade + 1, m.age = m.age + 1")
-	void incrementGradeAndAge();
+    /**
+     * 모든 정규 부원의 학년과 나이를 1씩 증가시킵니다.
+     */
+    @Modifying
+    @Query("UPDATE Member m SET m.grade = m.grade + 1, m.age = m.age + 1")
+    void incrementGradeAndAge();
 
-	//동아리에 소속중인 부원들의 모든 정보를 가져와 리스트로 만듦.
-	@Query("SELECT m FROM Member m")
-	List<Member> findAllByAdmin(Pageable pageable);
+    Page<Member> findAll(Pageable pageable);
 
-	/**
-	 * 특정 전화번호를 가진 부원이 이미 존재하는지 확인합니다.
-	 *
-	 * @param phoneNumber 전화번호
-	 * @return 존재하면 true
-	 */
-	boolean existsByPhoneNumber(String phoneNumber);
+    /**
+     * 특정 전화번호를 가진 부원이 이미 존재하는지 확인합니다.
+     *
+     * @param phoneNumber 전화번호
+     * @return 존재하면 true
+     */
+    boolean existsByPhoneNumber(String phoneNumber);
 
 }
