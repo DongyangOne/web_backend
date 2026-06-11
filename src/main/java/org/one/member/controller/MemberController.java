@@ -62,7 +62,7 @@ public class MemberController {
      * 응답 데이터 : x
      */
     @ApiErrorExceptions({ErrorCode.DUPLICATE_PHONE_NUMBER, ErrorCode.DUPLICATE_STUDENT_ID, ErrorCode.INVALID_INPUT})
-    @Operation(summary = "부원 등록", description = "관리자 권한(ADMIN)이 있는 계정만 전체 부원 명부를 조회할 수 있습니다.")
+    @Operation(summary = "부원 등록", description = "관리자 권한(ADMIN)이 있는 계정만 부원 등록 메뉴를 이용할 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> registerMember(@RequestBody @Valid MemberRegisterRequestDto requestDto) {
@@ -109,7 +109,7 @@ public class MemberController {
             @Valid @RequestBody MemberUpdateRequestDto requestDto) {
         memberService.updateMember(memberId, requestDto);
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 
     /**

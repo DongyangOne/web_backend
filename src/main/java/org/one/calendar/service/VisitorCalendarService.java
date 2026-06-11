@@ -11,9 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,18 +43,23 @@ public class VisitorCalendarService {
      * @param year 연도
      * @return 월별 그룹핑된 일정 목록
      */
-    @Transactional(readOnly = true)
     public List<CalendarMonthlyResponseDto> getYearScheduleList(int year) {
         LocalDate start = LocalDate.of(year, 1, 1);
         LocalDate end = LocalDate.of(year, 12, 31);
+
         List<CalendarSchedule> schedules = calendarScheduleRepository.findByDateRange(start, end);
 
-        Map<String, List<CalendarResponseDto>> grouped = schedules.stream()
-                .collect(Collectors.groupingBy(
-                        s -> s.getStartDate().format(YEAR_MONTH_FORMAT),
-                        LinkedHashMap::new,
-                        Collectors.mapping(CalendarResponseDto::from, Collectors.toList())
-                ));
+        Map<String, List<CalendarResponseDto>> grouped = new TreeMap<>();
+
+        for (CalendarSchedule schedule : schedules) {
+            if (schedule.getStartDate().getYear() == year) {
+
+                String monthKey = schedule.getStartDate().format(YEAR_MONTH_FORMAT);
+
+                CalendarResponseDto dto = CalendarResponseDto.from(schedule);
+                grouped.computeIfAbsent(monthKey, k -> new ArrayList<>()).add(dto);
+            }
+        }
 
         return grouped.entrySet().stream()
                 .map(entry -> CalendarMonthlyResponseDto.builder()

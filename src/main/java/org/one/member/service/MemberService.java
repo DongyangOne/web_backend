@@ -7,7 +7,11 @@ import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
 import org.one.global.pagination.ResponsePagingDto;
 import org.one.member.domain.Member;
-import org.one.member.dto.*;
+import org.one.member.dto.request.MemberListRequestDto;
+import org.one.member.dto.request.MemberRegisterRequestDto;
+import org.one.member.dto.request.MemberUpdateRequestDto;
+import org.one.member.dto.response.MemberDetailResponseDto;
+import org.one.member.dto.response.MemberListResponseDto;
 import org.one.member.enums.MemberStatus;
 import org.one.member.repository.MemberRepository;
 import org.springframework.data.domain.Page;
@@ -126,7 +130,6 @@ public class MemberService {
         if (existingMembers.size() != uniqueIds.size()) {
             throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
-
         memberRepository.deleteAllByIdInBatch(memberIds);
     }
 

@@ -49,7 +49,7 @@ public class ApplicantMemberService {
             throw new BusinessException(ErrorCode.INVALID_INPUT);
         }
         ApplicantMember applicantMember = applicantMemberRepository.findById(applicantMemberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.APPLICANT_MEMBER_NOT_FOUND));
         return ApplicantMemberDetailResponseDto.from(applicantMember);
     }
 
@@ -63,7 +63,7 @@ public class ApplicantMemberService {
             throw new BusinessException(ErrorCode.INVALID_INPUT);
         }
         ApplicantMember applicantMember = applicantMemberRepository.findById(applicantMemberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.APPLICANT_MEMBER_NOT_FOUND));
         return ApplicantInfoResponseDto.from(applicantMember);
     }
 

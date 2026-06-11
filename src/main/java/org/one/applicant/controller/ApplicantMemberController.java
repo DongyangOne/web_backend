@@ -57,7 +57,7 @@ public class ApplicantMemberController {
      *
      * 응답 데이터 : 특정 신청 부원에 대한 상세 정보
      */
-    @ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.MEMBER_NOT_FOUND})
+    @ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.APPLICANT_MEMBER_NOT_FOUND})
     @Operation(summary = "신청 부원 상세 정보 조회", description = "관리자 권한(ADMIN)이 있는 계정만 신청 부원의 상세 정보를 조회할 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{applicantMemberId}")
@@ -74,7 +74,7 @@ public class ApplicantMemberController {
      *
      * 응답 데이터 : 특정 신청 부원의 등록 시 사용할 정보
      */
-    @ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.MEMBER_NOT_FOUND})
+    @ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.APPLICANT_MEMBER_NOT_FOUND})
     @Operation(summary = "신청 정보 불러오기", description = "관리자 권한(ADMIN)이 있는 계정만 신청 정보를 불러올 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{applicantMemberId}/registration-form")

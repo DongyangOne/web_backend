@@ -1,4 +1,4 @@
-package org.one.member.dto;
+package org.one.member.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
@@ -6,12 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Schema(description = "새로운 부원 등록 요청")
+@Schema(description = "부원 정보 수정 요청")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberRegisterRequestDto {
-
+public class MemberUpdateRequestDto {
     @Schema(description = "부원 이름", example = "홍길동")
     @NotBlank(message = "이름을 입력해주세요.")
     @Size(min = 2, max = 20, message = "이름은 2~20자 사이로 입력해주세요.")

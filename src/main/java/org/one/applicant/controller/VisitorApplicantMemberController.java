@@ -13,7 +13,7 @@ import org.one.applicant.service.VisitorApplicantMemberService;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
-import org.one.member.dto.MemberRegisterRequestDto;
+import org.one.member.dto.request.MemberRegisterRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
