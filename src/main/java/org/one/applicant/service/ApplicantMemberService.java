@@ -24,9 +24,10 @@ public class ApplicantMemberService {
 
     /**
      * 신청부원 리스트를 모두 가져옴.
+     *
      * @Param ApplicantMemberListRequestDto : 페이지 설정 정보(정렬, 개수 등) 전달
      */
-    public List<ApplicantMemberListResponseDto> getApplicantList(ApplicantMemberListRequestDto requestDto){
+    public List<ApplicantMemberListResponseDto> getApplicantList(ApplicantMemberListRequestDto requestDto) {
         Pageable pageable = requestDto.toPageable();
 
         List<ApplicantMember> applicantMemberList = applicantMemberRepository.findAllBy(pageable);
@@ -43,12 +44,12 @@ public class ApplicantMemberService {
      * Param : applicantMemberId
      * return : ApplicantMemberDetailResponseDto
      */
-    public ApplicantMemberDetailResponseDto getApplicantMemberDetail(Long applicantMemberId){
-        if(applicantMemberId == null || applicantMemberId <= 0){
+    public ApplicantMemberDetailResponseDto getApplicantMemberDetail(Long applicantMemberId) {
+        if (applicantMemberId == null || applicantMemberId <= 0) {
             throw new BusinessException(ErrorCode.INVALID_INPUT);
         }
         ApplicantMember applicantMember = applicantMemberRepository.findById(applicantMemberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.APPLICANT_MEMBER_NOT_FOUND));
         return ApplicantMemberDetailResponseDto.from(applicantMember);
     }
 
@@ -57,12 +58,12 @@ public class ApplicantMemberService {
      * Param : applicantMemberId
      * return : ApplicantInfoResponseDto
      */
-    public ApplicantInfoResponseDto getApplicantInfo(Long applicantMemberId){
-        if(applicantMemberId == null || applicantMemberId <= 0){
+    public ApplicantInfoResponseDto getApplicantInfo(Long applicantMemberId) {
+        if (applicantMemberId == null || applicantMemberId <= 0) {
             throw new BusinessException(ErrorCode.INVALID_INPUT);
         }
         ApplicantMember applicantMember = applicantMemberRepository.findById(applicantMemberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.APPLICANT_MEMBER_NOT_FOUND));
         return ApplicantInfoResponseDto.from(applicantMember);
     }
 
