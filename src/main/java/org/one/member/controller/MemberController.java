@@ -7,12 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
-import org.one.member.dto.request.MemberDeleteListRequestDto;
-import org.one.member.dto.request.MemberListRequestDto;
-import org.one.member.dto.request.MemberRegisterRequestDto;
-import org.one.member.dto.request.MemberUpdateRequestDto;
-import org.one.member.dto.response.MemberDetailResponseDto;
-import org.one.member.dto.response.MemberListResponseDto;
+import org.one.global.pagination.ResponsePagingDto;
+import org.one.member.dto.*;
 import org.one.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,11 +39,10 @@ public class MemberController {
     @Operation(summary = "명부 전체 조회", description = "관리자 권한(ADMIN)이 있는 계정만 전체 부원 명부를 조회할 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<MemberListResponseDto>>> getMemberList(
+    public ResponseEntity<ApiResponse<ResponsePagingDto<MemberListResponseDto>>> getMemberList(
             @ModelAttribute @Valid MemberListRequestDto requestDto) {
 
-        List<MemberListResponseDto> response = memberService.getMemberListByAdmin(requestDto);
-
+        ResponsePagingDto<MemberListResponseDto> response = memberService.getMemberListByAdmin(requestDto);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
@@ -138,4 +133,5 @@ public class MemberController {
         memberService.deleteMembers(requestDto.getMemberIds());
         return ResponseEntity.ok(ApiResponse.success(null));
     }
+
 }

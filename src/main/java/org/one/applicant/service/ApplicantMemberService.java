@@ -9,6 +9,8 @@ import org.one.applicant.dto.response.ApplicantMemberDetailResponseDto;
 import org.one.applicant.dto.request.ApplicantMemberListRequestDto;
 import org.one.applicant.dto.response.ApplicantMemberListResponseDto;
 import org.one.applicant.repository.ApplicantMemberRepository;
+import org.one.global.pagination.ResponsePagingDto;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,17 +29,15 @@ public class ApplicantMemberService {
      *
      * @Param ApplicantMemberListRequestDto : 페이지 설정 정보(정렬, 개수 등) 전달
      */
-    public List<ApplicantMemberListResponseDto> getApplicantList(ApplicantMemberListRequestDto requestDto) {
+    public ResponsePagingDto<ApplicantMemberListResponseDto> getApplicantList(ApplicantMemberListRequestDto requestDto) {
         Pageable pageable = requestDto.toPageable();
 
-        List<ApplicantMember> applicantMemberList = applicantMemberRepository.findAllBy(pageable);
+        Page<ApplicantMember> applicantMemberPage = applicantMemberRepository.findAllBy(pageable);
 
-        //엔티티에서 dto형태로 구조를 변환하여 리스트를 만들어 반환
-        return applicantMemberList.stream()
-                .map(ApplicantMemberListResponseDto::from)
-                .toList();
+        Page<ApplicantMemberListResponseDto> dtoPage = applicantMemberPage.map(ApplicantMemberListResponseDto::from);
+
+        return ResponsePagingDto.from(dtoPage);
     }
-
 
     /**
      * 요청값(memberId)를 통해 해당 신청 부원의 상세 정보를 불러옴.

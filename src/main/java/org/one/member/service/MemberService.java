@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.one.auth.repository.AdminRepository;
 import org.one.global.enums.ErrorCode;
 import org.one.global.exception.BusinessException;
+import org.one.global.pagination.ResponsePagingDto;
 import org.one.member.domain.Member;
 import org.one.member.dto.request.MemberListRequestDto;
 import org.one.member.dto.request.MemberRegisterRequestDto;
@@ -13,6 +14,7 @@ import org.one.member.dto.response.MemberDetailResponseDto;
 import org.one.member.dto.response.MemberListResponseDto;
 import org.one.member.enums.MemberStatus;
 import org.one.member.repository.MemberRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,17 +31,18 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final AdminRepository adminRepository;
 
-    public List<MemberListResponseDto> getMemberListByAdmin(MemberListRequestDto requestDto) {
-        //requestDto로 설정한 sort, size 등을 바탕으로 Pageable객체를 만듦.
+    /**
+     * 모든 부원을 조회함.
+     * Param : MemberListRequestDto 부원 조회 dto
+     */
+    public ResponsePagingDto<MemberListResponseDto> getMemberListByAdmin(MemberListRequestDto requestDto) {
         Pageable pageable = requestDto.toPageable();
 
-        //memberRepository를 이용해 모든 부원 리스트를 가져옴.
-        List<Member> members = memberRepository.findAllByAdmin(pageable);
+        Page<Member> memberPage = memberRepository.findAll(pageable);
 
-        //모든 부원 리스트를 Member(entity) -> MemberListResponseDto로 필요한 데이터만 빼서 리스트를 만듦.
-        return members.stream()
-                .map(MemberListResponseDto::from)
-                .toList();
+        Page<MemberListResponseDto> dtoPage = memberPage.map(MemberListResponseDto::from);
+
+        return ResponsePagingDto.from(dtoPage);
     }
 
     /**
