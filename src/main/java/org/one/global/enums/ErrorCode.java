@@ -22,7 +22,8 @@ public enum ErrorCode {
     DUPLICATE_PHONE_NUMBER(HttpStatus.CONFLICT, "DUPLICATE_PHONE_NUMBER", "이미 존재하는 전화번호입니다."),
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_NOT_FOUND", "존재하지 않는 부원입니다."),
     MAINPAGE_CONFIG_NOT_FOUND(HttpStatus.NOT_FOUND, "MAINPAGE_CONFIG_NOT_FOUND", "메인 페이지 설정 데이터가 db에 없습니다."),
-    PRIVACY_POLICY_NOT_AGREED(HttpStatus.UNPROCESSABLE_CONTENT, "PRIVACY_POLICY_NOT_AGREED", "개인정보 수집 및 이용에 동의해야 회원가입이 가능합니다."),
+    PRIVACY_POLICY_NOT_AGREED(HttpStatus.UNPROCESSABLE_CONTENT, "PRIVACY_POLICY_NOT_AGREED", "개인정보 수집 및 이용에 동의해야 모집 신청이 가능합니다."),
+    ALREADY_APPLIED(HttpStatus.BAD_REQUEST, "ALREADY_APPLIED", "현재 모집기간 내에 제출한 이력이 있어 신청이 불가합니다."),
     APPLICANT_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT_MEMBER_NOT_FOUND", "존재하지 않는 신청 부원입니다.");
 
     private final HttpStatus status;
