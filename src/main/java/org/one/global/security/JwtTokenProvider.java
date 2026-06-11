@@ -16,7 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 /**
- * JWT 발급, 검증, Claims 파싱, Spring Security 인증 객체 생성을 담당합니다.
+ * Access Token 발급, 검증, Claims 파싱, Spring Security 인증 객체 생성을 담당합니다.
  */
 @Component
 public class JwtTokenProvider {
@@ -45,17 +45,6 @@ public class JwtTokenProvider {
 	 */
 	public String createAccessToken(String subject, String role) {
 		return createToken(subject, role, "ACCESS", accessExpirationMillis);
-	}
-
-	/**
-	 * JWT 형식의 Refresh Token을 생성합니다.
-	 *
-	 * @param subject 토큰 주체, 현재는 관리자 ID 문자열
-	 * @param role 관리자 권한명
-	 * @return JWT Refresh Token
-	 */
-	public String createRefreshToken(String subject, String role) {
-		return createToken(subject, role, "REFRESH", refreshExpirationMillis);
 	}
 
 	/**
