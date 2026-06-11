@@ -7,7 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.one.global.annotation.ApiErrorExceptions;
 import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
-import org.one.member.dto.*;
+import org.one.member.dto.request.MemberDeleteListRequestDto;
+import org.one.member.dto.request.MemberListRequestDto;
+import org.one.member.dto.request.MemberRegisterRequestDto;
+import org.one.member.dto.request.MemberUpdateRequestDto;
+import org.one.member.dto.response.MemberDetailResponseDto;
+import org.one.member.dto.response.MemberListResponseDto;
 import org.one.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -109,7 +114,7 @@ public class MemberController {
             @Valid @RequestBody MemberUpdateRequestDto requestDto) {
         memberService.updateMember(memberId, requestDto);
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 
     /**
@@ -133,5 +138,4 @@ public class MemberController {
         memberService.deleteMembers(requestDto.getMemberIds());
         return ResponseEntity.ok(ApiResponse.success(null));
     }
-
 }
