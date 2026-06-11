@@ -1,18 +1,14 @@
-package org.one.member.dto;
+package org.one.member.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
-import lombok.Getter;
 import org.one.global.pagination.RequestPagingDto;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 @Schema(description = "명부 리스트 조회 요청(페이지 설정)")
 public class MemberListRequestDto extends RequestPagingDto {
-    public MemberListRequestDto(){
+    public MemberListRequestDto() {
         //기본값 세팅
         this.setPage(0);
         this.setSize(15);
