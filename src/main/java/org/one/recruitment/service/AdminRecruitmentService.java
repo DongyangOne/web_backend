@@ -40,12 +40,10 @@ public class AdminRecruitmentService {
 	public RecruitmentResponseDto update(RecruitmentUpdateRequestDto request) {
 		validateDateRange(request.getRecruitmentStart(), request.getRecruitmentEnd());
 		validateDateRange(request.getInterviewStart(), request.getInterviewEnd());
+		validateDateRange(request.getInterviewEnd(), request.getNotificationDate());
 		validateRecruitmentInterviewOrder(request.getRecruitmentEnd(), request.getInterviewStart());
 
 		Recruitment recruitment = getOrInitRecruitment();
-		if (recruitment == null) {
-			throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND);
-		}
 		recruitment.update(
 				request.getTarget(),
 				request.getField(),
@@ -76,7 +74,7 @@ public class AdminRecruitmentService {
 	 */
 	private void validateDateRange(LocalDate start, LocalDate end) {
 		if (start != null && end != null && start.isAfter(end)) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.INVALID_DATE_RANGE);
 		}
 	}
 
@@ -89,7 +87,7 @@ public class AdminRecruitmentService {
 	 */
 	private void validateRecruitmentInterviewOrder(LocalDate recruitmentEnd, LocalDate interviewStart) {
 		if (recruitmentEnd != null && interviewStart != null && interviewStart.isBefore(recruitmentEnd)) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.INVALID_DATE_RANGE);
 		}
 	}
 
