@@ -3,7 +3,11 @@ package org.one.calendar.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.one.calendar.dto.request.CalendarSaveRequestDto;
@@ -64,7 +68,11 @@ public class AdminCalendarController {
 	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
 	@GetMapping
 	public ResponseEntity<ApiResponse<List<CalendarMonthlyResponseDto>>> findAllByYear(
-			@RequestParam Integer year) {
+			@RequestParam
+			@NotNull(message = "연도를 입력해주세요.")
+			@Min(value = 1900, message = "연도는 1900년 이상이어야 합니다.")
+			@Max(value = 2100, message = "연도는 2100년 이하이어야 합니다.")
+			Integer year) {
 		List<CalendarMonthlyResponseDto> response = adminCalendarService.findAllByYear(year);
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
@@ -80,8 +88,16 @@ public class AdminCalendarController {
 	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
 	@GetMapping("/month")
 	public ResponseEntity<ApiResponse<List<CalendarResponseDto>>> findAllByMonth(
-			@RequestParam Integer year,
-			@RequestParam Integer month) {
+			@RequestParam
+			@NotNull(message = "연도를 입력해주세요.")
+			@Min(value = 1900, message = "연도는 1900년 이상이어야 합니다.")
+			@Max(value = 2100, message = "연도는 2100년 이하이어야 합니다.")
+			Integer year,
+			@RequestParam
+			@NotNull(message = "월을 입력해주세요.")
+			@Min(value = 1, message = "월은 1 이상이어야 합니다.")
+			@Max(value = 12, message = "월은 12 이하이어야 합니다.")
+			Integer month) {
 		List<CalendarResponseDto> response = adminCalendarService.findAllByMonth(year, month);
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
@@ -113,7 +129,9 @@ public class AdminCalendarController {
 	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
 	@DeleteMapping
 	public ResponseEntity<ApiResponse<Void>> delete(
-			@RequestParam @NotEmpty(message = "삭제할 일정을 선택해주세요.") List<Long> calendarIds) {
+			@RequestParam @NotEmpty(message = "삭제할 일정을 선택해주세요.")
+			List<@NotNull(message = "캘린더 ID는 비어 있을 수 없습니다.")
+			@Positive(message = "캘린더 ID는 양수여야 합니다.") Long> calendarIds) {
 		adminCalendarService.delete(calendarIds);
 		return ResponseEntity.ok(ApiResponse.success(null));
 	}
