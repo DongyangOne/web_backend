@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import org.one.global.entity.BaseEntity;
+import org.one.global.enums.ErrorCode;
+import org.one.global.exception.BusinessException;
 
 /**
  * 캘린더에 노출할 기간형 일정을 저장하는 엔티티입니다.
@@ -36,12 +38,14 @@ public class CalendarSchedule extends BaseEntity {
 
 	/**
 	 * 캘린더 일정 엔티티를 생성합니다.
+	 * 시작일이 종료일보다 늦으면 {@link BusinessException}을 던집니다.
 	 *
 	 * @param title 일정 제목
 	 * @param startDate 일정 시작일
 	 * @param endDate 일정 종료일
 	 */
 	public CalendarSchedule(String title, LocalDate startDate, LocalDate endDate) {
+		validateDateRange(startDate, endDate);
 		this.title = title;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -77,14 +81,22 @@ public class CalendarSchedule extends BaseEntity {
 
 	/**
 	 * 캘린더 일정 내용을 수정합니다.
+	 * 시작일이 종료일보다 늦으면 {@link BusinessException}을 던집니다.
 	 *
 	 * @param title 일정 제목
 	 * @param startDate 일정 시작일
 	 * @param endDate 일정 종료일
 	 */
 	public void update(String title, LocalDate startDate, LocalDate endDate) {
+		validateDateRange(startDate, endDate);
 		this.title = title;
 		this.startDate = startDate;
 		this.endDate = endDate;
+	}
+
+	private void validateDateRange(LocalDate start, LocalDate end) {
+		if (start != null && end != null && start.isAfter(end)) {
+			throw new BusinessException(ErrorCode.INVALID_DATE_RANGE);
+		}
 	}
 }
