@@ -3,9 +3,6 @@ package org.one.applicant.repository;
 import java.time.LocalDateTime;
 
 import org.one.applicant.domain.ApplicantMember;
-
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,7 +29,7 @@ public interface ApplicantMemberRepository extends JpaRepository<ApplicantMember
      *
      * @param pageable 페이지 기본 설정
      */
-    List<ApplicantMember> findAllBy(Pageable pageable);
+    Page<ApplicantMember> findAllBy(Pageable pageable);
 
     //특정 학번이 주어진 모집 기간 사이에 제출한 이력이 존재하는지 확인
     boolean existsByStudentIdAndCreatedAtBetween(String studentId, LocalDateTime start, LocalDateTime end);
