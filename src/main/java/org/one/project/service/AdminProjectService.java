@@ -12,6 +12,7 @@ import org.one.project.dto.response.ProjectDetailResponseDto;
 import org.one.project.domain.ProjectEvent;
 import org.one.project.domain.ProjectPhoto;
 import org.one.project.domain.ProjectTechStack;
+import org.one.main.domain.MainPageConfig;
 import org.one.main.repository.MainPageConfigRepository;
 import org.one.project.repository.ProjectEventRepository;
 import org.one.global.enums.ErrorCode;
@@ -53,7 +54,7 @@ public class AdminProjectService {
 		validatePhotoKeys(photoKeys);
 
 		ProjectEvent project = new ProjectEvent(
-				mainPageConfigRepository.getConfig(),
+				getOrInitConfig(),
 				request.getYear(),
 				request.getProjectName(),
 				request.getAward(),
@@ -202,6 +203,11 @@ public class AdminProjectService {
 		if (!existingIds.containsAll(keepPhotoIds)) {
 			throw new BusinessException(ErrorCode.INVALID_INPUT);
 		}
+	}
+
+	private MainPageConfig getOrInitConfig() {
+		return mainPageConfigRepository.findById(1)
+				.orElseGet(() -> mainPageConfigRepository.save(MainPageConfig.singleton()));
 	}
 
 	/**
