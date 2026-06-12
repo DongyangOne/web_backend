@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.one.calendar.dto.request.CalendarSaveRequestDto;
@@ -128,7 +129,9 @@ public class AdminCalendarController {
 	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
 	@DeleteMapping
 	public ResponseEntity<ApiResponse<Void>> delete(
-			@RequestParam @NotEmpty(message = "삭제할 일정을 선택해주세요.") List<Long> calendarIds) {
+			@RequestParam @NotEmpty(message = "삭제할 일정을 선택해주세요.")
+			List<@NotNull(message = "캘린더 ID는 비어 있을 수 없습니다.")
+			@Positive(message = "캘린더 ID는 양수여야 합니다.") Long> calendarIds) {
 		adminCalendarService.delete(calendarIds);
 		return ResponseEntity.ok(ApiResponse.success(null));
 	}
