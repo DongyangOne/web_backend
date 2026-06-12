@@ -18,11 +18,13 @@ public class ApplyRequestDto {
     @Schema(description = "신청 부원 이름", example = "홍길동")
     @NotBlank(message = "이름을 입력해주세요.")
     @Size(min = 2, max = 8, message = "이름은 2~8자 사이로 입력해주세요.")
+    @Pattern(regexp = "^[가-힣]*$", message = "이름은 한글만 입력 가능합니다.")
     private String name;
 
     @Schema(description = "신청 부원 학과", example = "웹응용소프트웨어공학과")
     @NotBlank(message = "학과를 선택해주세요.")
     @Size(min = 3, max = 11, message = "학과는 3~11자 사이로 입력해주세요.")
+    @Pattern(regexp = "^[가-힣]*$", message = "학과는 한글만 입력 가능합니다.")
     private String department;
 
     @Schema(description = "신청 부원 학번", example = "20991234")
@@ -33,7 +35,7 @@ public class ApplyRequestDto {
     @Schema(description = "신청 부원 생년월일", example = "2001-01-01")
     @NotNull(message = "생년월일을 입력해주세요.")
     @Past(message = "생년월일은 과거의 날짜여야 합니다.")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d", timezone = "Asia/Seoul")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate birthday;
 
     @Schema(description = "신청 부원 학년", example = "3")
@@ -44,7 +46,7 @@ public class ApplyRequestDto {
 
     @Schema(description = "신청 부원 전화번호", example = "010-1111-2222")
     @NotBlank(message = "전화번호를 입력해주세요.")
-    @Pattern(regexp = "^010-?\\d{3,4}-?\\d{4}$", message = "전화번호 형식이 올바르지 않습니다. (예: 010-1234-5678 또는 01012345678)")
+    @Pattern(regexp = "^010-?\\d{4}-?\\d{4}$", message = "전화번호 형식이 올바르지 않습니다. (예: 010-1234-5678 또는 01012345678)")
     private String phoneNumber;
 
     @Schema(description = "신청 부원 성별", example = "FEMALE", allowableValues = {"MALE", "FEMALE"})
@@ -65,8 +67,6 @@ public class ApplyRequestDto {
     private String desiredActivity;
 
     @Schema(description = "신청 부원 마지막으로 하고 싶은 말", example = "잘 부탁드립니다.")
-    @NotBlank(message = "마지막으로 하고 싶은 말을 입력해주세요.")
-    @Size(min = 1, max = 500, message = "마지막으로 하고 싶은 말을 500자 이내로 입력해주세요.")
     private String finalWords;
 
     @Schema(description = "개인정보 수집 동의 여부", example = "TRUE", allowableValues = {"TRUE", "FALSE"})

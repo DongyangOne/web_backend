@@ -88,6 +88,9 @@ public class MinioService {
 	 */
 	public String extractObjectKey(String url) {
 		String prefix = minioConfig.getPublicUrl() + "/" + minioConfig.getBucketName() + "/";
+		if (url == null || url.isBlank() || !url.startsWith(prefix)) {
+			throw new BusinessException(ErrorCode.INVALID_OBJECT_KEY);
+		}
 		return url.substring(prefix.length());
 	}
 

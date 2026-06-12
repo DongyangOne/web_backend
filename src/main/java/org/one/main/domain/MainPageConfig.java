@@ -16,7 +16,7 @@ public class MainPageConfig extends BaseEntity {
 	@Id
 	private Integer mainId;
 
-	@Column(length = 500)
+	@Column(columnDefinition = "TEXT")
 	private String logoUrl;
 
 	@Column(columnDefinition = "TEXT")

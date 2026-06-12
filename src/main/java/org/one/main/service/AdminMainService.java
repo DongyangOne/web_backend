@@ -42,7 +42,7 @@ public class AdminMainService {
 	public MainLogoResponseDto update(String objectKey) {
 		validateObjectKey(objectKey);
 
-		MainPageConfig config = mainPageConfigRepository.getConfig();
+		MainPageConfig config = getOrInitConfig();
 		String oldLogoUrl = config.getLogoUrl();
 
 		String url = minioService.getObjectUrl(objectKey);
@@ -82,6 +82,16 @@ public class AdminMainService {
 		ActivityCard card = activityCardRepository.findById(cardId)
 				.orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
 		card.clear();
+	}
+
+	/**
+	 * 메인 페이지 설정을 조회하거나, 없으면 기본값으로 초기화하여 반환합니다.
+	 *
+	 * @return 메인 페이지 설정
+	 */
+	private MainPageConfig getOrInitConfig() {
+		return mainPageConfigRepository.findById(1)
+				.orElseGet(() -> mainPageConfigRepository.save(MainPageConfig.singleton()));
 	}
 
 	/**

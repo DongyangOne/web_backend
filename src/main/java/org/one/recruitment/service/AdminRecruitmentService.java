@@ -26,9 +26,8 @@ public class AdminRecruitmentService {
 	 *
 	 * @return 모집 공고 응답 DTO
 	 */
-	@Transactional(readOnly = true)
 	public RecruitmentResponseDto findOne() {
-		Recruitment recruitment = recruitmentRepository.findRecruitment();
+		Recruitment recruitment = getOrInitRecruitment();
 		return RecruitmentResponseDto.from(recruitment, computeIsRecruiting(recruitment));
 	}
 
@@ -41,12 +40,10 @@ public class AdminRecruitmentService {
 	public RecruitmentResponseDto update(RecruitmentUpdateRequestDto request) {
 		validateDateRange(request.getRecruitmentStart(), request.getRecruitmentEnd());
 		validateDateRange(request.getInterviewStart(), request.getInterviewEnd());
+		validateDateRange(request.getInterviewEnd(), request.getNotificationDate());
 		validateRecruitmentInterviewOrder(request.getRecruitmentEnd(), request.getInterviewStart());
 
-		Recruitment recruitment = recruitmentRepository.findRecruitment();
-		if (recruitment == null) {
-			throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND);
-		}
+		Recruitment recruitment = getOrInitRecruitment();
 		recruitment.update(
 				request.getTarget(),
 				request.getField(),
@@ -60,6 +57,16 @@ public class AdminRecruitmentService {
 	}
 
 	/**
+	 * 모집 공고 엔티티를 조회하거나, 없으면 기본값으로 초기화하여 반환합니다.
+	 *
+	 * @return 모집 공고 엔티티
+	 */
+	private Recruitment getOrInitRecruitment() {
+		return recruitmentRepository.findById(1)
+				.orElseGet(() -> recruitmentRepository.save(Recruitment.singleton()));
+	}
+
+	/**
 	 * 시작일이 종료일보다 늦지 않은지 검증합니다.
 	 *
 	 * @param start 시작일
@@ -67,7 +74,7 @@ public class AdminRecruitmentService {
 	 */
 	private void validateDateRange(LocalDate start, LocalDate end) {
 		if (start != null && end != null && start.isAfter(end)) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.INVALID_DATE_RANGE);
 		}
 	}
 
@@ -80,7 +87,7 @@ public class AdminRecruitmentService {
 	 */
 	private void validateRecruitmentInterviewOrder(LocalDate recruitmentEnd, LocalDate interviewStart) {
 		if (recruitmentEnd != null && interviewStart != null && interviewStart.isBefore(recruitmentEnd)) {
-			throw new BusinessException(ErrorCode.INVALID_INPUT);
+			throw new BusinessException(ErrorCode.INVALID_DATE_RANGE);
 		}
 	}
 
