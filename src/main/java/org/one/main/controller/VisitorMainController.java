@@ -9,9 +9,8 @@ import org.one.global.dto.ApiResponse;
 import org.one.global.enums.ErrorCode;
 import org.one.main.dto.response.VisitorMainResponseDto;
 import org.one.main.service.VisitorMainService;
-import org.one.recruitment.dto.response.MainRecruitmentResponseDto;
+import org.one.main.dto.response.MainRecruitmentResponseDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +33,7 @@ public class VisitorMainController {
     @Operation(summary = "메인 페이지", description = "메인페이지 데이터를 불러옵니다.")
     @SecurityRequirements()
     @GetMapping
-    public ResponseEntity<ApiResponse<VisitorMainResponseDto>> getMainPage(){
+    public ResponseEntity<ApiResponse<VisitorMainResponseDto>> getMainPage() {
         VisitorMainResponseDto responseDto = visitorMainService.getMainPage();
         return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
@@ -50,7 +49,7 @@ public class VisitorMainController {
     @Operation(summary = "모집 공고 조회", description = "모집 공고를 조회합니다.")
     @SecurityRequirements()
     @GetMapping("/recruitment")
-    public ResponseEntity<ApiResponse<MainRecruitmentResponseDto>> getRecruitment(){
+    public ResponseEntity<ApiResponse<MainRecruitmentResponseDto>> getRecruitment() {
         MainRecruitmentResponseDto responseDto = visitorMainService.getRecruitment();
         return ResponseEntity.ok(ApiResponse.success(responseDto));
     }

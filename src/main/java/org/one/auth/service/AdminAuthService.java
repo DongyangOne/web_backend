@@ -37,6 +37,7 @@ public class AdminAuthService {
 
 	/**
 	 * 관리자 계정 정보를 검증하고 Access Token과 Refresh Token을 발급합니다.
+	 * 단일 세션 정책이므로 동일 사용자 row가 있으면 그 row를 갱신합니다.
 	 *
 	 * @param request 로그인 요청 정보
 	 * @return 발급된 토큰 응답
@@ -56,7 +57,7 @@ public class AdminAuthService {
 	}
 
 	/**
-	 * 저장된 Refresh Token을 검증한 뒤 기존 토큰을 폐기하고 새 토큰 쌍을 발급합니다.
+	 * 저장된 Refresh Token을 검증한 뒤 같은 row를 갱신하고 새 토큰 쌍을 발급합니다.
 	 *
 	 * @param refreshTokenStr 클라이언트가 전달한 Refresh Token 원문
 	 * @return 새로 발급된 토큰 응답
@@ -70,11 +71,8 @@ public class AdminAuthService {
 			throw new BusinessException(ErrorCode.INVALID_TOKEN);
 		}
 
-		stored.revoke();
-		refreshTokenRepository.save(stored);
-
 		String newAccess = jwtTokenProvider.createAccessToken(String.valueOf(stored.getUserId()), "ADMIN");
-		String newRefresh = issueRefreshToken(stored.getUserId());
+		String newRefresh = rotateRefreshToken(stored);
 
 		return LoginResponseDto.from(newAccess, newRefresh);
 	}
@@ -94,19 +92,43 @@ public class AdminAuthService {
 	}
 
 	/**
-	 * 랜덤 Refresh Token을 생성하고 해시 값과 만료 시각만 DB에 저장합니다.
+	 * 랜덤 Refresh Token을 생성하고 해시 값과 만료 시각을 기존 row에 반영합니다.
+	 * 이미 사용자 row가 있으면 같은 row를 덮어써서 단일 세션을 유지합니다.
 	 *
 	 * @param adminId 토큰을 발급받는 관리자 ID
 	 * @return 클라이언트에 전달할 Refresh Token 원문
 	 */
 	private String issueRefreshToken(Long adminId) {
+		return rotateRefreshToken(adminId, null);
+	}
+
+	/**
+	 * 기존 Refresh Token row를 새 값으로 갱신합니다.
+	 *
+	 * @param existing 기존 Refresh Token 엔티티
+	 * @return 새로 발급한 Refresh Token 원문
+	 */
+	private String rotateRefreshToken(RefreshToken existing) {
+		return rotateRefreshToken(existing.getUserId(), existing);
+	}
+
+	/**
+	 * 사용자 기준으로 Refresh Token row를 생성하거나 갱신합니다.
+	 *
+	 * @param adminId 관리자 ID
+	 * @param existing 이미 조회한 엔티티가 있으면 그것을 사용하고, 없으면 새 row를 생성합니다.
+	 * @return 새로 발급한 Refresh Token 원문
+	 */
+	private String rotateRefreshToken(Long adminId, RefreshToken existing) {
 		String refreshToken = generateRefreshTokenValue();
 		long refreshMillis = jwtTokenProvider.getRefreshExpirationMillis();
-		RefreshToken entity = new RefreshToken(
-				adminId,
-				hashToken(refreshToken),
-				LocalDateTime.now().plus(Duration.ofMillis(refreshMillis))
-		);
+		LocalDateTime expiresAt = LocalDateTime.now().plus(Duration.ofMillis(refreshMillis));
+		String tokenHash = hashToken(refreshToken);
+		RefreshToken entity = existing != null
+				? existing
+				: refreshTokenRepository.findByUserId(adminId)
+						.orElseGet(() -> new RefreshToken(adminId, tokenHash, expiresAt));
+		entity.rotate(tokenHash, expiresAt);
 		refreshTokenRepository.save(entity);
 		return refreshToken;
 	}
