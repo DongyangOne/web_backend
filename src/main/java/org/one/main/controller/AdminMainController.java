@@ -1,6 +1,7 @@
 package org.one.main.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -62,6 +63,7 @@ public class AdminMainController {
 	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INTERNAL_SERVER_ERROR})
 	@PatchMapping("/activity/{cardId}")
 	public ResponseEntity<ApiResponse<ActivityCardResponseDto>> updateActivityCard(
+			@Parameter(description = "수정할 카드 ID", example = "5")
 			@PathVariable @Positive(message = "카드 ID는 양수여야 합니다.") Long cardId,
 			@RequestBody @Valid ActivityCardUpdateRequestDto request) {
 		ActivityCardResponseDto response = adminMainService.updateActivityCard(cardId, request);
@@ -78,6 +80,7 @@ public class AdminMainController {
 	@ApiErrorExceptions({ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INTERNAL_SERVER_ERROR})
 	@PatchMapping("/activity/{cardId}/clear")
 	public ResponseEntity<ApiResponse<Void>> clearActivityCard(
+			@Parameter(description = "초기화할 카드 ID", example = "5")
 			@PathVariable @Positive(message = "카드 ID는 양수여야 합니다.") Long cardId) {
 		adminMainService.clearActivityCard(cardId);
 		return ResponseEntity.ok(ApiResponse.success(null));

@@ -1,6 +1,7 @@
 package org.one.project.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -67,6 +68,7 @@ public class AdminProjectController {
 	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INTERNAL_SERVER_ERROR})
 	@PatchMapping("/{projectId}")
 	public ResponseEntity<ApiResponse<ProjectDetailResponseDto>> update(
+			@Parameter(description = "수정할 프로젝트 ID", example = "3")
 			@PathVariable @Positive(message = "프로젝트 ID는 양수여야 합니다.") Long projectId,
 			@RequestBody @Valid ProjectUpdateRequestDto request) {
 		ProjectDetailResponseDto response = adminProjectService.update(projectId, request);
@@ -83,6 +85,7 @@ public class AdminProjectController {
 	@ApiErrorExceptions({ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INTERNAL_SERVER_ERROR})
 	@DeleteMapping("/{projectId}")
 	public ResponseEntity<ApiResponse<Void>> delete(
+			@Parameter(description = "삭제할 프로젝트 ID", example = "3")
 			@PathVariable @Positive(message = "프로젝트 ID는 양수여야 합니다.") Long projectId) {
 		adminProjectService.delete(projectId);
 		return ResponseEntity.ok(ApiResponse.success(null));
