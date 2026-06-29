@@ -20,3 +20,7 @@ minio:
   secret-key: ${MINIO_SECRET_KEY}
   bucket-name: ${MINIO_BUCKET_NAME}
   presigned-expiry: ${MINIO_PRESIGNED_EXPIRY:3600}
+
+springdoc:
+  server:
+    prod-url: ${SWAGGER_PROD_URL:https://dongyangone.duckdns.org}
