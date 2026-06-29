@@ -42,6 +42,13 @@ public class VisitorApplicantMemberService {
         // LocalDate를 LocalDateTime으로 변환하여 시간 범위 지정 (시작일 00:00:00 ~ 종료일 23:59:59)
         LocalDateTime currentRecruitmentStart = recruitment.getRecruitmentStart().atStartOfDay();
         LocalDateTime currentRecruitmentEnd = recruitment.getRecruitmentEnd().atTime(23, 59, 59);
+
+        // 모집 기간이 아닌 경우 예외 처리
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(currentRecruitmentStart) || now.isAfter(currentRecruitmentEnd)) {
+            throw new BusinessException(ErrorCode.NOT_RECRUITMENT_PERIOD);
+        }
+
         // 현재 모집 기간 내에 동일한 학번으로 지원한 이력이 있는지 검증
         boolean isDuplicateApplication = applicantMemberRepository.existsByStudentIdAndCreatedAtBetween(
                 requestDto.getStudentId(),

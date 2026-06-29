@@ -28,7 +28,7 @@ public class VisitorApplicantMemberController {
      *
      * 응답 : 공통 응답 성공 메시지
      */
-    @ApiErrorExceptions({ErrorCode.INVALID_INPUT})
+    @ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.PRIVACY_POLICY_NOT_AGREED, ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.NOT_RECRUITMENT_PERIOD, ErrorCode.ALREADY_APPLIED})
     @Operation(summary = "모집 신청", description = "모집을 신청합니다.")
     @SecurityRequirements()
     @PostMapping

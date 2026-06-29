@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Schema(description = "신청 부원 상세 정보 응답")
 @Getter
 public class ApplicantMemberDetailResponseDto {
-    @Schema(description = "신청 부원 id", example = "3")
+    @Schema(description = "신청 부원 id", example = "1")
     private Long applicantId;
 
     @Schema(description = "신청 부원 이름", example = "홍길동")
@@ -22,34 +22,34 @@ public class ApplicantMemberDetailResponseDto {
     @Schema(description = "신청 부원 학과", example = "웹응용소프트웨어공학과")
     private String department;
 
-    @Schema(description = "신청 부원 학번", example = "20991234")
+    @Schema(description = "신청 부원 학번", example = "20240001")
     private String studentId;
 
-    @Schema(description = "신청 부원 생년월일", example = "2001-01-01")
+    @Schema(description = "신청 부원 생년월일", example = "2004-03-15")
     private LocalDate birthday;
 
-    @Schema(description = "신청 부원 학년", example = "3")
+    @Schema(description = "신청 부원 학년", example = "2")
     private Integer grade;
 
     @Schema(description = "신청 부원 전화번호", example = "010-1111-2222")
     private String phoneNumber;
 
-    @Schema(description = "신청 부원 성별", example = "FEMALE")
+    @Schema(description = "신청 부원 성별", example = "MALE")
     private Gender gender;
 
-    @Schema(description = "신청 부원 지원 동기", example = "웹 개발에 관심이 많아 실무적인 프로젝트 경험을 쌓고 싶어 지원했습니다.")
+    @Schema(description = "신청 부원 지원 동기", example = "개발에 관심이 많아 지원하게 되었습니다. 팀 프로젝트를 통해 실력을 키우고 싶습니다.")
     private String motivation;
 
-    @Schema(description = "신청 부원 기술 스택", example = "Java, Spring")
+    @Schema(description = "신청 부원 기술 스택", example = "Java, Python, HTML/CSS")
     private String techStack;
 
-    @Schema(description = "신청 부원 희망활동", example = "프론트엔드 UI/UX 개발")
+    @Schema(description = "신청 부원 희망활동", example = "프로젝트 개발 및 스터디 활동")
     private String desiredActivity;
 
-    @Schema(description = "신청 부원 마지막으로 하고 싶은 말", example = "잘 부탁드립니다.")
+    @Schema(description = "신청 부원 마지막으로 하고 싶은 말", example = "열심히 하겠습니다!")
     private String finalWords;
 
-    private ApplicantMemberDetailResponseDto(ApplicantMember applicantMember){
+    private ApplicantMemberDetailResponseDto(ApplicantMember applicantMember) {
         this.applicantId = applicantMember.getApplicantId();
         this.name = applicantMember.getName();
         this.birthday = applicantMember.getBirthday();
@@ -64,7 +64,7 @@ public class ApplicantMemberDetailResponseDto {
         this.finalWords = applicantMember.getFinalWords();
     }
 
-    public static ApplicantMemberDetailResponseDto from(ApplicantMember applicantMember){
+    public static ApplicantMemberDetailResponseDto from(ApplicantMember applicantMember) {
         return new ApplicantMemberDetailResponseDto(applicantMember);
     }
 }
