@@ -1,6 +1,7 @@
 package org.one.calendar.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -68,6 +69,7 @@ public class AdminCalendarController {
 	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
 	@GetMapping
 	public ResponseEntity<ApiResponse<List<CalendarMonthlyResponseDto>>> findAllByYear(
+			@Parameter(description = "조회할 연도", example = "2026")
 			@RequestParam
 			@NotNull(message = "연도를 입력해주세요.")
 			@Min(value = 1900, message = "연도는 1900년 이상이어야 합니다.")
@@ -88,11 +90,13 @@ public class AdminCalendarController {
 	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
 	@GetMapping("/month")
 	public ResponseEntity<ApiResponse<List<CalendarResponseDto>>> findAllByMonth(
+			@Parameter(description = "조회할 연도", example = "2026")
 			@RequestParam
 			@NotNull(message = "연도를 입력해주세요.")
 			@Min(value = 1900, message = "연도는 1900년 이상이어야 합니다.")
 			@Max(value = 2100, message = "연도는 2100년 이하이어야 합니다.")
 			Integer year,
+			@Parameter(description = "조회할 월", example = "7")
 			@RequestParam
 			@NotNull(message = "월을 입력해주세요.")
 			@Min(value = 1, message = "월은 1 이상이어야 합니다.")
@@ -129,6 +133,7 @@ public class AdminCalendarController {
 	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
 	@DeleteMapping
 	public ResponseEntity<ApiResponse<Void>> delete(
+			@Parameter(description = "삭제할 일정 ID 목록", example = "1")
 			@RequestParam @NotEmpty(message = "삭제할 일정을 선택해주세요.")
 			List<@NotNull(message = "캘린더 ID는 비어 있을 수 없습니다.")
 			@Positive(message = "캘린더 ID는 양수여야 합니다.") Long> calendarIds) {

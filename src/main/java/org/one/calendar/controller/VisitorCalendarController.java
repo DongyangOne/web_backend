@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.one.calendar.dto.request.VisitorCalendarDetailRequestDto;
 import org.one.calendar.dto.request.VisitorCalendarRequestDto;
+import org.springdoc.core.annotations.ParameterObject;
 import org.one.calendar.dto.response.CalendarMonthlyResponseDto;
 import org.one.calendar.dto.response.CalendarResponseDto;
 import org.one.calendar.service.VisitorCalendarService;
@@ -41,7 +42,7 @@ public class VisitorCalendarController {
     @ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.INTERNAL_SERVER_ERROR})
     @SecurityRequirements()
     @GetMapping("/month")
-    public ResponseEntity<ApiResponse<List<CalendarResponseDto>>> getMonthScheduleList(@ModelAttribute @Valid VisitorCalendarDetailRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<List<CalendarResponseDto>>> getMonthScheduleList(@ParameterObject @ModelAttribute @Valid VisitorCalendarDetailRequestDto requestDto) {
         List<CalendarResponseDto> response = visitorCalendarService.getMonthScheduleList(requestDto.getYear(), requestDto.getMonth());
         return ResponseEntity.ok(ApiResponse.success(response));
     }
@@ -57,7 +58,7 @@ public class VisitorCalendarController {
     @SecurityRequirements()
     @GetMapping
     public ResponseEntity<ApiResponse<List<CalendarMonthlyResponseDto>>> getYearScheduleList(
-            @ModelAttribute @Valid VisitorCalendarRequestDto requestDto
+            @ParameterObject @ModelAttribute @Valid VisitorCalendarRequestDto requestDto
     ) {
         List<CalendarMonthlyResponseDto> response = visitorCalendarService.getYearScheduleList(requestDto.getYear());
         return ResponseEntity.ok(ApiResponse.success(response));
