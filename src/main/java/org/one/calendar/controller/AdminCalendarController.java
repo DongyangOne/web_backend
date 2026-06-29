@@ -117,6 +117,7 @@ public class AdminCalendarController {
 	@ApiErrorExceptions({ErrorCode.INVALID_INPUT, ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN, ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INTERNAL_SERVER_ERROR})
 	@PatchMapping("/{calendarId}")
 	public ResponseEntity<ApiResponse<CalendarResponseDto>> update(
+			@Parameter(description = "수정할 일정 ID", example = "2")
 			@PathVariable Long calendarId,
 			@RequestBody @Valid CalendarUpdateRequestDto request) {
 		CalendarResponseDto response = adminCalendarService.update(calendarId, request);

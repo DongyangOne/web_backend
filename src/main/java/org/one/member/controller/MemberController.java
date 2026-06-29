@@ -1,6 +1,7 @@
 package org.one.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.one.global.pagination.ResponsePagingDto;
 import org.one.member.dto.request.*;
 import org.one.member.dto.response.*;
 import org.one.member.service.MemberService;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +43,7 @@ public class MemberController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<ApiResponse<ResponsePagingDto<MemberListResponseDto>>> getMemberList(
-            @ModelAttribute @Valid MemberListRequestDto requestDto) {
+            @ParameterObject @ModelAttribute @Valid MemberListRequestDto requestDto) {
 
         ResponsePagingDto<MemberListResponseDto> response = memberService.getMemberListByAdmin(requestDto);
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -86,7 +88,9 @@ public class MemberController {
     @Operation(summary = "부원 정보 가져오기", description = "관리자 권한(ADMIN)이 있는 계정만 부원 상세 정보를 조회할 수 있습니다.")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{memberId}")
-    public ResponseEntity<ApiResponse<MemberDetailResponseDto>> getMemberDetail(@PathVariable Long memberId) {
+    public ResponseEntity<ApiResponse<MemberDetailResponseDto>> getMemberDetail(
+            @Parameter(description = "조회할 부원 ID", example = "10")
+            @PathVariable Long memberId) {
         MemberDetailResponseDto responseDto = memberService.getMemberDetail(memberId);
         return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
@@ -106,6 +110,7 @@ public class MemberController {
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{memberId}")
     public ResponseEntity<ApiResponse<Void>> updateMember(
+            @Parameter(description = "수정할 부원 ID", example = "10")
             @PathVariable Long memberId,
             @Valid @RequestBody MemberUpdateRequestDto requestDto) {
         memberService.updateMember(memberId, requestDto);
