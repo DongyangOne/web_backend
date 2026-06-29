@@ -17,13 +17,13 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class VisitorMainResponseDto {
-    @Schema(description = "메인 로고 이미지 url", example = "https://cdn.example.com/logo.png")
+    @Schema(description = "메인 로고 이미지 url", example = "https://minio-dongyangone.duckdns.org/one-files/logo/4132272b-25a1-4e74-b821-8be4547d33a3")
     private String logoUrl;
-    @Schema(description = "동아리 설명", example = "아이디어를 현실로 구현하는 공간 one")
+    @Schema(description = "동아리 설명", example = "동양미래대학교 IT 개발 동아리 ONE입니다. 함께 만들고 함께 성장합니다.")
     private String mainDescription;
-    @Schema(description = "주요 활동 목록", example = "[{\"cardId\" : 3, \"title\" : \"스터디\", \"content\" : \"전공 지식과 최신 기술을 함께 공부하며 꾸준한 성장을 목표로 합니다.\", \"cardOrder\" : 3}]")
+    @Schema(description = "주요 활동 목록", example = "[{\"cardId\" : 5, \"title\" : \"팀 프로젝트\", \"content\" : \"매 학기 팀을 구성하여 실제 서비스 수준의 프로젝트를 기획·개발합니다. 기획부터 배포까지 전 과정을 경험할 수 있습니다.\", \"cardOrder\" : 1}]")
     private List<ActivityCardResponseDto> activityCards;
-    @Schema(description = "프로젝트 카드 목록", example = "[{\"projectId\": 1, \"year\": \"2023\", \"projectName\": \"Around Music\", \"award\": \"동양미래 EXPO 장려상\", \"activity\": \"2023 하계 MT · 정기 세미나 및 튜터링 운영\", \"startDate\": \"2023-03-01\", \"endDate\": \"2023-10-31\", \"participantCount\": 8, \"description\": \"Around Music은 음악과 AR을 통해 사용자의 순간과 감정을 공유하는 서비스이다.\", \"techStacks\": [\"Android Studio\", \"React Native\", \"Spring Boot\"], \"photos\": [{\"id\": 1, \"url\": \"https://cdn.example.com/projects/photo.jpg\"}]}]")
+    @Schema(description = "프로젝트 카드 목록", example = "[{\"projectId\": 9, \"year\": \"2025\", \"projectName\": \"AI 학습 도우미 챗봇\", \"award\": \"한국정보기술학회 학술 발표\", \"activity\": \"AI/ML 스터디, 모델 개발\", \"startDate\": \"2025-09-01\", \"endDate\": \"2025-12-15\", \"participantCount\": 4, \"description\": \"LLM 기반 대학생 학습 지원 챗봇 서비스 개발 및 학술 발표\", \"techStacks\": [\"Python\", \"FastAPI\", \"OpenAI\"], \"photos\": [{\"id\": 3, \"url\": \"https://cdn.example.com/projects/project9_photo1.jpg\"}]}]")
     private List<MainProjectCardResponseDto> projectDetails;
 
     public static VisitorMainResponseDto of(

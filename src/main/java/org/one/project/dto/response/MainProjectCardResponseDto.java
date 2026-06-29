@@ -16,37 +16,37 @@ import java.util.List;
 @AllArgsConstructor
 public class MainProjectCardResponseDto {
 
-    @Schema(description = "프로젝트 ID", example = "1")
+    @Schema(description = "프로젝트 ID", example = "9")
     private Long projectId;
 
-    @Schema(description = "년도", example = "2023")
+    @Schema(description = "년도", example = "2025")
     private String year;
 
-    @Schema(description = "프로젝트명", example = "Around Music")
+    @Schema(description = "프로젝트명", example = "AI 학습 도우미 챗봇")
     private String projectName;
 
-    @Schema(description = "수상 내역", example = "동양미래 EXPO 장려상")
+    @Schema(description = "수상 내역", example = "한국정보기술학회 학술 발표")
     private String award;
 
-    @Schema(description = "활동 내역", example = "2023 하계 MT · 정기 세미나 및 튜터링 운영")
+    @Schema(description = "활동 내역", example = "AI/ML 스터디, 모델 개발")
     private String activity;
 
-    @Schema(description = "시작일", example = "2023-03-01")
+    @Schema(description = "시작일", example = "2025-09-01")
     private String startDate;
 
-    @Schema(description = "종료일", example = "2023-10-31")
+    @Schema(description = "종료일", example = "2025-12-15")
     private String endDate;
 
-    @Schema(description = "참여 인원", example = "8")
+    @Schema(description = "참여 인원", example = "4")
     private Integer participantCount;
 
-    @Schema(description = "프로젝트 설명", example = "Around Music은 음악과 AR을 통해 사용자의 순간과 감정을 공유하는 서비스이다.")
+    @Schema(description = "프로젝트 설명", example = "LLM 기반 대학생 학습 지원 챗봇 서비스 개발 및 학술 발표")
     private String description;
 
-    @Schema(description = "기술 스택 목록", example = "[\"Android Studio\", \"React Native\", \"Spring Boot\"]")
+    @Schema(description = "기술 스택 목록", example = "[\"Python\", \"FastAPI\", \"OpenAI\"]")
     private List<String> techStacks;
 
-    @Schema(description = "프로젝트 사진 목록", example = "[{\"id\": 1, \"url\": \"https://cdn.example.com/projects/photo.jpg\"}]")
+    @Schema(description = "프로젝트 사진 목록", example = "[{\"id\": 3, \"url\": \"https://cdn.example.com/projects/project9_photo1.jpg\"}]")
     private List<ProjectPhotoResponseDto> photos;
 
     /**

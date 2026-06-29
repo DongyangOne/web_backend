@@ -14,18 +14,18 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MainLogoResponseDto {
 
-	@Schema(description = "로고 이미지 URL", example = "https://cdn.example.com/logo.png")
-	private String logoUrl;
+    @Schema(description = "로고 이미지 URL", example = "https://minio-dongyangone.duckdns.org/one-files/logo/4132272b-25a1-4e74-b821-8be4547d33a3")
+    private String logoUrl;
 
-	/**
-	 * 로고 URL 문자열에서 응답 DTO를 생성합니다.
-	 *
-	 * @param logoUrl 로고 이미지 URL
-	 * @return 로고 수정 응답 DTO
-	 */
-	public static MainLogoResponseDto from(String logoUrl) {
-		return MainLogoResponseDto.builder()
-				.logoUrl(logoUrl)
-				.build();
-	}
+    /**
+     * 로고 URL 문자열에서 응답 DTO를 생성합니다.
+     *
+     * @param logoUrl 로고 이미지 URL
+     * @return 로고 수정 응답 DTO
+     */
+    public static MainLogoResponseDto from(String logoUrl) {
+        return MainLogoResponseDto.builder()
+                .logoUrl(logoUrl)
+                .build();
+    }
 }

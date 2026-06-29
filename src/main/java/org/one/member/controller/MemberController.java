@@ -89,7 +89,7 @@ public class MemberController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{memberId}")
     public ResponseEntity<ApiResponse<MemberDetailResponseDto>> getMemberDetail(
-            @Parameter(description = "조회할 부원 ID", example = "10")
+            @Parameter(description = "조회할 부원 ID", example = "13")
             @PathVariable Long memberId) {
         MemberDetailResponseDto responseDto = memberService.getMemberDetail(memberId);
         return ResponseEntity.ok(ApiResponse.success(responseDto));
@@ -110,7 +110,7 @@ public class MemberController {
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{memberId}")
     public ResponseEntity<ApiResponse<Void>> updateMember(
-            @Parameter(description = "수정할 부원 ID", example = "10")
+            @Parameter(description = "수정할 부원 ID", example = "13")
             @PathVariable Long memberId,
             @Valid @RequestBody MemberUpdateRequestDto requestDto) {
         memberService.updateMember(memberId, requestDto);

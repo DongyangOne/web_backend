@@ -22,16 +22,16 @@ public class MainRecruitmentResponseDto {
     @Schema(description = "모집 시작일", example = "2026-04-01")
     private String recruitmentStart;
 
-    @Schema(description = "모집 종료일", example = "2026-04-05")
+    @Schema(description = "모집 종료일", example = "2026-08-01")
     private String recruitmentEnd;
 
-    @Schema(description = "면접 시작일", example = "2026-04-06")
+    @Schema(description = "면접 시작일", example = "2026-08-02")
     private String interviewStart;
 
-    @Schema(description = "면접 종료일", example = "2026-04-07")
+    @Schema(description = "면접 종료일", example = "2026-08-08")
     private String interviewEnd;
 
-    @Schema(description = "합격자 발표일", example = "2026-04-07")
+    @Schema(description = "합격자 발표일", example = "2026-08-08")
     private String notificationDate;
 
     @Schema(description = "현재 모집 중 여부", example = "true")

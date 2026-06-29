@@ -15,22 +15,22 @@ import org.one.project.domain.ProjectPhoto;
 @AllArgsConstructor
 public class ProjectPhotoResponseDto {
 
-	@Schema(description = "사진 ID", example = "1")
-	private Long id;
+    @Schema(description = "사진 ID", example = "3")
+    private Long id;
 
-	@Schema(description = "사진 URL", example = "https://cdn.example.com/projects/photo.jpg")
-	private String url;
+    @Schema(description = "사진 URL", example = "https://cdn.example.com/projects/project9_photo1.jpg")
+    private String url;
 
-	/**
-	 * ProjectPhoto 엔티티에서 응답 DTO를 생성합니다.
-	 *
-	 * @param photo 프로젝트 사진 엔티티
-	 * @return 프로젝트 사진 응답 DTO
-	 */
-	public static ProjectPhotoResponseDto from(ProjectPhoto photo) {
-		return ProjectPhotoResponseDto.builder()
-				.id(photo.getPhotoId())
-				.url(photo.getPhotoUrl())
-				.build();
-	}
+    /**
+     * ProjectPhoto 엔티티에서 응답 DTO를 생성합니다.
+     *
+     * @param photo 프로젝트 사진 엔티티
+     * @return 프로젝트 사진 응답 DTO
+     */
+    public static ProjectPhotoResponseDto from(ProjectPhoto photo) {
+        return ProjectPhotoResponseDto.builder()
+                .id(photo.getPhotoId())
+                .url(photo.getPhotoUrl())
+                .build();
+    }
 }
