@@ -14,6 +14,10 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
+app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,https://dongyangone.duckdns.org}
+
 minio:
   url: ${MINIO_URL}
   access-key: ${MINIO_ACCESS_KEY}

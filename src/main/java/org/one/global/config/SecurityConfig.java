@@ -12,6 +12,7 @@ import org.one.global.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -86,11 +87,12 @@ public class SecurityConfig {
 				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.sessionManagement(session ->
 						session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(auth -> auth
-						.requestMatchers(PUBLIC_URLS).permitAll()
-						.requestMatchers("/api/v1/visitor/**").permitAll()
-						.anyRequest().hasRole("ADMIN")
-				)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(PUBLIC_URLS).permitAll()
+                        .requestMatchers("/api/v1/visitor/**").permitAll()
+                        .anyRequest().hasRole("ADMIN")
+                )
 				.exceptionHandling(exc -> exc
 						.authenticationEntryPoint((request, response, authException) ->
 								writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED,
