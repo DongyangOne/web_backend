@@ -4,7 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
 import java.time.LocalDate;
+
 import org.one.global.entity.BaseEntity;
 
 /**
@@ -14,118 +16,163 @@ import org.one.global.entity.BaseEntity;
 @Table(name = "recruitment")
 public class Recruitment extends BaseEntity {
 
-	@Id
-	private Integer recruitmentId;
+    @Id
+    private Integer recruitmentId;
 
-	@Column(length = 255)
-	private String target;
+    @Column(length = 255)
+    private String target;
 
-	@Column(columnDefinition = "TEXT")
-	private String field;
+    @Column(columnDefinition = "TEXT")
+    private String field;
 
-	private LocalDate recruitmentStart;
+    private LocalDate recruitmentStart;
 
-	private LocalDate recruitmentEnd;
+    private LocalDate recruitmentEnd;
 
-	private LocalDate interviewStart;
+    private LocalDate interviewStart;
 
-	private LocalDate interviewEnd;
+    private LocalDate interviewEnd;
 
-	private LocalDate notificationDate;
+    private LocalDate notificationDate;
 
-	/**
-	 * JPA 엔티티 생성을 위한 기본 생성자입니다.
-	 */
-	protected Recruitment() {}
+    @Column(length = 20)
+    private String contactNumber;
 
-	/**
-	 * recruitment_id가 1인 기본 모집 공고 엔티티를 생성합니다.
-	 *
-	 * @return 기본 모집 공고 설정
-	 */
-	public static Recruitment singleton() {
-		Recruitment recruitment = new Recruitment();
-		recruitment.recruitmentId = 1;
-		return recruitment;
-	}
+    @Column(length = 100)
+    private String roomLocation;
 
-	/**
-	 * 모집 공고 ID를 반환합니다.
-	 *
-	 * @return 모집 공고 ID
-	 */
-	public Integer getRecruitmentId() { return recruitmentId; }
+    /**
+     * JPA 엔티티 생성을 위한 기본 생성자입니다.
+     */
+    protected Recruitment() {
+    }
 
-	/**
-	 * 모집 대상을 반환합니다.
-	 *
-	 * @return 모집 대상
-	 */
-	public String getTarget() { return target; }
+    /**
+     * recruitment_id가 1인 기본 모집 공고 엔티티를 생성합니다.
+     *
+     * @return 기본 모집 공고 설정
+     */
+    public static Recruitment singleton() {
+        Recruitment recruitment = new Recruitment();
+        recruitment.recruitmentId = 1;
+        return recruitment;
+    }
 
-	/**
-	 * 지원 분야를 반환합니다.
-	 *
-	 * @return 지원 분야
-	 */
-	public String getField() { return field; }
+    /**
+     * 모집 공고 ID를 반환합니다.
+     *
+     * @return 모집 공고 ID
+     */
+    public Integer getRecruitmentId() {
+        return recruitmentId;
+    }
 
-	/**
-	 * 모집 시작일을 반환합니다.
-	 *
-	 * @return 모집 시작일
-	 */
-	public LocalDate getRecruitmentStart() { return recruitmentStart; }
+    /**
+     * 모집 대상을 반환합니다.
+     *
+     * @return 모집 대상
+     */
+    public String getTarget() {
+        return target;
+    }
 
-	/**
-	 * 모집 종료일을 반환합니다.
-	 *
-	 * @return 모집 종료일
-	 */
-	public LocalDate getRecruitmentEnd() { return recruitmentEnd; }
+    /**
+     * 지원 분야를 반환합니다.
+     *
+     * @return 지원 분야
+     */
+    public String getField() {
+        return field;
+    }
 
-	/**
-	 * 면접 시작일을 반환합니다.
-	 *
-	 * @return 면접 시작일
-	 */
-	public LocalDate getInterviewStart() { return interviewStart; }
+    /**
+     * 모집 시작일을 반환합니다.
+     *
+     * @return 모집 시작일
+     */
+    public LocalDate getRecruitmentStart() {
+        return recruitmentStart;
+    }
 
-	/**
-	 * 면접 종료일을 반환합니다.
-	 *
-	 * @return 면접 종료일
-	 */
-	public LocalDate getInterviewEnd() { return interviewEnd; }
+    /**
+     * 모집 종료일을 반환합니다.
+     *
+     * @return 모집 종료일
+     */
+    public LocalDate getRecruitmentEnd() {
+        return recruitmentEnd;
+    }
 
-	/**
-	 * 합격자 발표일을 반환합니다.
-	 *
-	 * @return 합격자 발표일
-	 */
-	public LocalDate getNotificationDate() { return notificationDate; }
+    /**
+     * 면접 시작일을 반환합니다.
+     *
+     * @return 면접 시작일
+     */
+    public LocalDate getInterviewStart() {
+        return interviewStart;
+    }
 
-	/**
-	 * 모집 공고 정보를 수정합니다.
-	 *
-	 * @param target 모집 대상
-	 * @param field 지원 분야
-	 * @param recruitmentStart 모집 시작일
-	 * @param recruitmentEnd 모집 종료일
-	 * @param interviewStart 면접 시작일
-	 * @param interviewEnd 면접 종료일
-	 * @param notificationDate 합격자 발표일
-	 */
-	public void update(String target, String field,
-			LocalDate recruitmentStart, LocalDate recruitmentEnd,
-			LocalDate interviewStart, LocalDate interviewEnd,
-			LocalDate notificationDate) {
-		this.field = field;
-		this.target = target;
-		this.recruitmentStart = recruitmentStart;
-		this.recruitmentEnd = recruitmentEnd;
-		this.interviewStart = interviewStart;
-		this.interviewEnd = interviewEnd;
-		this.notificationDate = notificationDate;
-	}
+    /**
+     * 면접 종료일을 반환합니다.
+     *
+     * @return 면접 종료일
+     */
+    public LocalDate getInterviewEnd() {
+        return interviewEnd;
+    }
+
+    /**
+     * 합격자 발표일을 반환합니다.
+     *
+     * @return 합격자 발표일
+     */
+    public LocalDate getNotificationDate() {
+        return notificationDate;
+    }
+
+    /**
+     * 동아리 문의 번호를 반환합니다.
+     *
+     * @return 동아리 문의 번호
+     */
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    /**
+     * 동아리 방 위치를 반환합니다.
+     *
+     * @return 동아리 방 위치
+     */
+    public String getRoomLocation() {
+        return roomLocation;
+    }
+
+    /**
+     * 모집 공고 정보를 수정합니다.
+     *
+     * @param target           모집 대상
+     * @param field            지원 분야
+     * @param recruitmentStart 모집 시작일
+     * @param recruitmentEnd   모집 종료일
+     * @param interviewStart   면접 시작일
+     * @param interviewEnd     면접 종료일
+     * @param notificationDate 합격자 발표일
+     * @param contactNumber    동아리 문의 번호
+     * @param roomLocation     동아리 방 위치
+     */
+    public void update(String target, String field,
+                       LocalDate recruitmentStart, LocalDate recruitmentEnd,
+                       LocalDate interviewStart, LocalDate interviewEnd,
+                       LocalDate notificationDate, String contactNumber, String roomLocation) {
+        this.field = field;
+        this.target = target;
+        this.recruitmentStart = recruitmentStart;
+        this.recruitmentEnd = recruitmentEnd;
+        this.interviewStart = interviewStart;
+        this.interviewEnd = interviewEnd;
+        this.notificationDate = notificationDate;
+        this.contactNumber = contactNumber;
+        this.roomLocation = roomLocation;
+    }
 }

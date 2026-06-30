@@ -37,6 +37,12 @@ public class MainRecruitmentResponseDto {
     @Schema(description = "현재 모집 중 여부", example = "true")
     private Boolean recruiting;
 
+    @Schema(description = "동아리 문의 번호", example = "010-1234-5678")
+    private String contactNumber;
+
+    @Schema(description = "동아리 방 위치", example = "3호관 5층")
+    private String roomLocation;
+
     public static MainRecruitmentResponseDto of(Recruitment recruitment, boolean isRecruiting) {
         return MainRecruitmentResponseDto.builder()
                 .target(recruitment.getTarget())
@@ -47,6 +53,8 @@ public class MainRecruitmentResponseDto {
                 .interviewEnd(recruitment.getInterviewEnd() != null ? recruitment.getInterviewEnd().toString() : null)
                 .notificationDate(recruitment.getNotificationDate() != null ? recruitment.getNotificationDate().toString() : null)
                 .recruiting(isRecruiting)
+                .contactNumber(recruitment.getContactNumber())
+                .roomLocation(recruitment.getRoomLocation())
                 .build();
     }
 }
