@@ -43,6 +43,9 @@ public class MainRecruitmentResponseDto {
     @Schema(description = "동아리 방 위치", example = "3호관 5층")
     private String roomLocation;
 
+    @Schema(description = "회장 이름", example = "홍길동")
+    private String bossName;
+
     public static MainRecruitmentResponseDto of(Recruitment recruitment, boolean isRecruiting) {
         return MainRecruitmentResponseDto.builder()
                 .target(recruitment.getTarget())
@@ -55,6 +58,7 @@ public class MainRecruitmentResponseDto {
                 .recruiting(isRecruiting)
                 .contactNumber(recruitment.getContactNumber())
                 .roomLocation(recruitment.getRoomLocation())
+                .bossName(recruitment.getBossName())
                 .build();
     }
 }
