@@ -54,7 +54,8 @@ public class AdminRecruitmentService {
                 request.getInterviewEnd(),
                 request.getNotificationDate(),
                 request.getContactNumber(),
-                request.getRoomLocation()
+                request.getRoomLocation(),
+                request.getBossName()
         );
         return RecruitmentResponseDto.from(recruitment, computeIsRecruiting(recruitment));
     }

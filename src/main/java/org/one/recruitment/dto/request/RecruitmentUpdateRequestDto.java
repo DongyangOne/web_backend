@@ -50,4 +50,8 @@ public class RecruitmentUpdateRequestDto {
     @Schema(description = "동아리 방 위치", example = "3호관 5층")
     @Size(max = 100, message = "방 위치는 100자 이내로 입력해주세요.")
     private String roomLocation;
+
+    @Schema(description = "회장 이름", example = "홍길동")
+    @Size(max = 5, message = "회장 이름은 5자 이내로 입력해주세요.")
+    private String bossName;
 }

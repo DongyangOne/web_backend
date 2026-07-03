@@ -48,6 +48,9 @@ public class RecruitmentResponseDto {
     @Schema(description = "동아리 방 위치", example = "3호관 5층")
     private String roomLocation;
 
+    @Schema(description = "회장 이름", example = "홍길동")
+    private String bossName;
+
     /**
      * Recruitment 엔티티에서 응답 DTO를 생성합니다.
      *
@@ -67,6 +70,7 @@ public class RecruitmentResponseDto {
                 .recruiting(isRecruiting)
                 .contactNumber(recruitment.getContactNumber())
                 .roomLocation(recruitment.getRoomLocation())
+                .bossName(recruitment.getBossName())
                 .build();
     }
 }

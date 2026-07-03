@@ -41,6 +41,9 @@ public class Recruitment extends BaseEntity {
     @Column(length = 100)
     private String roomLocation;
 
+    @Column(name = "boss_name", length = 5)
+    private String bossName;
+
     /**
      * JPA 엔티티 생성을 위한 기본 생성자입니다.
      */
@@ -149,6 +152,14 @@ public class Recruitment extends BaseEntity {
     }
 
     /**
+     * 회장님 이름을 반환합니다
+     *
+     * @return 회장님 이름
+     */
+    public String getBossName() {
+        return bossName; }
+
+    /**
      * 모집 공고 정보를 수정합니다.
      *
      * @param target           모집 대상
@@ -160,11 +171,12 @@ public class Recruitment extends BaseEntity {
      * @param notificationDate 합격자 발표일
      * @param contactNumber    동아리 문의 번호
      * @param roomLocation     동아리 방 위치
+     * @param bossName         회장님 이름
      */
     public void update(String target, String field,
                        LocalDate recruitmentStart, LocalDate recruitmentEnd,
                        LocalDate interviewStart, LocalDate interviewEnd,
-                       LocalDate notificationDate, String contactNumber, String roomLocation) {
+                       LocalDate notificationDate, String contactNumber, String roomLocation, String bossName) {
         this.field = field;
         this.target = target;
         this.recruitmentStart = recruitmentStart;
@@ -174,5 +186,6 @@ public class Recruitment extends BaseEntity {
         this.notificationDate = notificationDate;
         this.contactNumber = contactNumber;
         this.roomLocation = roomLocation;
+        this.bossName = bossName;
     }
 }
